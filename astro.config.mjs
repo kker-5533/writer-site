@@ -5,4 +5,9 @@ export default defineConfig({
   site: 'https://linshen.me',
   output: 'static',
   adapter: node({ mode: 'standalone' }),
+  vite: {
+    server: {
+      allowedHosts: ['.trycloudflare.com'],
+    },
+  },
 });

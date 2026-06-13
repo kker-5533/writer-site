@@ -6,5 +6,9 @@
   "works/ferry": {
     "likes": 1,
     "urges": 1
+  },
+  "works/桂花落": {
+    "likes": 0,
+    "urges": 1
   }
 }
