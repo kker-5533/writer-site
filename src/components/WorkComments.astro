@@ -11,7 +11,7 @@ const safeId = slug.replace(/[^a-zA-Z0-9一-鿿]/g, '-');
 
   <form class="wc-form" id={`wcForm-${safeId}`}>
     <div class="wc-row">
-      <input type="text" id={`wcAuthor-${safeId}`} placeholder="你的昵称" maxlength="20" required />
+      <input type="text" id={`wcAuthor-${safeId}`} placeholder="你的昵称" maxlength="20" />
       <button type="submit">提交留言</button>
     </div>
     <textarea id={`wcBody-${safeId}`} placeholder="对这篇作品说些什么..." rows="3" maxlength="1000" required></textarea>
