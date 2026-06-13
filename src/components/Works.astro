@@ -1,15 +1,13 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-
 interface Props {
-  works: CollectionEntry<'works'>[];
+  works: any[];
   interactions: Record<string, { likes: number; urges: number }>;
 }
 
 const { works, interactions } = Astro.props;
-const sorted = works
-  .filter(w => w.data.body)
-  .sort((a, b) => b.data.year - a.data.year);
+// 兼容两种数据格式: Astro collection entries 或纯 JSON 对象
+const normalized = works.map((w: any) => w.title ? w : { id: w.id, ...w.data });
+const sorted = normalized.filter((w: any) => w.body).sort((a: any, b: any) => b.year - a.year);
 ---
 
 <section id="works">
@@ -23,11 +21,11 @@ const sorted = works
       <div class="work-item">
         <span class="num">{String(i + 1).padStart(2, '0')}</span>
         <div class="info">
-          <a href={`/works/${w.id}`} class="title">{w.data.title}</a>
+          <a href={`/works/${w.id}`} class="title">{w.title}</a>
           <span class="meta">
-            {w.data.type} · {w.data.year} 年{w.data.wordCount && ` · 约 ${w.data.wordCount} 字`}{w.data.published && w.data.publisher && ` · ${w.data.publisher}`}
+            {w.type} · {w.year} 年{w.wordCount && ` · 约 ${w.wordCount} 字`}{w.published && w.publisher && ` · ${w.publisher}`}
           </span>
-          <p class="desc">{w.data.summary}</p>
+          <p class="desc">{w.summary}</p>
           <span class="counts-mini">
             <span class="mini-like">♥ {counts.likes}</span>
             <span class="mini-urge">⚡ {counts.urges}</span>

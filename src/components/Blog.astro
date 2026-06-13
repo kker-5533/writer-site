@@ -1,15 +1,12 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-
 interface Props {
-  posts: CollectionEntry<'blog'>[];
+  posts: any[];
   interactions: Record<string, { likes: number; urges: number }>;
 }
 
 const { posts, interactions } = Astro.props;
-const published = posts
-  .filter(p => !p.data.draft && p.data.body)
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const normalized = posts.map((p: any) => p.title ? p : { id: p.id, ...p.data });
+const published = normalized.filter((p: any) => !p.draft && p.body).sort((a: any, b: any) => (b.date || '').localeCompare(a.date || ''));
 ---
 
 <section id="blog" class="alt">
@@ -21,10 +18,10 @@ const published = posts
       const counts = interactions[`blog/${p.id}`] || { likes: 0, urges: 0 };
       return (
       <div class="post-item">
-        <span class="date">{p.data.date.toISOString().slice(0, 10).replace(/-/g, '.')}</span>
+        <span class="date">{p.date.replace(/-/g, '.')}</span>
         <div class="content">
-          <a href={`/blog/${p.id}`} class="title">{p.data.title}</a>
-          <p class="excerpt">{p.data.excerpt}</p>
+          <a href={`/blog/${p.id}`} class="title">{p.title}</a>
+          <p class="excerpt">{p.excerpt}</p>
           <span class="counts-mini">
             <span class="mini-like">♥ {counts.likes}</span>
             <span class="mini-urge">⚡ {counts.urges}</span>
