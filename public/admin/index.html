@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>内容管理 - 林深</title>
+  <style>
+    body { margin: 0; background: #f5f2ea; }
+    /* 覆盖 Decap 默认字体为中文友好的 */
+    [class*="CMS"] {
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif !important;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    // 登录检查
+    if (sessionStorage.getItem('linshen_auth') !== 'true') {
+      window.location.href = '/login';
+    }
+  </script>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script>
+    // 本地开发时使用 local_backend
+    if (window.location.hostname === 'localhost') {
+      CMS.init({
+        config: {
+          load_config_file: true,
+          backend: { name: 'git-gateway', branch: 'main' },
+          local_backend: true,
+        }
+      });
+    }
+  </script>
+</body>
+</html>

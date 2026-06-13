@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>林深 — 个人网站</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== 基础 ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #1b2a3a;
+    --teal-deep: #2e5c6e;
+    --teal: #4a8a9e;
+    --teal-light: #8bbfcc;
+    --sand: #e6dccf;
+    --sand-light: #f2ece3;
+    --cream: #fdfaf6;
+    --white: #ffffff;
+    --gold: #b8936e;
+    --gold-light: #d4b896;
+    --text-dark: #1e2d35;
+    --text-mid: #4d5c64;
+    --text-light: #88959d;
+    --border: #e8e2d8;
+    --border-light: #f0ebe3;
+    --font-heading: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", serif;
+    --font-body: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    font-size: 15.5px;
+    font-weight: 400;
+    line-height: 1.95;
+    color: var(--text-mid);
+    background: var(--cream);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ===== 导航 — 固定铺满顶部 ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+    background: rgba(27, 42, 58, 0.96);
+    backdrop-filter: blur(16px) saturate(1.4);
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  nav .inner {
+    max-width: 780px; margin: 0 auto;
+    display: flex; justify-content: space-between;
+    padding: 0 28px;
+  }
+  nav a {
+    display: block;
+    text-decoration: none;
+    color: rgba(255,255,255,0.65);
+    padding: 10px 0;
+    position: relative;
+    transition: color 0.3s;
+  }
+  nav a::after {
+    content: '';
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 0; height: 2px;
+    background: var(--gold-light);
+    border-radius: 1px;
+    transition: width 0.3s;
+  }
+  nav a:hover { color: #fff; }
+  nav a:hover::after { width: 60%; }
+  nav a {
+    display: block;
+    text-decoration: none;
+    color: rgba(255,255,255,0.65);
+    padding: 10px 14px;
+    border-radius: 20px;
+    position: relative;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+  nav a:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* ===== Hero — 大海 ===== */
+  #hero {
+    position: relative;
+    min-height: 90vh;
+    display: flex; align-items: center; justify-content: center;
+    background:
+      linear-gradient(160deg, rgba(27,42,58,0.78) 0%, rgba(27,42,58,0.4) 35%, rgba(46,92,110,0.3) 70%, rgba(139,191,204,0.25) 100%),
+      url("https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=1800&q=85") center 40%/cover no-repeat;
+    text-align: center;
+    overflow: hidden;
+  }
+  #hero::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 160px;
+    background: linear-gradient(to top, var(--cream) 0%, transparent 100%);
+  }
+  #hero .hero-inner {
+    position: relative; z-index: 2;
+    padding: 40px 28px 140px;
+  }
+  #hero h1 {
+    font-family: var(--font-heading);
+    font-size: 58px; font-weight: 900;
+    color: var(--white);
+    letter-spacing: 12px;
+    margin-bottom: 18px;
+    text-shadow: 0 2px 30px rgba(0,0,0,0.35);
+  }
+  #hero .subtitle {
+    font-family: var(--font-body);
+    font-size: 15px; font-weight: 300;
+    color: rgba(255,255,255,0.78);
+    letter-spacing: 6px;
+    margin-bottom: 48px;
+  }
+  #hero .intro {
+    font-family: var(--font-heading);
+    max-width: 520px; margin: 0 auto;
+    font-size: 16.5px; font-weight: 400;
+    color: rgba(255,255,255,0.7);
+    line-height: 2.3;
+    letter-spacing: 0.5px;
+  }
+  #hero .scroll-dot {
+    position: absolute; bottom: 128px; left: 50%; transform: translateX(-50%); z-index: 2;
+    width: 6px; height: 6px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 50%;
+    animation: dotPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes dotPulse {
+    0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
+    50% { opacity: 1; transform: translateX(-50%) translateY(10px); }
+  }
+
+  /* ===== 容器 ===== */
+  .container { max-width: 720px; margin: 0 auto; padding: 0 32px; }
+
+  /* ===== 各 Section ===== */
+  section { padding: 100px 0; }
+  section.alt { background: var(--white); }
+
+  .section-tag {
+    font-family: var(--font-body);
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 4px; text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: var(--font-heading);
+    font-size: 30px; font-weight: 700;
+    margin-bottom: 52px; color: var(--navy);
+    position: relative;
+    padding-bottom: 20px;
+  }
+  .section-title::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0;
+    width: 36px; height: 3px;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+    border-radius: 2px;
+  }
+
+  /* ===== 作品 — 带序号 ===== */
+  .work-item {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 16px 0;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--border-light);
+    align-items: start;
+  }
+  .work-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .work-item .num {
+    font-family: var(--font-heading);
+    font-size: 15px; font-weight: 600;
+    color: var(--teal-light);
+    padding-top: 2px;
+  }
+  .work-item .info { display: flex; flex-direction: column; gap: 6px; }
+  .work-item .title {
+    font-family: var(--font-heading);
+    font-size: 21px; font-weight: 700;
+    color: var(--navy);
+    letter-spacing: 1px;
+  }
+  .work-item .meta {
+    font-family: var(--font-body);
+    font-size: 12.5px; font-weight: 500;
+    color: var(--teal);
+    letter-spacing: 0.8px;
+  }
+  .work-item .desc {
+    font-size: 14.5px; color: var(--text-mid); line-height: 1.95;
+    margin-top: 6px;
+  }
+
+  /* ===== 博客 — 左侧日期 ===== */
+  .post-item {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 16px 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border-light);
+    align-items: baseline;
+  }
+  .post-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .post-item .date {
+    font-family: var(--font-body);
+    font-size: 12.5px; font-weight: 500;
+    color: var(--teal);
+    letter-spacing: 0.5px;
+    padding-top: 3px;
+    white-space: nowrap;
+  }
+  .post-item .content { display: flex; flex-direction: column; gap: 5px; }
+  .post-item .title {
+    font-family: var(--font-heading);
+    font-size: 18.5px; font-weight: 700;
+    color: var(--navy);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: color 0.25s;
+  }
+  .post-item .title:hover { color: var(--gold); }
+  .post-item .excerpt {
+    font-size: 14.5px; color: var(--text-mid); line-height: 1.95;
+  }
+
+  /* ===== 关于 — 两侧排版 ===== */
+  #about {
+    background: linear-gradient(175deg, var(--cream) 0%, var(--sand-light) 50%, var(--white) 100%);
+  }
+  .about-content {
+    display: flex; flex-direction: column; gap: 24px;
+    font-size: 16px; color: var(--text-mid); line-height: 2.15;
+  }
+  .about-content p:last-child {
+    font-family: var(--font-heading);
+    font-size: 18px; font-weight: 600;
+    color: var(--navy);
+    padding: 24px 0 0;
+    margin-top: 8px;
+    border-top: 1px solid var(--border);
+    letter-spacing: 0.5px;
+  }
+
+  /* ===== 联系 ===== */
+  #contact {
+    background: var(--white);
+  }
+  .contact-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0 40px;
+    list-style: none;
+  }
+  .contact-grid li {
+    font-family: var(--font-body);
+    font-size: 15px; font-weight: 500;
+    color: var(--text-mid);
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .contact-grid .label {
+    color: var(--gold);
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: 2px;
+    min-width: 44px;
+  }
+
+  /* ===== 留言 ===== */
+  #messages {
+    background: linear-gradient(180deg, var(--white) 0%, var(--cream) 60%);
+  }
+  .message-item {
+    padding: 30px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .message-item:last-child { border-bottom: none; }
+  .message-item .head {
+    display: flex; align-items: baseline; gap: 10px;
+    margin-bottom: 8px;
+  }
+  .message-item .author {
+    font-family: var(--font-body);
+    font-size: 15px; font-weight: 600; color: var(--navy);
+  }
+  .message-item .time {
+    font-size: 12px; color: var(--text-light); font-weight: 400;
+  }
+  .message-item .body {
+    font-size: 15px; color: var(--text-mid); line-height: 1.95;
+  }
+
+  /* ===== 页脚 ===== */
+  footer {
+    text-align: center; padding: 60px 28px 44px;
+    font-family: var(--font-body);
+    font-size: 12.5px; font-weight: 400;
+    color: rgba(255,255,255,0.45);
+    background: var(--navy);
+    letter-spacing: 1px;
+  }
+  footer .divider { margin: 0 12px; color: rgba(255,255,255,0.18); }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 640px) {
+    nav .inner { padding: 0 14px; }
+    nav a { font-size: 11.5px; padding: 9px 0; letter-spacing: 0.8px; }
+    #hero { min-height: 75vh; }
+    #hero h1 { font-size: 38px; letter-spacing: 6px; }
+    #hero .subtitle { font-size: 13px; letter-spacing: 3px; }
+    #hero .intro { font-size: 15px; }
+    section { padding: 64px 0; }
+    .section-title { font-size: 25px; margin-bottom: 36px; }
+    .work-item { grid-template-columns: 36px 1fr; }
+    .post-item { grid-template-columns: 1fr; gap: 2px 0; }
+    .post-item .date { padding-top: 0; }
+    .contact-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 导航 -->
+<nav>
+  <div class="inner">
+    <a href="#hero">首页</a>
+    <a href="#works">作品</a>
+    <a href="#blog">随笔</a>
+    <a href="#about">关于</a>
+    <a href="#contact">联系</a>
+    <a href="#messages">留言</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header id="hero">
+  <div class="hero-inner">
+    <h1>林 深</h1>
+    <p class="subtitle">散 文 / 小 说 / 诗 歌</p>
+    <p class="intro">
+      文字是林间的光，深浅不一，却总能照亮些什么。<br>
+      这里收录我的作品、随笔与日常思考。
+    </p>
+  </div>
+  <div class="scroll-dot"></div>
+</header>
+
+<!-- 作品 -->
+<section id="works">
+  <div class="container">
+    <p class="section-tag">Works</p>
+    <h2 class="section-title">作品</h2>
+
+    <div class="work-item">
+      <span class="num">01</span>
+      <div class="info">
+        <span class="title">南方有雨</span>
+        <span class="meta">长篇小说 · 2024 年 · 约 12 万字</span>
+        <p class="desc">一个关于南方小城三代女性的故事。雨水贯穿始终，冲刷出被遗忘的记忆与未曾说出口的爱。</p>
+      </div>
+    </div>
+
+    <div class="work-item">
+      <span class="num">02</span>
+      <div class="info">
+        <span class="title">傍晚的十三种写法</span>
+        <span class="meta">散文集 · 2023 年 · 已出版</span>
+        <p class="desc">二十篇散文，记录城市缝隙里的日常诗意。菜市场、末班地铁、旧书店——那些被忽略的角落。</p>
+      </div>
+    </div>
+
+    <div class="work-item">
+      <span class="num">03</span>
+      <div class="info">
+        <span class="title">渡口</span>
+        <span class="meta">中篇小说 · 2022 年 · 《收获》发表</span>
+        <p class="desc">长江边一个小渡口的最后一年。摆渡人老周和来往过客之间的短暂相遇与长久告别。</p>
+      </div>
+    </div>
+
+    <div class="work-item">
+      <span class="num">04</span>
+      <div class="info">
+        <span class="title">失眠者手记</span>
+        <span class="meta">诗歌集 · 2021 年</span>
+        <p class="desc">凌晨两点的独白，写给同样在黑夜里睁着眼睛的人。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 随笔 -->
+<section id="blog" class="alt">
+  <div class="container">
+    <p class="section-tag">Blog</p>
+    <h2 class="section-title">随笔</h2>
+
+    <div class="post-item">
+      <span class="date">2026.06.10</span>
+      <div class="content">
+        <span class="title">写作者的书桌</span>
+        <p class="excerpt">一张书桌能透露多少秘密？半杯凉茶、散落的便利贴、三支没墨的笔。写作从来不是体面的事。</p>
+      </div>
+    </div>
+
+    <div class="post-item">
+      <span class="date">2026.05.28</span>
+      <div class="content">
+        <span class="title">重读《边城》</span>
+        <p class="excerpt">时隔十年再读沈从文。年轻时只读到翠翠的爱情，现在读到的却是那条河本身——它带走一切，又包容一切。</p>
+      </div>
+    </div>
+
+    <div class="post-item">
+      <span class="date">2026.05.12</span>
+      <div class="content">
+        <span class="title">在菜市场学到的写作课</span>
+        <p class="excerpt">最好的对话不在书里，在菜市场。摊贩的吆喝、大妈的讨价还价——每一句都带着生活的纹理。</p>
+      </div>
+    </div>
+
+    <div class="post-item">
+      <span class="date">2026.04.25</span>
+      <div class="content">
+        <span class="title">关于「南方有雨」的创作谈</span>
+        <p class="excerpt">编辑问我为什么要写三代女性。我说，因为我的外婆、母亲和我——我们从未真正交谈过。写作是一种迟到的对话。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 关于 -->
+<section id="about">
+  <div class="container">
+    <p class="section-tag">About</p>
+    <h2 class="section-title">关于作者</h2>
+    <div class="about-content">
+      <p>林深，1990 年生于湖南岳阳，现居杭州。写小说、散文和诗歌。</p>
+      <p>大学读的是建筑，毕业后在设计院画了三年图纸，某天在工地突然意识到——自己更想搭建的是文字的世界。于是辞职，开始全职写作。</p>
+      <p>作品散见于《收获》《人民文学》《上海文学》等刊物。散文集《傍晚的十三种写法》于 2023 年由人民文学出版社出版。</p>
+      <p>相信好的文字应该像南方冬天的阳光：不灼人，但有温度。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 联系 -->
+<section id="contact">
+  <div class="container">
+    <p class="section-tag">Contact</p>
+    <h2 class="section-title">联系方式</h2>
+    <ul class="contact-grid">
+      <li><span class="label">邮箱</span> linshen@example.com</li>
+      <li><span class="label">微博</span> @林深写字</li>
+      <li><span class="label">豆瓣</span> douban.com/people/linshen</li>
+      <li><span class="label">公众号</span> 林深的房间</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 留言 -->
+<section id="messages">
+  <div class="container">
+    <p class="section-tag">Messages</p>
+    <h2 class="section-title">读者留言</h2>
+
+    <div class="message-item">
+      <div class="head">
+        <span class="author">陈小鱼</span>
+        <span class="time">2026 年 6 月 9 日</span>
+      </div>
+      <p class="body">读过《傍晚的十三种写法》后，我开始认真观察每天下班路上的风景。谢谢您教会我慢下来。</p>
+    </div>
+
+    <div class="message-item">
+      <div class="head">
+        <span class="author">远山</span>
+        <span class="time">2026 年 5 月 30 日</span>
+      </div>
+      <p class="body">《渡口》读了三遍。老周让我想起我外公，他也是摆渡人，在嘉陵江上。读到结尾那句「渡口关了，江水还在流」，眼泪止不住。</p>
+    </div>
+
+    <div class="message-item">
+      <div class="head">
+        <span class="author">匿名读者</span>
+        <span class="time">2026 年 5 月 20 日</span>
+      </div>
+      <p class="body">什么时候出新书？等了一年多了。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 页脚 -->
+<footer>
+  <span>© 2026 林深</span>
+  <span class="divider">·</span>
+  <span>由内而外地安静生长</span>
+</footer>
+
+</body>
+</html>

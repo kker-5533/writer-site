@@ -1,0 +1,47 @@
+---
+interface ContactItem { label: string; value: string; }
+
+interface Props {
+  items: ContactItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<section id="contact">
+  <div class="container">
+    <p class="section-tag">Contact</p>
+    <h2 class="section-title">联系方式</h2>
+    <ul class="contact-grid">
+      {items.map(item => (
+        <li><span class="label">{item.label}</span> {item.value}</li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  #contact { background: var(--white); }
+  .contact-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0 40px;
+    list-style: none;
+  }
+  .contact-grid li {
+    font-family: var(--font-body);
+    font-size: 15px; font-weight: 500;
+    color: var(--text-mid);
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .contact-grid .label {
+    color: var(--gold);
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: 2px;
+    min-width: 44px;
+  }
+  @media (max-width: 640px) {
+    .contact-grid { grid-template-columns: 1fr; }
+  }
+</style>

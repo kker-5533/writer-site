@@ -1,0 +1,66 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { posts } = Astro.props;
+const published = posts
+  .filter(p => !p.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<section id="blog" class="alt">
+  <div class="container">
+    <p class="section-tag">Blog</p>
+    <h2 class="section-title">随笔</h2>
+
+    {published.map(p => (
+      <div class="post-item">
+        <span class="date">{p.data.date.toISOString().slice(0, 10).replace(/-/g, '.')}</span>
+        <div class="content">
+          <span class="title">{p.data.title}</span>
+          <p class="excerpt">{p.data.excerpt}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .post-item {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 16px 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border-light);
+    align-items: baseline;
+  }
+  .post-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .post-item .date {
+    font-family: var(--font-body);
+    font-size: 12.5px; font-weight: 500;
+    color: var(--teal);
+    letter-spacing: 0.5px;
+    padding-top: 3px;
+    white-space: nowrap;
+  }
+  .post-item .content { display: flex; flex-direction: column; gap: 5px; }
+  .post-item .title {
+    font-family: var(--font-heading);
+    font-size: 18.5px; font-weight: 700;
+    color: var(--navy);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: color 0.25s;
+  }
+  .post-item .title:hover { color: var(--gold); }
+  .post-item .excerpt {
+    font-size: 14.5px; color: var(--text-mid); line-height: 1.95;
+  }
+  @media (max-width: 640px) {
+    .post-item { grid-template-columns: 1fr; gap: 2px 0; }
+    .post-item .date { padding-top: 0; }
+  }
+</style>

@@ -1,0 +1,66 @@
+/* ===== 全局样式 ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #1b2a3a;
+  --teal-deep: #2e5c6e;
+  --teal: #4a8a9e;
+  --teal-light: #8bbfcc;
+  --sand: #e6dccf;
+  --sand-light: #f2ece3;
+  --cream: #fdfaf6;
+  --white: #ffffff;
+  --gold: #b8936e;
+  --gold-light: #d4b896;
+  --text-dark: #1e2d35;
+  --text-mid: #4d5c64;
+  --text-light: #88959d;
+  --border: #e8e2d8;
+  --border-light: #f0ebe3;
+  --font-heading: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", serif;
+  --font-body: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  font-size: 15.5px;
+  font-weight: 400;
+  line-height: 1.95;
+  color: var(--text-mid);
+  background: var(--cream);
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 720px; margin: 0 auto; padding: 0 32px; }
+
+section { padding: 100px 0; }
+section.alt { background: var(--white); }
+
+.section-tag {
+  font-family: var(--font-body);
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 4px; text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 30px; font-weight: 700;
+  margin-bottom: 52px; color: var(--navy);
+  position: relative;
+  padding-bottom: 20px;
+}
+.section-title::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0;
+  width: 36px; height: 3px;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+  border-radius: 2px;
+}
+
+@media (max-width: 640px) {
+  section { padding: 64px 0; }
+  .section-title { font-size: 25px; margin-bottom: 36px; }
+}

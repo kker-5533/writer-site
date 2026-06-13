@@ -1,0 +1,26 @@
+{
+  "author": "林深",
+  "subtitle": "散 文 / 小 说 / 诗 歌",
+  "intro": "文字是林间的光，深浅不一，却总能照亮些什么。\n这里收录我的作品、随笔与日常思考。",
+  "coverImage": "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=1800&q=85",
+  "coverPresets": [
+    { "name": "深海", "url": "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=1800&q=85" },
+    { "name": "静谧湖泊", "url": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1800&q=85" },
+    { "name": "山林晨雾", "url": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1800&q=85" },
+    { "name": "海岸余晖", "url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1800&q=85" },
+    { "name": "水墨远山", "url": "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=1800&q=85" },
+    { "name": "雨窗", "url": "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=1800&q=85" }
+  ],
+  "contact": {
+    "email": "linshen@example.com",
+    "weibo": "@林深写字",
+    "douban": "douban.com/people/linshen",
+    "wechat": "林深的房间"
+  },
+  "about": [
+    "林深，1990 年生于湖南岳阳，现居杭州。写小说、散文和诗歌。",
+    "大学读的是建筑，毕业后在设计院画了三年图纸，某天在工地突然意识到——自己更想搭建的是文字的世界。于是辞职，开始全职写作。",
+    "作品散见于《收获》《人民文学》《上海文学》等刊物。散文集《傍晚的十三种写法》于 2023 年由人民文学出版社出版。",
+    "相信好的文字应该像南方冬天的阳光：不灼人，但有温度。"
+  ]
+}

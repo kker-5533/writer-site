@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "command": ".claude/hooks/stop-check.sh",
+        "description": "交付验收检查 — 修改代码/配置/文档后必须完成验证才允许结束"
+      }
+    ]
+  }
+}

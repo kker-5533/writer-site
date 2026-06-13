@@ -1,0 +1,53 @@
+---
+interface Message { author: string; time: string; body: string; }
+
+interface Props {
+  messages: Message[];
+}
+
+const { messages } = Astro.props;
+---
+
+<section id="messages">
+  <div class="container">
+    <p class="section-tag">Messages</p>
+    <h2 class="section-title">读者留言</h2>
+
+    {messages.length === 0 && <p style="color: var(--text-light); padding: 20px 0;">暂无留言，来做第一个留言的读者吧。</p>}
+
+    {messages.map(m => (
+      <div class="message-item">
+        <div class="head">
+          <span class="author">{m.author}</span>
+          <span class="time">{m.time}</span>
+        </div>
+        <p class="body">{m.body}</p>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  #messages {
+    background: linear-gradient(180deg, var(--white) 0%, var(--cream) 60%);
+  }
+  .message-item {
+    padding: 30px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .message-item:last-child { border-bottom: none; }
+  .message-item .head {
+    display: flex; align-items: baseline; gap: 10px;
+    margin-bottom: 8px;
+  }
+  .message-item .author {
+    font-family: var(--font-body);
+    font-size: 15px; font-weight: 600; color: var(--navy);
+  }
+  .message-item .time {
+    font-size: 12px; color: var(--text-light); font-weight: 400;
+  }
+  .message-item .body {
+    font-size: 15px; color: var(--text-mid); line-height: 1.95;
+  }
+</style>

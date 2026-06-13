@@ -1,0 +1,70 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "public/images"
+public_folder: "/images"
+
+collections:
+  - name: "config"
+    label: "网站设置"
+    editor:
+      preview: false
+    files:
+      - name: "site"
+        label: "基本信息"
+        file: "src/data/site.json"
+        fields:
+          - { label: "笔名", name: "author", widget: "string" }
+          - { label: "副标题", name: "subtitle", widget: "string" }
+          - { label: "简介", name: "intro", widget: "text" }
+          - label: "封面图片"
+            name: "coverImage"
+            widget: "select"
+            options:
+              - { label: "深海", value: "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=1800&q=85" }
+              - { label: "静谧湖泊", value: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1800&q=85" }
+              - { label: "山林晨雾", value: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1800&q=85" }
+              - { label: "海岸余晖", value: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1800&q=85" }
+              - { label: "水墨远山", value: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=1800&q=85" }
+              - { label: "雨窗", value: "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=1800&q=85" }
+          - label: "联系方式"
+            name: "contact"
+            widget: "object"
+            fields:
+              - { label: "邮箱", name: "email", widget: "string" }
+              - { label: "微博", name: "weibo", widget: "string" }
+              - { label: "豆瓣", name: "douban", widget: "string" }
+              - { label: "公众号", name: "wechat", widget: "string" }
+          - label: "关于作者"
+            name: "about"
+            widget: "list"
+            field: { label: "段落", name: "paragraph", widget: "text" }
+
+  - name: "works"
+    label: "作品"
+    folder: "src/content/works"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "类型", name: "type", widget: "select", options: ["长篇小说", "中篇小说", "短篇小说", "散文集", "诗歌集", "杂文集"] }
+      - { label: "年份", name: "year", widget: "number", valueType: "int" }
+      - { label: "字数", name: "wordCount", widget: "string", required: false }
+      - { label: "已出版", name: "published", widget: "boolean", default: false }
+      - { label: "出版方", name: "publisher", widget: "string", required: false }
+      - { label: "简介", name: "summary", widget: "text" }
+      - { label: "排序", name: "order", widget: "number", valueType: "int", default: 0 }
+    body: ""
+
+  - name: "blog"
+    label: "随笔"
+    folder: "src/content/blog"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "日期", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
+      - { label: "摘要", name: "excerpt", widget: "text" }
+      - { label: "草稿", name: "draft", widget: "boolean", default: false }
+    body: ""

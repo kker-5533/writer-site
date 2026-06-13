@@ -1,0 +1,40 @@
+---
+interface Props {
+  paragraphs: string[];
+}
+
+const { paragraphs } = Astro.props;
+---
+
+<section id="about">
+  <div class="container">
+    <p class="section-tag">About</p>
+    <h2 class="section-title">关于作者</h2>
+    <div class="about-content">
+      {paragraphs.map((p, i) => (
+        <p class:list={['highlight', { highlight: i === paragraphs.length - 1 }]}>
+          {p}
+        </p>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  #about {
+    background: linear-gradient(175deg, var(--cream) 0%, var(--sand-light) 50%, var(--white) 100%);
+  }
+  .about-content {
+    display: flex; flex-direction: column; gap: 24px;
+    font-size: 16px; color: var(--text-mid); line-height: 2.15;
+  }
+  .about-content .highlight {
+    font-family: var(--font-heading);
+    font-size: 18px; font-weight: 600;
+    color: var(--navy);
+    padding: 24px 0 0;
+    margin-top: 8px;
+    border-top: 1px solid var(--border);
+    letter-spacing: 0.5px;
+  }
+</style>
