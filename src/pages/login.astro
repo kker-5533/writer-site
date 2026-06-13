@@ -5,7 +5,7 @@ import Layout from '../layouts/Layout.astro';
 <Layout>
   <div class="login-wrapper">
     <div class="login-card">
-      <h1>林 深</h1>
+      <h1>作者登录</h1>
       <p class="sub">内容管理系统</p>
 
       <form id="loginForm" class="login-form">
@@ -27,23 +27,36 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  const VALID_NICKNAME = '0000';
-  const VALID_PASSWORD = '0000';
-
   const form = document.getElementById('loginForm');
   const errorEl = document.getElementById('error');
+  const btn = form.querySelector('button');
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const nickname = document.getElementById('nickname').value.trim();
     const password = document.getElementById('password').value;
 
-    if (nickname === VALID_NICKNAME && password === VALID_PASSWORD) {
-      sessionStorage.setItem('linshen_auth', 'true');
-      window.location.href = '/admin/';
-    } else {
+    btn.disabled = true; btn.textContent = '验证中...';
+    errorEl.style.display = 'none';
+
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'login', nickname, password })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        sessionStorage.setItem('linshen_auth', 'true');
+        window.location.href = '/admin';
+      } else {
+        errorEl.textContent = data.error || '昵称或密码错误';
+        errorEl.style.display = 'block';
+      }
+    } catch {
+      errorEl.textContent = '网络错误，请稍后再试';
       errorEl.style.display = 'block';
     }
+    btn.disabled = false; btn.textContent = '登 录';
   });
 </script>
 
@@ -65,9 +78,9 @@ import Layout from '../layouts/Layout.astro';
   }
   .login-card h1 {
     font-family: var(--font-heading);
-    font-size: 28px; font-weight: 700;
+    font-size: 26px; font-weight: 700;
     color: var(--navy);
-    letter-spacing: 6px;
+    letter-spacing: 4px;
     margin-bottom: 6px;
   }
   .login-card .sub {

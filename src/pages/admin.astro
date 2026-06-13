@@ -1,0 +1,451 @@
+---
+export const prerender = false;
+import Layout from '../layouts/Layout.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+function loadSite() {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src/data/site.json'), 'utf-8'));
+  } catch { return {}; }
+}
+const site = loadSite();
+const presets = site.coverPresets || [];
+const currentCover = site.coverImage || '';
+---
+
+<Layout>
+<div class="admin-wrapper">
+  <div class="admin-header">
+    <h1>内容管理</h1>
+    <a href="/" class="back-link">&larr; 返回网站</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="site">网站设置</button>
+    <button class="tab" data-tab="works">作品管理</button>
+    <button class="tab" data-tab="blog">随笔管理</button>
+    <button class="tab" data-tab="messages">留言管理</button>
+    <button class="tab" data-tab="workmsgs">作品评论</button>
+    <button class="tab" data-tab="password">密码修改</button>
+  </div>
+
+  <!-- ===== 网站设置 ===== -->
+  <div id="tab-site" class="tab-content active">
+    <form id="siteForm" class="admin-form">
+      <div class="field"><label>笔名</label><input name="author" /></div>
+      <div class="field"><label>副标题</label><input name="subtitle" /></div>
+      <div class="field"><label>简介（换行分隔）</label><textarea name="intro" rows="3"></textarea></div>
+      <input type="hidden" name="coverImage" />
+      <div class="field"><label>封面图片</label>
+        <div class="cover-grid" id="presetGrid">
+          {presets.map(p => (
+            <div class={`cover-box${p.url === currentCover ? ' selected' : ''}`} data-url={p.url} title={p.name}>
+              <img src={`${p.url.split('?')[0]}?w=240&q=30&fit=crop`} alt={p.name} loading="lazy" />
+              <span class="cover-check">&#10003;</span>
+            </div>
+          ))}
+        </div>
+        <div class="cover-custom">
+          <span class="cover-custom-label">自定义：</span>
+          <input type="file" id="coverUpload" accept="image/*" />
+          <span id="coverUploadMsg" class="msg"></span>
+        </div>
+      </div>
+      <h3>联系方式</h3>
+      <div class="row"><div class="field"><label>邮箱</label><input name="contact.email" /></div><div class="field"><label>微博</label><input name="contact.weibo" /></div></div>
+      <div class="row"><div class="field"><label>豆瓣</label><input name="contact.douban" /></div><div class="field"><label>公众号</label><input name="contact.wechat" /></div></div>
+      <h3>关于作者（每行一段）</h3>
+      <div id="aboutList" class="list-editor"></div>
+      <button type="button" class="btn-sm" id="addAboutBtn">+ 添加段落</button>
+      <br><br>
+      <button type="submit" class="btn-save">保存设置</button>
+      <span id="siteMsg" class="msg"></span>
+    </form>
+  </div>
+
+  <!-- ===== 作品管理 ===== -->
+  <div id="tab-works" class="tab-content">
+    <button id="addWorkBtn" class="btn-add">+ 新增作品</button>
+    <div id="workList" class="card-list"></div>
+    <div id="workEditor" class="editor-panel" style="display:none">
+      <h3 id="workEditorTitle">新增作品</h3>
+      <form id="workForm" class="admin-form">
+        <input type="hidden" name="workId" />
+        <div class="field"><label>标题</label><input name="title" /></div>
+        <div class="row"><div class="field"><label>类型</label><select name="type"><option>长篇小说</option><option>中篇小说</option><option>短篇小说</option><option>散文集</option><option>诗歌集</option><option>杂文集</option></select></div><div class="field"><label>年份</label><input name="year" type="number" /></div></div>
+        <div class="row"><div class="field"><label>字数</label><input name="wordCount" /></div><div class="field"><label>出版方</label><input name="publisher" /></div></div>
+        <div class="field"><label><input type="checkbox" name="published" /> 已出版</label></div>
+        <div class="field"><label>简介</label><textarea name="summary" rows="3"></textarea></div>
+        <div class="field"><label>正文</label><textarea name="body" rows="12" class="body-editor"></textarea></div>
+        <button type="submit" class="btn-save">保存</button>
+        <button type="button" id="cancelWorkBtn" class="btn-cancel">取消</button>
+        <span id="workMsg" class="msg"></span>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== 随笔管理 ===== -->
+  <div id="tab-blog" class="tab-content">
+    <button id="addBlogBtn" class="btn-add">+ 新建随笔</button>
+    <div id="blogList" class="card-list"></div>
+    <div id="blogEditor" class="editor-panel" style="display:none">
+      <h3 id="blogEditorTitle">新建随笔</h3>
+      <form id="blogForm" class="admin-form">
+        <input type="hidden" name="blogId" />
+        <div class="field"><label>标题</label><input name="title" /></div>
+        <div class="row"><div class="field"><label>日期</label><input name="date" type="date" /></div><div class="field"><label><input type="checkbox" name="draft" /> 草稿</label></div></div>
+        <div class="field"><label>摘要</label><textarea name="excerpt" rows="3"></textarea></div>
+        <div class="field"><label>正文</label><textarea name="body" rows="12" class="body-editor"></textarea></div>
+        <button type="submit" class="btn-save">保存</button>
+        <button type="button" id="cancelBlogBtn" class="btn-cancel">取消</button>
+        <span id="blogMsg" class="msg"></span>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== 留言管理 ===== -->
+  <div id="tab-messages" class="tab-content">
+    <div id="msgList" class="card-list"></div>
+  </div>
+
+  <!-- ===== 作品评论管理 ===== -->
+  <div id="tab-workmsgs" class="tab-content">
+    <div class="field" style="margin-bottom:20px"><label>选择作品</label><select id="workMsgSelect"><option value="">-- 请选择 --</option></select></div>
+    <div id="workMsgList" class="card-list"></div>
+  </div>
+
+  <!-- ===== 密码修改 ===== -->
+  <div id="tab-password" class="tab-content">
+    <form id="pwdForm" class="admin-form" style="max-width:440px">
+      <div class="field"><label>当前昵称</label><input name="curNickname" /></div>
+      <div class="field"><label>当前密码</label><input name="curPassword" type="password" /></div>
+      <div class="field"><label>新密码（至少 4 位）</label><input name="newPassword" type="password" /></div>
+      <button type="submit" class="btn-save">修改密码</button>
+      <span id="pwdMsg" class="msg"></span>
+    </form>
+  </div>
+</div>
+</Layout>
+
+<script>
+  // ---- 登录检查 ----
+  if (sessionStorage.getItem('linshen_auth') !== 'true') { window.location.href = '/login'; }
+
+  // ---- Tab 切换 ----
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      document.getElementById('tab-' + t.dataset.tab)?.classList.add('active');
+      if (t.dataset.tab === 'works') loadWorks();
+      if (t.dataset.tab === 'blog') loadBlog();
+      if (t.dataset.tab === 'messages') loadMessages();
+      if (t.dataset.tab === 'workmsgs') loadWorkMsgs();
+    });
+  });
+
+  // ====== 网站设置 ======
+  async function loadSite() {
+    const res = await fetch('/api/site'); const d = await res.json();
+    setVal('author', d.author); setVal('subtitle', d.subtitle); setVal('intro', d.intro); setVal('coverImage', d.coverImage);
+    setVal('contact.email', d.contact?.email); setVal('contact.weibo', d.contact?.weibo);
+    setVal('contact.douban', d.contact?.douban); setVal('contact.wechat', d.contact?.wechat);
+    // about paragraphs
+    const aboutList = document.getElementById('aboutList');
+    aboutList.innerHTML = '';
+    (d.about || []).forEach((p, i) => {
+      const div = document.createElement('div'); div.className = 'list-row';
+      div.innerHTML = `<textarea name="about.${i}" rows="2">${esc(p)}</textarea><button type="button" class="btn-del" onclick="this.parentElement.remove()">×</button>`;
+      aboutList.appendChild(div);
+    });
+    // custom upload
+    const uploadEl = document.getElementById('coverUpload');
+    if (uploadEl) uploadEl.addEventListener('change', async function() {
+      const file = this.files?.[0]; if (!file) return;
+      const msgEl = document.getElementById('coverUploadMsg');
+      msgEl.textContent = '上传中...';
+      const fd = new FormData(); fd.append('file', file);
+      try {
+        const res = await fetch('/api/upload-cover', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.ok) { setVal('coverImage', data.url); msgEl.textContent = '✓ 已上传，记得保存'; }
+        else msgEl.textContent = data.error || '失败';
+      } catch { msgEl.textContent = '上传失败'; }
+    });
+  }
+
+  document.getElementById('siteForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const about = []; document.querySelectorAll('#aboutList textarea').forEach(t => about.push(t.value));
+    const body = {
+      author: getVal('author'), subtitle: getVal('subtitle'), intro: getVal('intro'), coverImage: getVal('coverImage'),
+      contact: { email: getVal('contact.email'), weibo: getVal('contact.weibo'), douban: getVal('contact.douban'), wechat: getVal('contact.wechat') },
+      about,
+    };
+    const res = await fetch('/api/site', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    showMsg('siteMsg', res.ok ? '✓ 已保存' : '保存失败');
+  });
+
+  document.getElementById('addAboutBtn').addEventListener('click', () => {
+    const div = document.createElement('div'); div.className = 'list-row';
+    const i = document.querySelectorAll('#aboutList textarea').length;
+    div.innerHTML = `<textarea name="about.${i}" rows="2"></textarea><button type="button" class="btn-del" onclick="this.parentElement.remove()">×</button>`;
+    document.getElementById('aboutList').appendChild(div);
+  });
+
+  // ====== 作品管理 ======
+  async function loadWorks() {
+    const res = await fetch('/api/works'); const works = await res.json();
+    const list = document.getElementById('workList');
+    list.innerHTML = works.length === 0 ? '<p class="empty-msg">暂无作品</p>' : '';
+    works.forEach(w => {
+      const card = document.createElement('div'); card.className = 'card';
+      card.innerHTML = `<div><strong>${esc(w.title)}</strong> <span class="tag">${esc(w.type)}</span> <span class="tag">${w.year}</span></div><div class="card-summary">${esc(w.summary || '')}</div><div class="card-actions"><button class="btn-sm edit-work" data-id="${w.id}">编辑</button><button class="btn-sm danger del-work" data-id="${w.id}">删除</button></div>`;
+      list.appendChild(card);
+    });
+    bindWorkButtons();
+  }
+
+  function bindWorkButtons() {
+    document.querySelectorAll('.edit-work').forEach(b => b.addEventListener('click', () => editWork(b.dataset.id)));
+    document.querySelectorAll('.del-work').forEach(b => b.addEventListener('click', () => deleteWork(b.dataset.id)));
+  }
+
+  async function editWork(id) {
+    const res = await fetch('/api/works'); const works = await res.json();
+    const w = works.find(x => x.id === id); if (!w) return;
+    document.getElementById('workEditor').style.display = 'block';
+    document.getElementById('workEditorTitle').textContent = '编辑作品';
+    setVal('workId', id); setVal('title', w.title); setVal('type', w.type); setVal('year', w.year);
+    setVal('wordCount', w.wordCount || ''); setVal('publisher', w.publisher || '');
+    (document.querySelector('[name="published"]')).checked = w.published; setVal('summary', w.summary); setVal('body', w.body || '');
+  }
+
+  document.getElementById('addWorkBtn').addEventListener('click', () => {
+    document.getElementById('workEditor').style.display = 'block';
+    document.getElementById('workEditorTitle').textContent = '新增作品';
+    document.getElementById('workForm').reset(); setVal('workId', '');
+  });
+
+  document.getElementById('cancelWorkBtn').addEventListener('click', () => { document.getElementById('workEditor').style.display = 'none'; });
+
+  document.getElementById('workForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const id = getVal('workId');
+    const body = { action: id ? 'update' : 'create', id: id || undefined, title: getVal('title'), type: getVal('type'), year: Number(getVal('year')), wordCount: getVal('wordCount'), publisher: getVal('publisher'), published: (document.querySelector('[name="published"]')).checked, summary: getVal('summary'), body: getVal('body') };
+    const res = await fetch('/api/works', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    if (res.ok) { showMsg('workMsg', '✓ 已保存'); document.getElementById('workEditor').style.display = 'none'; loadWorks(); }
+    else showMsg('workMsg', '保存失败');
+  });
+
+  async function deleteWork(id) {
+    if (!confirm('确定删除这个作品？')) return;
+    await fetch('/api/works', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'delete', id }) });
+    loadWorks();
+  }
+
+  // ====== 随笔管理 ======
+  async function loadBlog() {
+    const res = await fetch('/api/blog'); const posts = await res.json();
+    const list = document.getElementById('blogList');
+    list.innerHTML = posts.length === 0 ? '<p class="empty-msg">暂无随笔</p>' : '';
+    posts.forEach(p => {
+      const card = document.createElement('div'); card.className = 'card';
+      const draftBadge = p.draft ? ' <span class="tag draft">草稿</span>' : '';
+      card.innerHTML = `<div><strong>${esc(p.title)}</strong>${draftBadge} <span class="tag">${p.date}</span></div><div class="card-summary">${esc(p.excerpt || '')}</div><div class="card-actions"><button class="btn-sm edit-blog" data-id="${p.id}">编辑</button><button class="btn-sm danger del-blog" data-id="${p.id}">删除</button></div>`;
+      list.appendChild(card);
+    });
+    document.querySelectorAll('.edit-blog').forEach(b => b.addEventListener('click', () => editBlog(b.dataset.id)));
+    document.querySelectorAll('.del-blog').forEach(b => b.addEventListener('click', () => deleteBlog(b.dataset.id)));
+  }
+
+  async function editBlog(id) {
+    const res = await fetch('/api/blog'); const posts = await res.json();
+    const p = posts.find(x => x.id === id); if (!p) return;
+    document.getElementById('blogEditor').style.display = 'block';
+    document.getElementById('blogEditorTitle').textContent = '编辑随笔';
+    setVal('blogId', id); setVal('title', p.title); setVal('date', p.date); setVal('excerpt', p.excerpt); setVal('body', p.body || '');
+    (document.querySelector('[name="draft"]')).checked = p.draft;
+  }
+
+  document.getElementById('addBlogBtn').addEventListener('click', () => {
+    document.getElementById('blogEditor').style.display = 'block';
+    document.getElementById('blogEditorTitle').textContent = '新建随笔';
+    document.getElementById('blogForm').reset(); setVal('blogId', ''); setVal('date', new Date().toISOString().slice(0,10));
+  });
+
+  document.getElementById('cancelBlogBtn').addEventListener('click', () => { document.getElementById('blogEditor').style.display = 'none'; });
+
+  document.getElementById('blogForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const id = getVal('blogId');
+    const body = { action: id ? 'update' : 'create', id: id || undefined, title: getVal('title'), date: getVal('date'), excerpt: getVal('excerpt'), draft: (document.querySelector('[name="draft"]')).checked, body: getVal('body') };
+    const res = await fetch('/api/blog', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    if (res.ok) { showMsg('blogMsg', '✓ 已保存'); document.getElementById('blogEditor').style.display = 'none'; loadBlog(); }
+    else showMsg('blogMsg', '保存失败');
+  });
+
+  async function deleteBlog(id) {
+    if (!confirm('确定删除？')) return;
+    await fetch('/api/blog', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'delete', id }) });
+    loadBlog();
+  }
+
+  // ====== 留言管理 ======
+  async function loadMessages() {
+    const res = await fetch('/api/messages?list=1');
+    const msgs = await res.json();
+    const list = document.getElementById('msgList');
+    list.innerHTML = msgs.length === 0 ? '<p class="empty-msg">暂无留言</p>' : '';
+    msgs.forEach((m, i) => {
+      const card = document.createElement('div'); card.className = 'card';
+      card.innerHTML = `<div><strong>${esc(m.author)}</strong> <span class="tag">${m.time}</span></div><div class="card-summary">${esc(m.body)}</div><div class="card-actions"><button class="btn-sm danger del-msg" data-idx="${i}">删除</button></div>`;
+      list.appendChild(card);
+    });
+    document.querySelectorAll('.del-msg').forEach(b => b.addEventListener('click', () => deleteMessage(Number(b.dataset.idx))));
+  }
+
+  async function deleteMessage(idx) {
+    if (!confirm('确定删除？')) return;
+    await fetch('/api/messages', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'delete', index: idx }) });
+    loadMessages();
+  }
+
+  // ====== 作品评论管理 ======
+  let workMsgData = {};
+  async function loadWorkMsgs() {
+    const wRes = await fetch('/api/works'); const works = await wRes.json();
+    const sel = document.getElementById('workMsgSelect');
+    sel.innerHTML = '<option value="">-- 请选择 --</option>' + works.map(w => `<option value="works/${w.id}">${esc(w.title)}</option>`).join('');
+    sel.onchange = async () => {
+      const slug = sel.value;
+      if (!slug) { document.getElementById('workMsgList').innerHTML = ''; return; }
+      const r = await fetch('/api/work-messages?slug=' + encodeURIComponent(slug));
+      const msgs = await r.json();
+      const list = document.getElementById('workMsgList');
+      list.innerHTML = msgs.length === 0 ? '<p class="empty-msg">暂无评论</p>' : '';
+      msgs.forEach((m, i) => {
+        const card = document.createElement('div'); card.className = 'card';
+        card.innerHTML = `<div><strong>${esc(m.author)}</strong> <span class="tag">${m.time}</span></div><div class="card-summary">${esc(m.body)}</div><div class="card-actions"><button class="btn-sm danger del-wm" data-slug="${slug}" data-idx="${i}">删除</button></div>`;
+        list.appendChild(card);
+      });
+      document.querySelectorAll('.del-wm').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('确定删除？')) return;
+        await fetch('/api/work-messages', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ slug: b.dataset.slug, action: 'delete', index: Number(b.dataset.idx) }) });
+        sel.onchange();
+      }));
+    };
+    // auto-select first work
+    if (works.length > 0) { sel.value = 'works/' + works[0].id; sel.onchange(); }
+  }
+
+  // ====== 密码修改 ======
+  document.getElementById('pwdForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const nickname = getVal('curNickname');
+    const password = getVal('curPassword');
+    const newPassword = getVal('newPassword');
+    if (!nickname || !password || !newPassword) { showMsg('pwdMsg', '请填写所有字段'); return; }
+    if (newPassword.length < 4) { showMsg('pwdMsg', '新密码至少 4 位'); return; }
+    const res = await fetch('/api/auth', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'change', nickname, password, newPassword }) });
+    const data = await res.json();
+    if (data.ok) { showMsg('pwdMsg', '✓ 密码已修改'); document.getElementById('pwdForm').reset(); }
+    else showMsg('pwdMsg', data.error || '修改失败');
+  });
+
+  // ---- 工具函数 ----
+  function getVal(name) { const el = document.querySelector(`[name="${name}"]`); return el ? el.value : ''; }
+  function setVal(name, val) { const el = document.querySelector(`[name="${name}"]`); if (el) el.value = val || ''; }
+  function esc(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function showMsg(id, text) { const el = document.getElementById(id); if (el) { el.textContent = text; setTimeout(() => el.textContent = '', 3000); }}
+
+  // ---- 封面框点击 ----
+  document.querySelectorAll('.cover-box').forEach(box => {
+    box.addEventListener('click', () => {
+      const url = (box as HTMLElement).dataset.url || '';
+      setVal('coverImage', url);
+      document.querySelectorAll('.cover-box').forEach(x => x.classList.remove('selected'));
+      box.classList.add('selected');
+    });
+  });
+
+  // ---- 启动 ----
+  loadSite();
+</script>
+
+<style>
+  .admin-wrapper { max-width: 900px; margin: 0 auto; padding: 40px 28px 80px; }
+  .admin-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px; }
+  .admin-header h1 { font-family: var(--font-heading); font-size: 26px; color: var(--navy); }
+  .back-link { font-size: 13px; color: var(--text-light); text-decoration: none; }
+  .back-link:hover { color: var(--teal); }
+
+  .tabs { display: flex; gap: 4px; margin-bottom: 32px; border-bottom: 2px solid var(--border); }
+  .tab { padding: 10px 20px; font-family: var(--font-body); font-size: 14px; font-weight: 500; background: none; border: none; color: var(--text-light); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+  .tab.active { color: var(--navy); border-bottom-color: var(--gold); }
+  .tab:hover { color: var(--navy); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .admin-form { display: flex; flex-direction: column; gap: 16px; }
+  .admin-form h3 { font-family: var(--font-heading); font-size: 17px; color: var(--navy); margin-top: 12px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+  .field { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .field label { font-size: 12px; font-weight: 600; color: var(--text-mid); letter-spacing: 0.5px; }
+  .field input, .field textarea, .field select { padding: 10px 12px; font-family: var(--font-body); font-size: 14.5px; border: 1px solid var(--border); border-radius: 6px; background: var(--cream); color: var(--text-dark); outline: none; }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--teal); background: #fff; }
+  .row { display: flex; gap: 16px; }
+
+  .cover-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+  .cover-box {
+    position: relative; aspect-ratio: 16/10;
+    border-radius: 8px; overflow: hidden;
+    cursor: pointer; border: 2px solid var(--border);
+    transition: border-color 0.2s;
+  }
+  .cover-box:hover { border-color: var(--teal); }
+  .cover-box.selected { border-color: var(--gold); }
+  .cover-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cover-check {
+    position: absolute; inset: 0;
+    display: none; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.35);
+    color: #fff; font-size: 40px; font-weight: bold;
+  }
+  .cover-box.selected .cover-check { display: flex; }
+  .cover-custom { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-mid); }
+  .cover-custom input[type="file"] { font-size: 12px; }
+
+  .list-editor { display: flex; flex-direction: column; gap: 8px; }
+  .list-row { display: flex; gap: 8px; align-items: flex-start; }
+  .list-row textarea { flex: 1; padding: 8px 10px; font-family: var(--font-body); font-size: 14px; border: 1px solid var(--border); border-radius: 4px; background: var(--cream); resize: vertical; }
+
+  .btn-save { padding: 11px 36px; font-family: var(--font-body); font-size: 14px; font-weight: 600; letter-spacing: 2px; background: var(--navy); color: #fff; border: none; border-radius: 6px; cursor: pointer; align-self: flex-start; }
+  .btn-save:hover { background: #243548; }
+  .btn-sm { padding: 5px 12px; font-size: 12px; font-weight: 500; border: 1px solid var(--border); border-radius: 4px; background: #fff; cursor: pointer; }
+  .btn-sm:hover { background: var(--cream); }
+  .btn-sm.danger { color: #c44; border-color: #ecc; } .btn-sm.danger:hover { background: #fef0f0; }
+  .btn-del { padding: 2px 8px; font-size: 14px; color: #c44; border: none; background: none; cursor: pointer; font-weight: bold; }
+  .btn-add { padding: 10px 24px; font-family: var(--font-body); font-size: 14px; font-weight: 600; background: var(--teal); color: #fff; border: none; border-radius: 6px; cursor: pointer; margin-bottom: 20px; }
+  .btn-add:hover { background: var(--teal-deep); }
+  .btn-cancel { padding: 8px 20px; font-size: 13px; border: 1px solid var(--border); border-radius: 6px; background: #fff; cursor: pointer; }
+  .msg { font-size: 13px; color: #4a8a4a; margin-left: 12px; }
+
+  .card-list { display: flex; flex-direction: column; gap: 10px; }
+  .card { padding: 16px; border: 1px solid var(--border-light); border-radius: 8px; background: #fff; display: flex; flex-direction: column; gap: 6px; }
+  .card strong { font-family: var(--font-heading); color: var(--navy); }
+  .card .tag { font-size: 11px; padding: 2px 8px; background: var(--sand-light); border-radius: 3px; color: var(--text-light); margin-left: 8px; }
+  .card .tag.draft { background: #fef3cd; color: #856404; }
+  .card-summary { font-size: 13.5px; color: var(--text-mid); }
+  .card-actions { display: flex; gap: 6px; margin-top: 4px; }
+  .empty-msg { color: var(--text-light); padding: 24px 0; }
+  .editor-panel { margin-top: 16px; padding: 24px; border: 2px solid var(--teal-light); border-radius: 10px; background: #fff; }
+
+  @media (max-width: 640px) {
+    .admin-wrapper { padding: 20px 16px 60px; }
+    .row { flex-direction: column; }
+    .tabs { overflow-x: auto; }
+    .tab { padding: 8px 14px; font-size: 13px; white-space: nowrap; }
+  }
+</style>

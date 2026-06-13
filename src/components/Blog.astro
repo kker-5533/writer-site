@@ -3,11 +3,12 @@ import type { CollectionEntry } from 'astro:content';
 
 interface Props {
   posts: CollectionEntry<'blog'>[];
+  interactions: Record<string, { likes: number; urges: number }>;
 }
 
-const { posts } = Astro.props;
+const { posts, interactions } = Astro.props;
 const published = posts
-  .filter(p => !p.data.draft)
+  .filter(p => !p.data.draft && p.data.body)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
@@ -16,15 +17,21 @@ const published = posts
     <p class="section-tag">Blog</p>
     <h2 class="section-title">随笔</h2>
 
-    {published.map(p => (
+    {published.map(p => {
+      const counts = interactions[`blog/${p.id}`] || { likes: 0, urges: 0 };
+      return (
       <div class="post-item">
         <span class="date">{p.data.date.toISOString().slice(0, 10).replace(/-/g, '.')}</span>
         <div class="content">
-          <span class="title">{p.data.title}</span>
+          <a href={`/blog/${p.id}`} class="title">{p.data.title}</a>
           <p class="excerpt">{p.data.excerpt}</p>
+          <span class="counts-mini">
+            <span class="mini-like">♥ {counts.likes}</span>
+            <span class="mini-urge">⚡ {counts.urges}</span>
+          </span>
         </div>
       </div>
-    ))}
+    )})}
   </div>
 </section>
 
@@ -52,13 +59,19 @@ const published = posts
     font-size: 18.5px; font-weight: 700;
     color: var(--navy);
     letter-spacing: 0.5px;
-    cursor: pointer;
+    text-decoration: none;
     transition: color 0.25s;
   }
   .post-item .title:hover { color: var(--gold); }
   .post-item .excerpt {
     font-size: 14.5px; color: var(--text-mid); line-height: 1.95;
   }
+  .counts-mini {
+    display: flex; gap: 14px; margin-top: 6px;
+    font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  }
+  .mini-like { color: var(--teal); }
+  .mini-urge { color: var(--coral); }
   @media (max-width: 640px) {
     .post-item { grid-template-columns: 1fr; gap: 2px 0; }
     .post-item .date { padding-top: 0; }

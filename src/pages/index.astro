@@ -1,4 +1,6 @@
 ---
+export const prerender = false;
+
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
@@ -10,9 +12,31 @@ import Messages from '../components/Messages.astro';
 import Footer from '../components/Footer.astro';
 import { getCollection } from 'astro:content';
 import siteData from '../data/site.json';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const works = await getCollection('works');
 const posts = await getCollection('blog');
+
+function loadMessages() {
+  try {
+    const filePath = path.join(process.cwd(), 'src/data/messages.json');
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  } catch {
+    return [];
+  }
+}
+const messages = loadMessages();
+
+function loadInteractions() {
+  try {
+    const filePath = path.join(process.cwd(), 'src/data/interactions.json');
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  } catch {
+    return {};
+  }
+}
+const interactions = loadInteractions();
 
 const contactItems = [
   { label: '邮箱', value: siteData.contact.email },
@@ -30,10 +54,10 @@ const contactItems = [
     intro={siteData.intro}
     coverImage={siteData.coverImage}
   />
-  <Works works={works} />
-  <Blog posts={posts} />
+  <Works works={works} interactions={interactions} />
+  <Blog posts={posts} interactions={interactions} />
   <About paragraphs={siteData.about} />
   <Contact items={contactItems} />
-  <Messages messages={[]} />
+  <Messages messages={messages} />
   <Footer author={siteData.author} tagline="由内而外地安静生长" />
 </Layout>

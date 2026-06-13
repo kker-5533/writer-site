@@ -3,10 +3,13 @@ import type { CollectionEntry } from 'astro:content';
 
 interface Props {
   works: CollectionEntry<'works'>[];
+  interactions: Record<string, { likes: number; urges: number }>;
 }
 
-const { works } = Astro.props;
-const sorted = works.sort((a, b) => b.data.year - a.data.year);
+const { works, interactions } = Astro.props;
+const sorted = works
+  .filter(w => w.data.body)
+  .sort((a, b) => b.data.year - a.data.year);
 ---
 
 <section id="works">
@@ -14,18 +17,24 @@ const sorted = works.sort((a, b) => b.data.year - a.data.year);
     <p class="section-tag">Works</p>
     <h2 class="section-title">作品</h2>
 
-    {sorted.map((w, i) => (
+    {sorted.map((w, i) => {
+      const counts = interactions[`works/${w.id}`] || { likes: 0, urges: 0 };
+      return (
       <div class="work-item">
         <span class="num">{String(i + 1).padStart(2, '0')}</span>
         <div class="info">
-          <span class="title">{w.data.title}</span>
+          <a href={`/works/${w.id}`} class="title">{w.data.title}</a>
           <span class="meta">
             {w.data.type} · {w.data.year} 年{w.data.wordCount && ` · 约 ${w.data.wordCount} 字`}{w.data.published && w.data.publisher && ` · ${w.data.publisher}`}
           </span>
           <p class="desc">{w.data.summary}</p>
+          <span class="counts-mini">
+            <span class="mini-like">♥ {counts.likes}</span>
+            <span class="mini-urge">⚡ {counts.urges}</span>
+          </span>
         </div>
       </div>
-    ))}
+    )})}
   </div>
 </section>
 
@@ -51,7 +60,10 @@ const sorted = works.sort((a, b) => b.data.year - a.data.year);
     font-size: 21px; font-weight: 700;
     color: var(--navy);
     letter-spacing: 1px;
+    text-decoration: none;
+    transition: color 0.25s;
   }
+  .work-item .title:hover { color: var(--gold); }
   .work-item .meta {
     font-family: var(--font-body);
     font-size: 12.5px; font-weight: 500;
@@ -62,6 +74,12 @@ const sorted = works.sort((a, b) => b.data.year - a.data.year);
     font-size: 14.5px; color: var(--text-mid); line-height: 1.95;
     margin-top: 6px;
   }
+  .counts-mini {
+    display: flex; gap: 14px; margin-top: 8px;
+    font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  }
+  .mini-like { color: var(--teal); }
+  .mini-urge { color: var(--coral); }
   @media (max-width: 640px) {
     .work-item { grid-template-columns: 36px 1fr; }
   }

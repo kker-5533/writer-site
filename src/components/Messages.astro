@@ -13,7 +13,8 @@ const { messages } = Astro.props;
     <p class="section-tag">Messages</p>
     <h2 class="section-title">读者留言</h2>
 
-    {messages.length === 0 && <p style="color: var(--text-light); padding: 20px 0;">暂无留言，来做第一个留言的读者吧。</p>}
+    <!-- 留言列表 -->
+    {messages.length === 0 && <p class="empty">暂无留言，来做第一个留言的读者吧。</p>}
 
     {messages.map(m => (
       <div class="message-item">
@@ -24,18 +25,79 @@ const { messages } = Astro.props;
         <p class="body">{m.body}</p>
       </div>
     ))}
+
+    <!-- 留言表单 -->
+    <div class="msg-form-wrapper">
+      <h3>写下你的留言</h3>
+      <form id="msgForm" class="msg-form">
+        <input type="text" id="msgAuthor" placeholder="你的昵称" maxlength="20" required />
+        <textarea id="msgBody" placeholder="想说些什么..." rows="3" maxlength="1000" required></textarea>
+        <p id="msgError" class="msg-error" style="display:none"></p>
+        <p id="msgOk" class="msg-ok" style="display:none">留言成功！感谢你的留言。</p>
+        <button type="submit">提交留言</button>
+      </form>
+    </div>
   </div>
 </section>
+
+<script>
+  const form = document.getElementById('msgForm') as HTMLFormElement;
+  const errorEl = document.getElementById('msgError') as HTMLElement;
+  const okEl = document.getElementById('msgOk') as HTMLElement;
+  const btn = form.querySelector('button') as HTMLButtonElement;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorEl.style.display = 'none';
+    okEl.style.display = 'none';
+
+    const author = (document.getElementById('msgAuthor') as HTMLInputElement).value.trim();
+    const body = (document.getElementById('msgBody') as HTMLTextAreaElement).value.trim();
+
+    if (!author || !body) {
+      errorEl.textContent = '请填写昵称和留言内容';
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '提交中...';
+
+    try {
+      const res = await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ author, body }),
+      });
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        okEl.style.display = 'block';
+        form.reset();
+        // 1.5 秒后刷新显示新留言
+        setTimeout(() => { window.location.reload(); }, 1500);
+      } else {
+        errorEl.textContent = data.error || '提交失败，请稍后再试';
+        errorEl.style.display = 'block';
+      }
+    } catch {
+      errorEl.textContent = '网络错误，请稍后再试';
+      errorEl.style.display = 'block';
+    }
+    btn.disabled = false;
+    btn.textContent = '提交留言';
+  });
+</script>
 
 <style>
   #messages {
     background: linear-gradient(180deg, var(--white) 0%, var(--cream) 60%);
   }
+  .empty { color: var(--text-light); padding: 20px 0; }
   .message-item {
     padding: 30px 0;
     border-bottom: 1px solid var(--border-light);
   }
-  .message-item:last-child { border-bottom: none; }
+  .message-item:last-of-type { border-bottom: none; }
   .message-item .head {
     display: flex; align-items: baseline; gap: 10px;
     margin-bottom: 8px;
@@ -50,4 +112,50 @@ const { messages } = Astro.props;
   .message-item .body {
     font-size: 15px; color: var(--text-mid); line-height: 1.95;
   }
+
+  /* 表单 */
+  .msg-form-wrapper {
+    margin-top: 48px;
+    padding-top: 36px;
+    border-top: 2px solid var(--border);
+  }
+  .msg-form-wrapper h3 {
+    font-family: var(--font-heading);
+    font-size: 19px; font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 20px;
+  }
+  .msg-form { display: flex; flex-direction: column; gap: 14px; }
+  .msg-form input, .msg-form textarea {
+    width: 100%; padding: 12px 14px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--cream);
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+  .msg-form input:focus, .msg-form textarea:focus {
+    border-color: var(--teal);
+    background: var(--white);
+  }
+  .msg-error { font-size: 13px; color: #c44; }
+  .msg-ok { font-size: 13px; color: #4a8a4a; }
+  .msg-form button {
+    align-self: flex-start;
+    padding: 10px 32px;
+    font-family: var(--font-body);
+    font-size: 14px; font-weight: 600;
+    letter-spacing: 2px;
+    background: var(--navy);
+    color: #fff;
+    border: none; border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .msg-form button:hover { background: #243548; }
+  .msg-form button:disabled { opacity: 0.6; cursor: not-allowed; }
 </style>
