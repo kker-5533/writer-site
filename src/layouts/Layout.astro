@@ -7,12 +7,41 @@ import '../styles/global.css';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>林深 — 个人网站</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <title>文学社</title>
 </head>
 <body>
   <slot />
+  <script>
+    // 全局：根据登录状态更新导航栏用户区
+    var userStr = sessionStorage.getItem('linshen_user');
+    var auth = sessionStorage.getItem('linshen_auth');
+    var areas = document.querySelectorAll('.user-area');
+    areas.forEach(function(area) {
+      if (auth !== 'true' || !userStr) {
+        area.innerHTML = '<a href="/login">登录</a>';
+        return;
+      }
+      var u = JSON.parse(userStr);
+      var roleLabel = u.role === 'admin' ? '管理员' : '作者';
+      var roleCls = u.role === 'admin' ? 'badge-admin' : 'badge-author';
+      var adminUrl = u.role === 'admin' ? '/platform-admin' : '/admin';
+      area.innerHTML = '<span class="user-trigger" id="userTrigger-' + u.id + '"><span class="uname">' + u.nickname + '</span><span class="role-badge ' + roleCls + '">' + roleLabel + '</span></span><div class="user-dropdown" id="userDropdown-' + u.id + '" style="display:none"><a href="' + adminUrl + '">进入后台</a><a href="/author/' + u.id + '">我的主页</a><a href="javascript:void(0)" class="logout-link">退出登录</a></div>';
+      // 绑定下拉菜单
+      var trigger = document.getElementById('userTrigger-' + u.id);
+      var dropdown = document.getElementById('userDropdown-' + u.id);
+      if (trigger && dropdown) {
+        trigger.addEventListener('click', function(e) { e.stopPropagation(); dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none'; });
+        document.addEventListener('click', function() { dropdown.style.display = 'none'; });
+      }
+    });
+    // 退出登录
+    document.querySelectorAll('.logout-link').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        sessionStorage.removeItem('linshen_auth');
+        sessionStorage.removeItem('linshen_user');
+        window.location.reload();
+      });
+    });
+  </script>
 </body>
 </html>

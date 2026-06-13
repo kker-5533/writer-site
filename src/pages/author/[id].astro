@@ -1,0 +1,76 @@
+---
+export const prerender = false;
+import Layout from '../../layouts/Layout.astro';
+import AuthorNav from '../../components/AuthorNav.astro';
+import Hero from '../../components/Hero.astro';
+import Works from '../../components/Works.astro';
+import Blog from '../../components/Blog.astro';
+import About from '../../components/About.astro';
+import Contact from '../../components/Contact.astro';
+import Messages from '../../components/Messages.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection } from 'astro:content';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const { id } = Astro.params;
+
+function getUser(userId: string) {
+  try {
+    const users = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src/data/users.json'), 'utf-8'));
+    return users.find((u: any) => u.id === userId);
+  } catch { return null; }
+}
+const author = getUser(id);
+if (!author) return Astro.redirect('/');
+
+const allWorks = await getCollection('works');
+const authorWorks = allWorks.filter(w =>
+  w.data.authorId === id &&
+  (!w.data.reviewStatus || w.data.reviewStatus === 'approved')
+);
+
+const allPosts = await getCollection('blog');
+const authorPosts = allPosts.filter(p => p.data.authorId === id && !p.data.draft);
+
+function loadInteractions() {
+  try {
+    const fp = path.join(process.cwd(), 'src/data/interactions.json');
+    return JSON.parse(fs.readFileSync(fp, 'utf-8'));
+  } catch { return {}; }
+}
+const interactions = loadInteractions();
+
+function loadMessages() {
+  try {
+    const fp = path.join(process.cwd(), 'src/data/messages.json');
+    return JSON.parse(fs.readFileSync(fp, 'utf-8'));
+  } catch { return []; }
+}
+const messages = loadMessages();
+
+import siteData from '../../data/site.json';
+const contactItems = [
+  { label: '邮箱', value: author.email || '' },
+  { label: '微博', value: author.weibo || '' },
+  { label: '豆瓣', value: author.douban || '' },
+  { label: '公众号', value: author.wechat || '' },
+];
+const aboutParagraphs = [author.intro || '这个人很懒，什么都没写...'];
+---
+
+<Layout>
+  <AuthorNav />
+  <Hero
+    author={author.nickname}
+    subtitle="散 文 / 小 说 / 诗 歌"
+    intro={`加入于 ${author.createdAt}`}
+    coverImage={siteData.coverImage}
+  />
+  <Works works={authorWorks} interactions={interactions} />
+  <Blog posts={authorPosts} interactions={interactions} />
+  <About paragraphs={aboutParagraphs} />
+  <Contact items={contactItems} />
+  <Messages messages={messages} />
+  <Footer author={author.nickname} tagline="由内而外地安静生长" />
+</Layout>

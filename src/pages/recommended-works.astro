@@ -1,0 +1,47 @@
+---
+export const prerender = false;
+import Layout from '../layouts/Layout.astro';
+import PlatformNav from '../components/PlatformNav.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+const allWorks = await getCollection('works');
+const works = allWorks.filter(w => (!w.data.reviewStatus || w.data.reviewStatus === 'approved') && w.data.recommended);
+---
+
+<Layout>
+  <PlatformNav />
+  <div class="page">
+    <div class="container">
+      <h1>推荐作品</h1>
+      {works.length === 0 ? <p class="empty">暂无推荐作品</p> : (
+        <div class="list">
+          {works.map(w => (
+            <a href={`/works/${w.id}`} class="card">
+              <h3>{w.data.title}</h3>
+              <span class="meta">{w.data.type} · {w.data.year} · {w.data.authorName || '佚名'}</span>
+              <p class="desc">{w.data.summary}</p>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+  <Footer author="文学社" tagline="发现好文字，遇见好作者" />
+</Layout>
+
+<style>
+  .page { padding: 100px 0 60px; min-height: 60vh; }
+  .page h1 { font-family: var(--font-heading); font-size: 28px; color: var(--navy); margin-bottom: 36px; }
+  .list { display: flex; flex-direction: column; gap: 12px; }
+  .card {
+    display: block; padding: 24px; border: 1px solid var(--border-light); border-radius: 10px;
+    background: #fff; text-decoration: none; transition: box-shadow 0.2s;
+  }
+  .card:hover { box-shadow: 0 2px 16px rgba(0,0,0,0.06); }
+  .card h3 { font-family: var(--font-heading); font-size: 20px; color: var(--navy); margin-bottom: 6px; }
+  .card .meta { font-size: 12px; color: var(--teal); }
+  .card .desc { font-size: 14px; color: var(--text-mid); margin-top: 8px; line-height: 1.7; }
+  .empty { color: var(--text-light); padding: 40px 0; }
+  @media (max-width: 640px) { .page { padding: 80px 0 40px; } }
+</style>

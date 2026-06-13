@@ -12,6 +12,11 @@ const works = defineCollection({
     publisher: z.string().optional(),
     summary: z.string(),
     body: z.string().default(''),
+    authorId: z.string().default(''),
+    authorName: z.string().default(''),
+    reviewStatus: z.string().default('approved'),
+    reviewNote: z.string().default(''),
+    recommended: z.boolean().default(false),
   }),
 });
 
@@ -23,6 +28,8 @@ const blog = defineCollection({
     excerpt: z.string(),
     body: z.string().default(''),
     draft: z.boolean().default(false),
+    authorId: z.string().default(''),
+    authorName: z.string().default(''),
   }),
 });
 

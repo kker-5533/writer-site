@@ -1,0 +1,62 @@
+---
+export const prerender = false;
+import Layout from '../layouts/Layout.astro';
+import PlatformNav from '../components/PlatformNav.astro';
+import Footer from '../components/Footer.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+function getAuthors() {
+  try {
+    const users = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src/data/users.json'), 'utf-8'));
+    return users.filter((u: any) => u.recommended && u.status === 'active');
+  } catch { return []; }
+}
+const authors = getAuthors();
+---
+
+<Layout>
+  <PlatformNav />
+  <div class="page">
+    <div class="container">
+      <h1>推荐作者</h1>
+      {authors.length === 0 ? <p class="empty">暂无推荐作者</p> : (
+        <div class="grid">
+          {authors.map((a: any) => (
+            <a href={`/author/${a.id}`} class="card">
+              <div class="avatar">{a.nickname[0]}</div>
+              <h3>{a.nickname}</h3>
+              {a.intro && <p class="desc">{a.intro}</p>}
+              <span class="date">加入于 {a.createdAt}</span>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+  <Footer author="文学社" tagline="发现好文字，遇见好作者" />
+</Layout>
+
+<style>
+  .page { padding: 100px 0 60px; min-height: 60vh; }
+  .page h1 { font-family: var(--font-heading); font-size: 28px; color: var(--navy); margin-bottom: 36px; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .card {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 32px 20px; border: 1px solid var(--border-light); border-radius: 10px;
+    background: #fff; text-decoration: none; transition: box-shadow 0.2s;
+  }
+  .card:hover { box-shadow: 0 2px 16px rgba(0,0,0,0.06); }
+  .avatar {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: var(--teal); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-heading); font-size: 26px; font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .card h3 { font-family: var(--font-heading); font-size: 18px; color: var(--navy); }
+  .card .desc { font-size: 13px; color: var(--text-mid); text-align: center; line-height: 1.6; }
+  .card .date { font-size: 11px; color: var(--text-light); }
+  .empty { color: var(--text-light); padding: 40px 0; }
+  @media (max-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); } .page { padding: 80px 0 40px; } }
+</style>

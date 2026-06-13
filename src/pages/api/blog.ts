@@ -47,6 +47,8 @@ export async function POST({ request }: { request: Request }) {
         excerpt: data.excerpt || '',
         body: data.body || '',
         draft: Boolean(data.draft),
+        authorId: data.authorId || '',
+        authorName: data.authorName || '',
       };
       fs.writeFileSync(filePath, JSON.stringify(entry, null, 2) + '\n', 'utf-8');
       return new Response(JSON.stringify({ ok: true, id: slug }), { status: 200 });

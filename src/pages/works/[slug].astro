@@ -18,6 +18,10 @@ try {
 } catch {
   return Astro.redirect('/');
 }
+// 未审核通过的作品不对外展示
+if (work.reviewStatus && work.reviewStatus !== 'approved') {
+  return Astro.redirect('/');
+}
 
 const bodyHtml = (work.body || '').replace(/\n/g, '<br>');
 ---

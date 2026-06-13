@@ -5,23 +5,28 @@ import Layout from '../layouts/Layout.astro';
 <Layout>
   <div class="login-wrapper">
     <div class="login-card">
-      <h1>作者登录</h1>
-      <p class="sub">内容管理系统</p>
-
-      <form id="loginForm" class="login-form">
-        <div class="field">
-          <label for="nickname">昵称</label>
-          <input type="text" id="nickname" name="nickname" placeholder="请输入昵称" autocomplete="off" />
-        </div>
-        <div class="field">
-          <label for="password">密码</label>
-          <input type="password" id="password" name="password" placeholder="请输入密码" />
-        </div>
-        <p id="error" class="error" style="display:none">昵称或密码错误</p>
-        <button type="submit">登 录</button>
-      </form>
-
-      <a href="/" class="back">&larr; 返回首页</a>
+      <div class="card-top">
+        <h1>文学社</h1>
+        <p class="sub">作者登录</p>
+      </div>
+      <div class="card-body">
+        <form id="loginForm" class="login-form">
+          <div class="field">
+            <label for="nickname">昵称</label>
+            <input type="text" id="nickname" name="nickname" placeholder="请输入昵称" autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for="password">密码</label>
+            <input type="password" id="password" name="password" placeholder="请输入密码" />
+          </div>
+          <p id="error" class="error" style="display:none">昵称或密码错误</p>
+          <button type="submit">登 录</button>
+        </form>
+      </div>
+      <div class="card-bottom">
+        <a href="/register" class="reg-link">注册作者</a>
+        <a href="/">&larr; 返回首页</a>
+      </div>
     </div>
   </div>
 </Layout>
@@ -46,8 +51,11 @@ import Layout from '../layouts/Layout.astro';
       });
       const data = await res.json();
       if (data.ok) {
+        const u = data.user;
         sessionStorage.setItem('linshen_auth', 'true');
-        window.location.href = '/admin';
+        sessionStorage.setItem('linshen_user', JSON.stringify(u));
+        // 登录后回到首页，右上角显示昵称和下拉菜单
+        window.location.href = '/';
       } else {
         errorEl.textContent = data.error || '昵称或密码错误';
         errorEl.style.display = 'block';
@@ -64,77 +72,90 @@ import Layout from '../layouts/Layout.astro';
   .login-wrapper {
     min-height: 100vh;
     display: flex; align-items: center; justify-content: center;
-    background: var(--cream);
+    background: linear-gradient(160deg, #1b2a3a 0%, #2e5c6e 100%);
     padding: 40px 24px;
   }
   .login-card {
     background: var(--white);
-    border-radius: 12px;
-    padding: 56px 48px 40px;
+    border-radius: 16px;
+    padding: 0;
     width: 100%;
-    max-width: 400px;
-    box-shadow: 0 2px 24px rgba(0,0,0,0.06);
+    max-width: 420px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+    overflow: hidden;
+  }
+  .login-card .card-top {
+    background: linear-gradient(135deg, #1b2a3a 0%, #2e5c6e 100%);
+    padding: 40px 40px 32px;
     text-align: center;
   }
-  .login-card h1 {
+  .login-card .card-top h1 {
     font-family: var(--font-heading);
-    font-size: 26px; font-weight: 700;
-    color: var(--navy);
+    font-size: 24px; font-weight: 700;
+    color: #fff;
     letter-spacing: 4px;
     margin-bottom: 6px;
   }
-  .login-card .sub {
-    font-size: 12.5px; color: var(--text-light);
+  .login-card .card-top .sub {
+    font-size: 12px; color: rgba(255,255,255,0.6);
     letter-spacing: 2px;
-    margin-bottom: 40px;
   }
-  .login-form { display: flex; flex-direction: column; gap: 20px; }
+  .login-card .card-body {
+    padding: 36px 40px 40px;
+  }
+  .login-form { display: flex; flex-direction: column; gap: 18px; }
   .field { text-align: left; }
   .field label {
     display: block;
     font-family: var(--font-body);
-    font-size: 12px; font-weight: 600;
-    color: var(--text-mid);
+    font-size: 11px; font-weight: 600;
+    color: var(--text-light);
     letter-spacing: 1px;
     margin-bottom: 6px;
+    text-transform: uppercase;
   }
   .field input {
-    width: 100%; padding: 12px 14px;
+    width: 100%; padding: 13px 14px;
     font-family: var(--font-body);
     font-size: 15px;
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 8px;
     background: var(--cream);
     color: var(--text-dark);
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
   .field input:focus {
     border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(74,138,158,0.1);
     background: var(--white);
   }
   .error {
-    font-size: 13px; color: #c44;
-    text-align: center;
+    font-size: 13px; color: #c44; text-align: center;
   }
   .login-form button {
-    padding: 13px;
+    padding: 14px;
     font-family: var(--font-body);
     font-size: 14px; font-weight: 600;
     letter-spacing: 4px;
     background: var(--navy);
     color: #fff;
-    border: none; border-radius: 6px;
+    border: none; border-radius: 8px;
     cursor: pointer;
     transition: background 0.2s;
-    margin-top: 4px;
+    margin-top: 6px;
   }
   .login-form button:hover { background: #243548; }
-  .back {
-    display: inline-block; margin-top: 28px;
-    font-size: 13px; color: var(--text-light);
-    text-decoration: none;
-    transition: color 0.2s;
+  .login-form button:disabled { opacity: 0.6; cursor: not-allowed; }
+  .card-bottom {
+    padding: 20px 40px;
+    border-top: 1px solid var(--border-light);
+    display: flex; justify-content: center; gap: 24px;
   }
-  .back:hover { color: var(--teal); }
+  .card-bottom a {
+    font-size: 13px; color: var(--text-light);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .card-bottom a:hover { color: var(--teal); }
+  .reg-link { font-weight: 600; color: var(--teal) !important; }
 </style>

@@ -41,9 +41,14 @@ export async function POST({ request }: { request: Request }) {
       return new Response(JSON.stringify({ error: '请输入内容' }), { status: 400 });
     }
 
+    const { userId, role } = body;
+
     const now = new Date();
     const time = `${now.getFullYear()} 年 ${now.getMonth() + 1} 月 ${now.getDate()} 日`;
-    data[slug].unshift({ author: author.trim().slice(0, 20), time, body: msgBody.trim().slice(0, 1000) });
+    const msg: any = { author: author.trim().slice(0, 20), time, body: msgBody.trim().slice(0, 1000) };
+    if (userId) msg.userId = userId;
+    if (role) msg.role = role;
+    data[slug].unshift(msg);
     write(data);
     return new Response(JSON.stringify({ ok: true }), { status: 200 });
   } catch {

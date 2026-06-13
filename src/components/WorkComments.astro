@@ -5,7 +5,6 @@ const safeId = slug.replace(/[^a-zA-Z0-9一-鿿]/g, '-');
 
 <section class="work-comments" id={`wcm-${safeId}`}>
   <h3>作品留言</h3>
-
   <div class="wc-list" id={`wcList-${safeId}`}>
     <p class="wc-empty">暂无留言</p>
   </div>
@@ -20,98 +19,123 @@ const safeId = slug.replace(/[^a-zA-Z0-9一-鿿]/g, '-');
   </form>
 </section>
 
-<script define:vars={{ slug, safeId }}>
-  (function() {
-    const list = document.getElementById('wcList-' + safeId);
-    const form = document.getElementById('wcForm-' + safeId);
-    const authorEl = document.getElementById('wcAuthor-' + safeId);
-    const bodyEl = document.getElementById('wcBody-' + safeId);
-    const msgEl = document.getElementById('wcMsg-' + safeId);
-    if (!list || !form) return;
+<script define:vars={{ wcSlug: slug, wcId: safeId }}>
+(function() {
+  var s = wcId;
+  var list = document.getElementById('wcList-' + s);
+  var form = document.getElementById('wcForm-' + s);
+  var authorEl = document.getElementById('wcAuthor-' + s);
+  var bodyEl = document.getElementById('wcBody-' + s);
+  var msgEl = document.getElementById('wcMsg-' + s);
+  if (!list || !form) return;
 
-    async function load() {
-      try {
-        const res = await fetch('/api/work-messages?slug=' + encodeURIComponent(slug));
-        const msgs = await res.json();
-        if (!msgs.length) { list.innerHTML = '<p class="wc-empty">暂无留言，来做第一个留言的读者吧。</p>'; return; }
-        list.innerHTML = msgs.map(m =>
-          `<div class="wc-item"><div class="wc-head"><span class="wc-author">${esc(m.author)}</span><span class="wc-time">${m.time}</span></div><p class="wc-body">${esc(m.body)}</p></div>`
-        ).join('');
-      } catch {}
+  var _slug = wcSlug;
+
+  var userStr = sessionStorage.getItem('linshen_user');
+  var auth = sessionStorage.getItem('linshen_auth');
+  var currentUser = null;
+  if (auth === 'true' && userStr) {
+    try { currentUser = JSON.parse(userStr); } catch(e) {}
+  }
+
+  if (currentUser) { authorEl.style.display = 'none'; }
+
+  function roleBadge(m) {
+    if (!m.role) return '';
+    var label = m.role === 'admin' ? '管理员' : '作者';
+    var cls = m.role === 'admin' ? 'badge-admin' : 'badge-author';
+    return '<span class="wc-role-badge ' + cls + '">' + label + '</span>';
+  }
+
+  var allMsgs = [];
+  var showLimit = 5;
+
+  function renderList(msgs) {
+    if (!msgs.length) { list.innerHTML = '<p class="wc-empty">暂无留言，来做第一个留言的读者吧。</p>'; return; }
+    var html = msgs.map(function(m) {
+      var badgeHtml = '';
+      if (m.role === 'admin') badgeHtml = '<span style="font-size:10px;padding:1px 6px;border-radius:3px;font-weight:600;background:#c0745c;color:#fff;margin-left:6px;">管理员</span>';
+      else if (m.role === 'author') badgeHtml = '<span style="font-size:10px;padding:1px 6px;border-radius:3px;font-weight:600;background:#4a8a9e;color:#fff;margin-left:6px;">作者</span>';
+      return '<div style="padding:20px 24px;margin-bottom:12px;background:#fff;border:1px solid #e0dcd5;border-radius:10px;">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">' +
+          '<span style="display:flex;align-items:center;">' +
+            '<span style="font-size:12px;font-weight:600;color:#1b2a3a;">' + esc(m.author) + '</span>' + badgeHtml +
+          '</span>' +
+          '<span style="font-size:12px;color:#88959d;">' + m.time + '</span>' +
+        '</div>' +
+        '<p style="font-size:15px;color:#1e2d35;line-height:1.9;margin:0;">' + esc(m.body) + '</p>' +
+      '</div>';
+    }).join('');
+    if (allMsgs.length > showLimit && msgs.length === showLimit) {
+      html += '<button class="wc-show-all" id="wcShowAll">查看全部评论（共 ' + allMsgs.length + ' 条）</button>';
     }
+    list.innerHTML = html;
+    var btn = document.getElementById('wcShowAll');
+    if (btn) btn.addEventListener('click', function() { renderList(allMsgs); });
+  }
 
-    form.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const author = authorEl.value.trim();
-      const msgBody = bodyEl.value.trim();
-      if (!author || !msgBody) { showMsg('请填写昵称和留言内容', 'error'); return; }
-      const btn = form.querySelector('button');
-      btn.disabled = true; btn.textContent = '提交中...';
-      try {
-        const res = await fetch('/api/work-messages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug, author, body: msgBody }) });
-        const data = await res.json();
-        if (data.ok) { bodyEl.value = ''; showMsg('留言成功！', 'ok'); load(); }
-        else showMsg(data.error || '提交失败', 'error');
-      } catch { showMsg('网络错误', 'error'); }
-      btn.disabled = false; btn.textContent = '提交留言';
-    });
+  async function load() {
+    try {
+      var res = await fetch('/api/work-messages?slug=' + encodeURIComponent(_slug));
+      allMsgs = await res.json();
+      renderList(allMsgs.slice(0, showLimit));
+    } catch(e) {}
+  }
 
-    function showMsg(text, type) {
-      if (msgEl) { msgEl.textContent = text; msgEl.className = 'wc-msg wc-' + type; setTimeout(function() { msgEl.textContent = ''; }, 3000); }
-    }
-    function esc(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var author = currentUser ? currentUser.nickname : authorEl.value.trim();
+    var msgBody = bodyEl.value.trim();
+    if (!author || !msgBody) { showMsg('请填写昵称和留言内容', 'error'); return; }
+    var btn = form.querySelector('button');
+    btn.disabled = true; btn.textContent = '提交中...';
+    try {
+      var payload = { slug: _slug, author: author, body: msgBody };
+      if (currentUser) { payload.userId = currentUser.id; payload.role = currentUser.role; }
+      var res = await fetch('/api/work-messages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      var data = await res.json();
+      if (data.ok) { bodyEl.value = ''; showMsg('留言成功！', 'ok'); load(); }
+      else showMsg(data.error || '提交失败', 'error');
+    } catch(er) { showMsg('网络错误', 'error'); }
+    btn.disabled = false; btn.textContent = '提交留言';
+  });
 
-    load();
-  })();
+  function showMsg(text, type) {
+    if (msgEl) { msgEl.textContent = text; msgEl.className = 'wc-msg wc-' + type; setTimeout(function() { msgEl.textContent = ''; }, 3000); }
+  }
+  function esc(str) { return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  load();
+})();
 </script>
 
 <style>
-  .work-comments {
-    margin-top: 48px; padding-top: 36px;
-    border-top: 1px solid var(--border);
-  }
-  .work-comments h3 {
-    font-family: var(--font-heading);
-    font-size: 19px; font-weight: 700;
-    color: var(--navy); margin-bottom: 24px;
-  }
-  .wc-empty { color: var(--text-light); padding: 12px 0; font-size: 14px; }
-  .wc-item {
-    padding: 20px 0; border-bottom: 1px solid var(--border-light);
-  }
-  .wc-item:first-of-type { padding-top: 0; }
-  .wc-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
-  .wc-author { font-size: 14px; font-weight: 600; color: var(--navy); }
-  .wc-time { font-size: 11.5px; color: var(--text-light); }
-  .wc-body { font-size: 14.5px; color: var(--text-mid); line-height: 1.9; }
+  .work-comments { margin-top: 64px; padding-top: 40px; border-top: 1px solid var(--border); }
+  .work-comments h3 { font-family: var(--font-heading); font-size: 21px; font-weight: 700; color: var(--navy); margin-bottom: 28px; padding-bottom: 14px; position: relative; }
+  .work-comments h3::after { content: ''; position: absolute; bottom: 0; left: 0; width: 28px; height: 2px; background: var(--gold); border-radius: 1px; }
+  .wc-empty { color: var(--text-light); padding: 24px 0; font-size: 14px; text-align: center; }
+  .wc-item { padding: 20px 24px; margin-bottom: 12px; background: var(--white); border: 1px solid var(--border); border-radius: 10px; }
+  .wc-item:last-of-type { margin-bottom: 0; }
+  .wc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .wc-left { display: flex; align-items: center; gap: 0; }
+  .wc-author { font-size: 12px; font-weight: 600; color: var(--navy); }
+  .wc-role-badge { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; letter-spacing: 0; flex-shrink: 0; margin-left: 6px; }
+  .badge-admin { background: #c0745c; color: #fff; }
+  .badge-author { background: var(--teal); color: #fff; }
+  .wc-time { font-size: 12px; color: var(--text-light); white-space: nowrap; }
+  .wc-body { font-size: 15px; color: var(--text-dark); line-height: 1.9; word-break: break-word; }
   .wc-form { margin-top: 28px; display: flex; flex-direction: column; gap: 10px; }
-  .wc-row { display: flex; gap: 10px; }
-  .wc-row input {
-    flex: 1; padding: 10px 12px;
-    font-family: var(--font-body); font-size: 14px;
-    border: 1px solid var(--border); border-radius: 6px;
-    background: var(--cream); color: var(--text-dark); outline: none;
-  }
+  .wc-row { display: flex; gap: 10px; align-items: center; }
+  .wc-row input { flex: 1; padding: 10px 12px; font-family: var(--font-body); font-size: 14px; border: 1px solid var(--border); border-radius: 6px; background: var(--cream); color: var(--text-dark); outline: none; }
   .wc-row input:focus { border-color: var(--teal); background: #fff; }
-  .wc-row button {
-    padding: 10px 20px; white-space: nowrap;
-    font-family: var(--font-body); font-size: 13px; font-weight: 600;
-    letter-spacing: 1px;
-    background: var(--navy); color: #fff;
-    border: none; border-radius: 6px; cursor: pointer;
-  }
+  .wc-row button { padding: 10px 20px; white-space: nowrap; font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: 1px; background: var(--navy); color: #fff; border: none; border-radius: 6px; cursor: pointer; }
   .wc-row button:hover { background: #243548; }
-  .wc-form textarea {
-    padding: 10px 12px; resize: vertical;
-    font-family: var(--font-body); font-size: 14px;
-    border: 1px solid var(--border); border-radius: 6px;
-    background: var(--cream); color: var(--text-dark); outline: none;
-  }
+  .wc-form textarea { padding: 10px 12px; resize: vertical; font-family: var(--font-body); font-size: 14px; border: 1px solid var(--border); border-radius: 6px; background: var(--cream); color: var(--text-dark); outline: none; }
   .wc-form textarea:focus { border-color: var(--teal); background: #fff; }
-  .wc-msg { font-size: 13px; }
+  .wc-msg { font-size: 13px; min-height: 20px; }
   .wc-ok { color: #4a8a4a; }
   .wc-error { color: #c44; }
-  @media (max-width: 640px) {
-    .wc-row { flex-direction: column; }
-  }
+  .wc-show-all { display: block; width: 100%; padding: 12px; margin-top: 8px; font-family: var(--font-body); font-size: 13px; font-weight: 500; color: var(--teal); background: var(--cream); border: 1px dashed var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+  .wc-show-all:hover { background: #f0f7f9; border-color: var(--teal); }
+  @media (max-width: 640px) { .wc-item { gap: 10px; } }
 </style>

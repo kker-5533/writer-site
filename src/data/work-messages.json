@@ -5,5 +5,72 @@
       "time": "2026 年 6 月 13 日",
       "body": "真好"
     }
+  ],
+  "works/ferry": [
+    {
+      "author": "江月",
+      "time": "2026 年 6 月 14 日",
+      "body": "想起了我外公，他也是江边的摆渡人。有些东西消失了就再也回不来了。"
+    },
+    {
+      "author": "匿名读者",
+      "time": "2026 年 6 月 14 日",
+      "body": "江水还在流——这句话让我沉默了很久。"
+    },
+    {
+      "author": "苏晚",
+      "time": "2026 年 6 月 14 日",
+      "body": "渡口这篇文章写得太好了，读了三遍，每次都有新的感受。老周这个人物塑造得非常立体。",
+      "userId": "user-1781365882384",
+      "role": "author"
+    },
+    {
+      "author": "1",
+      "time": "2026 年 6 月 14 日",
+      "body": "好吧"
+    },
+    {
+      "author": "猫",
+      "time": "2026 年 6 月 14 日",
+      "body": "你好"
+    },
+    {
+      "author": "蒲瑞昇",
+      "time": "2026 年 6 月 14 日",
+      "body": "好吧",
+      "userId": "admin-001",
+      "role": "admin"
+    },
+    {
+      "author": "蒲瑞昇",
+      "time": "2026 年 6 月 14 日",
+      "body": "真好",
+      "userId": "admin-001",
+      "role": "admin"
+    },
+    {
+      "author": "苏晚",
+      "time": "2026 年 6 月 14 日",
+      "body": "test by author",
+      "userId": "user-1781365882384",
+      "role": "author"
+    },
+    {
+      "author": "测试",
+      "time": "2026 年 6 月 14 日",
+      "body": "test"
+    },
+    {
+      "author": "test",
+      "time": "2026 年 6 月 14 日",
+      "body": "test comment"
+    }
+  ],
+  "works/insomniac-notes": [
+    {
+      "author": "猫",
+      "time": "2026 年 6 月 14 日",
+      "body": "你好"
+    }
   ]
 }

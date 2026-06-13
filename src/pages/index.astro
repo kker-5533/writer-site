@@ -2,62 +2,181 @@
 export const prerender = false;
 
 import Layout from '../layouts/Layout.astro';
-import Nav from '../components/Nav.astro';
-import Hero from '../components/Hero.astro';
-import Works from '../components/Works.astro';
-import Blog from '../components/Blog.astro';
-import About from '../components/About.astro';
-import Contact from '../components/Contact.astro';
-import Messages from '../components/Messages.astro';
+import PlatformNav from '../components/PlatformNav.astro';
 import Footer from '../components/Footer.astro';
 import { getCollection } from 'astro:content';
 import siteData from '../data/site.json';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const works = await getCollection('works');
-const posts = await getCollection('blog');
+const allWorks = await getCollection('works');
+// 推荐作品：审核通过 + 管理员推荐
+const featuredWorks = allWorks
+  .filter(w => (!w.data.reviewStatus || w.data.reviewStatus === 'approved') && w.data.recommended);
 
-function loadMessages() {
+const allPosts = await getCollection('blog');
+const recentPosts = allPosts
+  .filter(p => !p.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+// 推荐作者
+function getRecommendedAuthors() {
   try {
-    const filePath = path.join(process.cwd(), 'src/data/messages.json');
-    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-  } catch {
-    return [];
-  }
+    const users = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src/data/users.json'), 'utf-8'));
+    return users.filter((u: any) => u.recommended && u.status === 'active');
+  } catch { return []; }
 }
-const messages = loadMessages();
-
-function loadInteractions() {
-  try {
-    const filePath = path.join(process.cwd(), 'src/data/interactions.json');
-    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-  } catch {
-    return {};
-  }
-}
-const interactions = loadInteractions();
-
-const contactItems = [
-  { label: '邮箱', value: siteData.contact.email },
-  { label: '微博', value: siteData.contact.weibo },
-  { label: '豆瓣', value: siteData.contact.douban },
-  { label: '公众号', value: siteData.contact.wechat },
-];
+const recommendedAuthors = getRecommendedAuthors();
 ---
 
 <Layout>
-  <Nav />
-  <Hero
-    author={siteData.author}
-    subtitle={siteData.subtitle}
-    intro={siteData.intro}
-    coverImage={siteData.coverImage}
-  />
-  <Works works={works} interactions={interactions} />
-  <Blog posts={posts} interactions={interactions} />
-  <About paragraphs={siteData.about} />
-  <Contact items={contactItems} />
-  <Messages messages={messages} />
-  <Footer author={siteData.author} tagline="由内而外地安静生长" />
+  <PlatformNav />
+
+  <header class="hero">
+    <div class="hero-inner">
+      <h1>文学社</h1>
+      <p class="subtitle">发现好文字，遇见好作者</p>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- 推荐作品 -->
+    <section class="sec">
+      <div class="container">
+        <div class="sec-header">
+          <h2>推荐作品</h2>
+          <a href="/recommended-works" class="more">查看全部 &rarr;</a>
+        </div>
+        {featuredWorks.length === 0 ? <p class="empty">暂无推荐作品</p> : (
+          <div class="work-grid">
+            {featuredWorks.map(w => (
+              <a href={`/works/${w.id}`} class="work-card">
+                <h3>{w.data.title}</h3>
+                <span class="meta">{w.data.type} · {w.data.year} · {w.data.authorName || '佚名'}</span>
+                <p class="desc">{w.data.summary}</p>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- 推荐作者 -->
+    <section class="sec alt">
+      <div class="container">
+        <div class="sec-header">
+          <h2>推荐作者</h2>
+          <a href="/recommended-authors" class="more">查看全部 &rarr;</a>
+        </div>
+        {recommendedAuthors.length === 0 ? <p class="empty">暂无推荐作者</p> : (
+          <div class="author-grid">
+            {recommendedAuthors.map((a: any) => (
+              <a href={`/author/${a.id}`} class="author-card">
+                <div class="avatar">{a.nickname[0]}</div>
+                <h3>{a.nickname}</h3>
+                {a.intro && <p class="desc">{a.intro}</p>}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- 最新随笔 -->
+    <section class="sec">
+      <div class="container">
+        <h2>最新随笔</h2>
+        {recentPosts.map(p => (
+          <div class="post-item">
+            <span class="date">{p.data.date.toISOString().slice(0, 10).replace(/-/g, '.')}</span>
+            <div class="post-content">
+              <a href={`/blog/${p.id}`} class="post-title">{p.data.title}</a>
+              <span class="post-author">{p.data.authorName || '佚名'}</span>
+              <p class="desc">{p.data.excerpt}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <Footer author="文学社" tagline="发现好文字，遇见好作者" />
 </Layout>
+
+<style>
+  .hero {
+    min-height: 60vh; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(160deg, #1b2a3a 0%, #2e5c6e 60%, #3a7b8c 100%);
+    text-align: center; padding: 60px 0;
+  }
+  .hero-inner { display: flex; flex-direction: column; align-items: center; }
+  .hero h1 {
+    font-family: var(--font-heading); font-size: 56px; font-weight: 900;
+    color: #fff; letter-spacing: 16px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+  }
+  .hero .subtitle {
+    font-family: var(--font-body); font-size: 16px; font-weight: 300;
+    color: rgba(255,255,255,0.7); letter-spacing: 6px; margin-top: 16px;
+  }
+  .main { padding: 20px 0; }
+  .sec { padding: 60px 0; }
+  .sec.alt { background: var(--white); }
+  .sec-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 28px; }
+  .sec-header h2, .sec h2 {
+    font-family: var(--font-heading); font-size: 24px; font-weight: 700; color: var(--navy);
+  }
+  .more { font-size: 13px; color: var(--teal); text-decoration: none; }
+  .more:hover { text-decoration: underline; }
+
+  .work-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .work-card {
+    display: block; padding: 24px; border: 1px solid var(--border-light); border-radius: 10px;
+    background: #fff; text-decoration: none; transition: box-shadow 0.2s;
+  }
+  .work-card:hover { box-shadow: 0 2px 16px rgba(0,0,0,0.06); }
+  .work-card h3 { font-family: var(--font-heading); font-size: 18px; color: var(--navy); margin-bottom: 6px; }
+  .work-card .meta { font-size: 12px; color: var(--teal); }
+  .work-card .desc { font-size: 13.5px; color: var(--text-mid); margin-top: 8px; line-height: 1.7; }
+
+  .author-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .author-card {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 24px 16px; border: 1px solid var(--border-light); border-radius: 10px;
+    background: #fff; text-decoration: none; transition: box-shadow 0.2s;
+  }
+  .author-card:hover { box-shadow: 0 2px 16px rgba(0,0,0,0.06); }
+  .avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--teal); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-heading); font-size: 22px; font-weight: 700;
+  }
+  .author-card h3 { font-family: var(--font-heading); font-size: 16px; color: var(--navy); }
+  .author-card .desc { font-size: 12px; color: var(--text-light); text-align: center; }
+
+  .post-item {
+    display: grid; grid-template-columns: 90px 1fr; gap: 16px 24px;
+    padding: 24px 0; border-bottom: 1px solid var(--border-light);
+    align-items: baseline;
+  }
+  .post-item:last-child { border-bottom: none; }
+  .date { font-size: 12.5px; color: var(--teal); white-space: nowrap; }
+  .post-title {
+    font-family: var(--font-heading); font-size: 18px; font-weight: 700;
+    color: var(--navy); text-decoration: none;
+  }
+  .post-title:hover { color: var(--gold); }
+  .post-author { font-size: 12px; color: var(--text-light); margin-left: 8px; }
+  .post-content .desc { font-size: 14px; color: var(--text-mid); margin-top: 4px; line-height: 1.7; }
+  .empty { color: var(--text-light); padding: 24px 0; }
+
+  @media (max-width: 640px) {
+    .hero { min-height: 45vh; }
+    .hero h1 { font-size: 36px; letter-spacing: 8px; }
+    .work-grid { grid-template-columns: 1fr; }
+    .author-grid { grid-template-columns: repeat(2, 1fr); }
+    .post-item { grid-template-columns: 1fr; }
+  }
+</style>

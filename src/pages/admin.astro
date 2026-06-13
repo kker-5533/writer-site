@@ -21,24 +21,24 @@ const currentCover = site.coverImage || '';
     <a href="/" class="back-link">&larr; 返回网站</a>
   </div>
 
-  <div class="tabs">
-    <button class="tab active" data-tab="site">网站设置</button>
-    <button class="tab" data-tab="works">作品管理</button>
-    <button class="tab" data-tab="blog">随笔管理</button>
-    <button class="tab" data-tab="messages">留言管理</button>
-    <button class="tab" data-tab="workmsgs">作品评论</button>
-    <button class="tab" data-tab="password">密码修改</button>
+  <div class="admin-tabs">
+    <button class="admin-tab active" data-tab="site">网站设置</button>
+    <button class="admin-tab" data-tab="works">作品管理</button>
+    <button class="admin-tab" data-tab="blog">随笔管理</button>
+    <button class="admin-tab" data-tab="messages">留言管理</button>
+    <button class="admin-tab" data-tab="workmsgs">作品评论</button>
+    <button class="admin-tab" data-tab="password">密码修改</button>
   </div>
 
   <!-- ===== 网站设置 ===== -->
-  <div id="tab-site" class="tab-content active">
+  <div id="tab-site" class="admin-tab-content active">
     <form id="siteForm" class="admin-form">
-      <div class="field"><label>笔名</label><input name="author" /></div>
-      <div class="field"><label>副标题</label><input name="subtitle" /></div>
-      <div class="field"><label>简介（换行分隔）</label><textarea name="intro" rows="3"></textarea></div>
+      <div class="admin-field"><label>笔名</label><input name="author" /></div>
+      <div class="admin-field"><label>副标题</label><input name="subtitle" /></div>
+      <div class="admin-field"><label>简介（换行分隔）</label><textarea name="intro" rows="3"></textarea></div>
       <input type="hidden" name="coverImage" />
-      <div class="field"><label>封面图片</label>
-        <div class="cover-grid" id="presetGrid">
+      <div class="admin-field"><label>封面图片</label>
+        <div class="admin-cover-grid" id="presetGrid">
           {presets.map(p => (
             <div class={`cover-box${p.url === currentCover ? ' selected' : ''}`} data-url={p.url} title={p.name}>
               <img src={`${p.url.split('?')[0]}?w=240&q=30&fit=crop`} alt={p.name} loading="lazy" />
@@ -49,7 +49,7 @@ const currentCover = site.coverImage || '';
         <div class="cover-custom">
           <span class="cover-custom-label">自定义：</span>
           <input type="file" id="coverUpload" accept="image/*" />
-          <span id="coverUploadMsg" class="msg"></span>
+          <span id="coverUploadMsg" class="admin-msg"></span>
         </div>
       </div>
       <h3>联系方式</h3>
@@ -57,18 +57,18 @@ const currentCover = site.coverImage || '';
       <div class="row"><div class="field"><label>豆瓣</label><input name="contact.douban" /></div><div class="field"><label>公众号</label><input name="contact.wechat" /></div></div>
       <h3>关于作者（每行一段）</h3>
       <div id="aboutList" class="list-editor"></div>
-      <button type="button" class="btn-sm" id="addAboutBtn">+ 添加段落</button>
+      <button type="button" class="admin-btn-sm" id="addAboutBtn">+ 添加段落</button>
       <br><br>
-      <button type="submit" class="btn-save">保存设置</button>
-      <span id="siteMsg" class="msg"></span>
+      <button type="submit" class="admin-btn-save">保存设置</button>
+      <span id="siteMsg" class="admin-msg"></span>
     </form>
   </div>
 
   <!-- ===== 作品管理 ===== -->
   <div id="tab-works" class="tab-content">
-    <button id="addWorkBtn" class="btn-add">+ 新增作品</button>
-    <div id="workList" class="card-list"></div>
-    <div id="workEditor" class="editor-panel" style="display:none">
+    <button id="addWorkBtn" class="admin-btn-add">+ 新增作品</button>
+    <div id="workList" class="admin-card-list"></div>
+    <div id="workEditor" class="admin-editor" style="display:none">
       <h3 id="workEditorTitle">新增作品</h3>
       <form id="workForm" class="admin-form">
         <input type="hidden" name="workId" />
@@ -78,18 +78,18 @@ const currentCover = site.coverImage || '';
         <div class="field"><label><input type="checkbox" name="published" /> 已出版</label></div>
         <div class="field"><label>简介</label><textarea name="summary" rows="3"></textarea></div>
         <div class="field"><label>正文</label><textarea name="body" rows="12" class="body-editor"></textarea></div>
-        <button type="submit" class="btn-save">保存</button>
-        <button type="button" id="cancelWorkBtn" class="btn-cancel">取消</button>
-        <span id="workMsg" class="msg"></span>
+        <button type="submit" class="admin-btn-save">保存</button>
+        <button type="button" id="cancelWorkBtn" class="admin-btn-cancel">取消</button>
+        <span id="workMsg" class="admin-msg"></span>
       </form>
     </div>
   </div>
 
   <!-- ===== 随笔管理 ===== -->
   <div id="tab-blog" class="tab-content">
-    <button id="addBlogBtn" class="btn-add">+ 新建随笔</button>
-    <div id="blogList" class="card-list"></div>
-    <div id="blogEditor" class="editor-panel" style="display:none">
+    <button id="addBlogBtn" class="admin-btn-add">+ 新建随笔</button>
+    <div id="blogList" class="admin-card-list"></div>
+    <div id="blogEditor" class="admin-editor" style="display:none">
       <h3 id="blogEditorTitle">新建随笔</h3>
       <form id="blogForm" class="admin-form">
         <input type="hidden" name="blogId" />
@@ -97,22 +97,22 @@ const currentCover = site.coverImage || '';
         <div class="row"><div class="field"><label>日期</label><input name="date" type="date" /></div><div class="field"><label><input type="checkbox" name="draft" /> 草稿</label></div></div>
         <div class="field"><label>摘要</label><textarea name="excerpt" rows="3"></textarea></div>
         <div class="field"><label>正文</label><textarea name="body" rows="12" class="body-editor"></textarea></div>
-        <button type="submit" class="btn-save">保存</button>
-        <button type="button" id="cancelBlogBtn" class="btn-cancel">取消</button>
-        <span id="blogMsg" class="msg"></span>
+        <button type="submit" class="admin-btn-save">保存</button>
+        <button type="button" id="cancelBlogBtn" class="admin-btn-cancel">取消</button>
+        <span id="blogMsg" class="admin-msg"></span>
       </form>
     </div>
   </div>
 
   <!-- ===== 留言管理 ===== -->
   <div id="tab-messages" class="tab-content">
-    <div id="msgList" class="card-list"></div>
+    <div id="msgList" class="admin-card-list"></div>
   </div>
 
   <!-- ===== 作品评论管理 ===== -->
   <div id="tab-workmsgs" class="tab-content">
     <div class="field" style="margin-bottom:20px"><label>选择作品</label><select id="workMsgSelect"><option value="">-- 请选择 --</option></select></div>
-    <div id="workMsgList" class="card-list"></div>
+    <div id="workMsgList" class="admin-card-list"></div>
   </div>
 
   <!-- ===== 密码修改 ===== -->
@@ -121,8 +121,8 @@ const currentCover = site.coverImage || '';
       <div class="field"><label>当前昵称</label><input name="curNickname" /></div>
       <div class="field"><label>当前密码</label><input name="curPassword" type="password" /></div>
       <div class="field"><label>新密码（至少 4 位）</label><input name="newPassword" type="password" /></div>
-      <button type="submit" class="btn-save">修改密码</button>
-      <span id="pwdMsg" class="msg"></span>
+      <button type="submit" class="admin-btn-save">修改密码</button>
+      <span id="pwdMsg" class="admin-msg"></span>
     </form>
   </div>
 </div>
@@ -131,6 +131,29 @@ const currentCover = site.coverImage || '';
 <script>
   // ---- 登录检查 ----
   if (sessionStorage.getItem('linshen_auth') !== 'true') { window.location.href = '/login'; }
+  const currentUserStr = sessionStorage.getItem('linshen_user');
+  const currentUser = currentUserStr ? JSON.parse(currentUserStr) : null;
+  if (!currentUser) { window.location.href = '/login'; }
+
+  // 非管理员：隐藏网站设置 tab，默认显示作品管理
+  const isAdmin = currentUser.role === 'admin';
+  if (!isAdmin) {
+    const siteTab = document.querySelector('[data-tab="site"]') as HTMLElement;
+    if (siteTab) siteTab.style.display = 'none';
+    document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    const worksTab = document.querySelector('[data-tab="works"]') as HTMLElement;
+    if (worksTab) worksTab.classList.add('active');
+    const worksContent = document.getElementById('tab-works');
+    if (worksContent) worksContent.classList.add('active');
+    loadWorks();
+  } else {
+    loadSite();
+  }
+
+  // 在标题区显示当前作者
+  const headerH1 = document.querySelector('.admin-header h1');
+  if (headerH1) headerH1.textContent = currentUser.nickname + ' 的后台';
 
   // ---- Tab 切换 ----
   document.querySelectorAll('.tab').forEach(t => {
@@ -157,7 +180,7 @@ const currentCover = site.coverImage || '';
     aboutList.innerHTML = '';
     (d.about || []).forEach((p, i) => {
       const div = document.createElement('div'); div.className = 'list-row';
-      div.innerHTML = `<textarea name="about.${i}" rows="2">${esc(p)}</textarea><button type="button" class="btn-del" onclick="this.parentElement.remove()">×</button>`;
+      div.innerHTML = `<textarea name="about.${i}" rows="2">${esc(p)}</textarea><button type="button" class="admin-btn-del" onclick="this.parentElement.remove()">×</button>`;
       aboutList.appendChild(div);
     });
     // custom upload
@@ -191,18 +214,24 @@ const currentCover = site.coverImage || '';
   document.getElementById('addAboutBtn').addEventListener('click', () => {
     const div = document.createElement('div'); div.className = 'list-row';
     const i = document.querySelectorAll('#aboutList textarea').length;
-    div.innerHTML = `<textarea name="about.${i}" rows="2"></textarea><button type="button" class="btn-del" onclick="this.parentElement.remove()">×</button>`;
+    div.innerHTML = `<textarea name="about.${i}" rows="2"></textarea><button type="button" class="admin-btn-del" onclick="this.parentElement.remove()">×</button>`;
     document.getElementById('aboutList').appendChild(div);
   });
 
   // ====== 作品管理 ======
   async function loadWorks() {
     const res = await fetch('/api/works'); const works = await res.json();
+    // 作者只看自己的作品，管理员看全部
+    const myWorks = currentUser.role === 'admin' ? works : works.filter((w: any) => w.authorId === currentUser.id);
     const list = document.getElementById('workList');
-    list.innerHTML = works.length === 0 ? '<p class="empty-msg">暂无作品</p>' : '';
-    works.forEach(w => {
-      const card = document.createElement('div'); card.className = 'card';
-      card.innerHTML = `<div><strong>${esc(w.title)}</strong> <span class="tag">${esc(w.type)}</span> <span class="tag">${w.year}</span></div><div class="card-summary">${esc(w.summary || '')}</div><div class="card-actions"><button class="btn-sm edit-work" data-id="${w.id}">编辑</button><button class="btn-sm danger del-work" data-id="${w.id}">删除</button></div>`;
+    list.innerHTML = myWorks.length === 0 ? '<p class="admin-empty">暂无作品</p>' : '';
+    const reviewLabel: Record<string, string> = { pending: '待审核', approved: '已通过', rejected: '未通过', violation_modified: '违规·已修改', violation_deleted: '违规·已删除' };
+    const reviewColor: Record<string, string> = { pending: '#e6a817', approved: '#4a8a4a', rejected: '#c44', violation_modified: '#e67e22', violation_deleted: '#999' };
+    myWorks.forEach(w => {
+      const s = w.reviewStatus || 'pending';
+      const note = w.reviewNote || '';
+      const card = document.createElement('div'); card.className = 'admin-card';
+      card.innerHTML = `<div><strong>${esc(w.title)}</strong> <span class="tag">${esc(w.type)}</span> <span class="tag">${w.year}</span> <span class="tag" style="color:${reviewColor[s] || '#999'}">${reviewLabel[s] || s}</span></div><div class="admin-card-summary">${esc(w.summary || '')}</div>${note ? `<div class="admin-card-note">📝 审核备注：${esc(note)}</div>` : ''}<div class="admin-card-actions"><button class="btn-sm edit-work" data-id="${w.id}">编辑</button><button class="btn-sm danger del-work" data-id="${w.id}">删除</button></div>`;
       list.appendChild(card);
     });
     bindWorkButtons();
@@ -214,8 +243,9 @@ const currentCover = site.coverImage || '';
   }
 
   async function editWork(id) {
-    const res = await fetch('/api/works'); const works = await res.json();
-    const w = works.find(x => x.id === id); if (!w) return;
+    const res = await fetch('/api/works'); const allWorks = await res.json();
+    const myWorks = currentUser.role === 'admin' ? allWorks : allWorks.filter((w: any) => w.authorId === currentUser.id);
+    const w = myWorks.find(x => x.id === id); if (!w) return;
     document.getElementById('workEditor').style.display = 'block';
     document.getElementById('workEditorTitle').textContent = '编辑作品';
     setVal('workId', id); setVal('title', w.title); setVal('type', w.type); setVal('year', w.year);
@@ -234,7 +264,8 @@ const currentCover = site.coverImage || '';
   document.getElementById('workForm').addEventListener('submit', async e => {
     e.preventDefault();
     const id = getVal('workId');
-    const body = { action: id ? 'update' : 'create', id: id || undefined, title: getVal('title'), type: getVal('type'), year: Number(getVal('year')), wordCount: getVal('wordCount'), publisher: getVal('publisher'), published: (document.querySelector('[name="published"]')).checked, summary: getVal('summary'), body: getVal('body') };
+    const reviewStatus = currentUser.role === 'admin' ? 'approved' : 'pending';
+    const body = { action: id ? 'update' : 'create', id: id || undefined, title: getVal('title'), type: getVal('type'), year: Number(getVal('year')), wordCount: getVal('wordCount'), publisher: getVal('publisher'), published: (document.querySelector('[name="published"]')).checked, summary: getVal('summary'), body: getVal('body'), authorId: currentUser.id, authorName: currentUser.nickname, reviewStatus };
     const res = await fetch('/api/works', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
     if (res.ok) { showMsg('workMsg', '✓ 已保存'); document.getElementById('workEditor').style.display = 'none'; loadWorks(); }
     else showMsg('workMsg', '保存失败');
@@ -249,12 +280,13 @@ const currentCover = site.coverImage || '';
   // ====== 随笔管理 ======
   async function loadBlog() {
     const res = await fetch('/api/blog'); const posts = await res.json();
+    const myPosts = currentUser.role === 'admin' ? posts : posts.filter((p: any) => p.authorId === currentUser.id);
     const list = document.getElementById('blogList');
-    list.innerHTML = posts.length === 0 ? '<p class="empty-msg">暂无随笔</p>' : '';
-    posts.forEach(p => {
-      const card = document.createElement('div'); card.className = 'card';
+    list.innerHTML = myPosts.length === 0 ? '<p class="admin-empty">暂无随笔</p>' : '';
+    myPosts.forEach(p => {
+      const card = document.createElement('div'); card.className = 'admin-card';
       const draftBadge = p.draft ? ' <span class="tag draft">草稿</span>' : '';
-      card.innerHTML = `<div><strong>${esc(p.title)}</strong>${draftBadge} <span class="tag">${p.date}</span></div><div class="card-summary">${esc(p.excerpt || '')}</div><div class="card-actions"><button class="btn-sm edit-blog" data-id="${p.id}">编辑</button><button class="btn-sm danger del-blog" data-id="${p.id}">删除</button></div>`;
+      card.innerHTML = `<div><strong>${esc(p.title)}</strong>${draftBadge} <span class="tag">${p.date}</span></div><div class="admin-card-summary">${esc(p.excerpt || '')}</div><div class="admin-card-actions"><button class="btn-sm edit-blog" data-id="${p.id}">编辑</button><button class="btn-sm danger del-blog" data-id="${p.id}">删除</button></div>`;
       list.appendChild(card);
     });
     document.querySelectorAll('.edit-blog').forEach(b => b.addEventListener('click', () => editBlog(b.dataset.id)));
@@ -262,8 +294,9 @@ const currentCover = site.coverImage || '';
   }
 
   async function editBlog(id) {
-    const res = await fetch('/api/blog'); const posts = await res.json();
-    const p = posts.find(x => x.id === id); if (!p) return;
+    const res = await fetch('/api/blog'); const allPosts = await res.json();
+    const myPosts = currentUser.role === 'admin' ? allPosts : allPosts.filter((p: any) => p.authorId === currentUser.id);
+    const p = myPosts.find(x => x.id === id); if (!p) return;
     document.getElementById('blogEditor').style.display = 'block';
     document.getElementById('blogEditorTitle').textContent = '编辑随笔';
     setVal('blogId', id); setVal('title', p.title); setVal('date', p.date); setVal('excerpt', p.excerpt); setVal('body', p.body || '');
@@ -281,7 +314,7 @@ const currentCover = site.coverImage || '';
   document.getElementById('blogForm').addEventListener('submit', async e => {
     e.preventDefault();
     const id = getVal('blogId');
-    const body = { action: id ? 'update' : 'create', id: id || undefined, title: getVal('title'), date: getVal('date'), excerpt: getVal('excerpt'), draft: (document.querySelector('[name="draft"]')).checked, body: getVal('body') };
+    const body = { action: id ? 'update' : 'create', id: id || undefined, title: getVal('title'), date: getVal('date'), excerpt: getVal('excerpt'), draft: (document.querySelector('[name="draft"]')).checked, body: getVal('body'), authorId: currentUser.id, authorName: currentUser.nickname };
     const res = await fetch('/api/blog', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
     if (res.ok) { showMsg('blogMsg', '✓ 已保存'); document.getElementById('blogEditor').style.display = 'none'; loadBlog(); }
     else showMsg('blogMsg', '保存失败');
@@ -298,10 +331,10 @@ const currentCover = site.coverImage || '';
     const res = await fetch('/api/messages?list=1');
     const msgs = await res.json();
     const list = document.getElementById('msgList');
-    list.innerHTML = msgs.length === 0 ? '<p class="empty-msg">暂无留言</p>' : '';
+    list.innerHTML = msgs.length === 0 ? '<p class="admin-empty">暂无留言</p>' : '';
     msgs.forEach((m, i) => {
-      const card = document.createElement('div'); card.className = 'card';
-      card.innerHTML = `<div><strong>${esc(m.author)}</strong> <span class="tag">${m.time}</span></div><div class="card-summary">${esc(m.body)}</div><div class="card-actions"><button class="btn-sm danger del-msg" data-idx="${i}">删除</button></div>`;
+      const card = document.createElement('div'); card.className = 'admin-card';
+      card.innerHTML = `<div><strong>${esc(m.author)}</strong> <span class="tag">${m.time}</span></div><div class="admin-card-summary">${esc(m.body)}</div><div class="admin-card-actions"><button class="btn-sm danger del-msg" data-idx="${i}">删除</button></div>`;
       list.appendChild(card);
     });
     document.querySelectorAll('.del-msg').forEach(b => b.addEventListener('click', () => deleteMessage(Number(b.dataset.idx))));
@@ -316,19 +349,20 @@ const currentCover = site.coverImage || '';
   // ====== 作品评论管理 ======
   let workMsgData = {};
   async function loadWorkMsgs() {
-    const wRes = await fetch('/api/works'); const works = await wRes.json();
+    const wRes = await fetch('/api/works'); const allWorks = await wRes.json();
+    const myWorks = currentUser.role === 'admin' ? allWorks : allWorks.filter((w: any) => w.authorId === currentUser.id);
     const sel = document.getElementById('workMsgSelect');
-    sel.innerHTML = '<option value="">-- 请选择 --</option>' + works.map(w => `<option value="works/${w.id}">${esc(w.title)}</option>`).join('');
+    sel.innerHTML = '<option value="">-- 请选择 --</option>' + myWorks.map((w: any) => `<option value="works/${w.id}">${esc(w.title)}</option>`).join('');
     sel.onchange = async () => {
       const slug = sel.value;
       if (!slug) { document.getElementById('workMsgList').innerHTML = ''; return; }
       const r = await fetch('/api/work-messages?slug=' + encodeURIComponent(slug));
       const msgs = await r.json();
       const list = document.getElementById('workMsgList');
-      list.innerHTML = msgs.length === 0 ? '<p class="empty-msg">暂无评论</p>' : '';
+      list.innerHTML = msgs.length === 0 ? '<p class="admin-empty">暂无评论</p>' : '';
       msgs.forEach((m, i) => {
-        const card = document.createElement('div'); card.className = 'card';
-        card.innerHTML = `<div><strong>${esc(m.author)}</strong> <span class="tag">${m.time}</span></div><div class="card-summary">${esc(m.body)}</div><div class="card-actions"><button class="btn-sm danger del-wm" data-slug="${slug}" data-idx="${i}">删除</button></div>`;
+        const card = document.createElement('div'); card.className = 'admin-card';
+        card.innerHTML = `<div><strong>${esc(m.author)}</strong> <span class="tag">${m.time}</span></div><div class="admin-card-summary">${esc(m.body)}</div><div class="admin-card-actions"><button class="btn-sm danger del-wm" data-slug="${slug}" data-idx="${i}">删除</button></div>`;
         list.appendChild(card);
       });
       document.querySelectorAll('.del-wm').forEach(b => b.addEventListener('click', async () => {
@@ -338,7 +372,7 @@ const currentCover = site.coverImage || '';
       }));
     };
     // auto-select first work
-    if (works.length > 0) { sel.value = 'works/' + works[0].id; sel.onchange(); }
+    if (myWorks.length > 0) { sel.value = 'works/' + myWorks[0].id; sel.onchange(); }
   }
 
   // ====== 密码修改 ======
@@ -372,29 +406,29 @@ const currentCover = site.coverImage || '';
   });
 
   // ---- 启动 ----
-  loadSite();
+  if (isAdmin) loadSite();
 </script>
 
-<style>
-  .admin-wrapper { max-width: 900px; margin: 0 auto; padding: 40px 28px 80px; }
-  .admin-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px; }
-  .admin-header h1 { font-family: var(--font-heading); font-size: 26px; color: var(--navy); }
+<style is:global>
+  .admin-wrapper { max-width: 900px; margin: 0 auto; padding: 60px 28px 80px; }
+  .admin-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 36px; }
+  .admin-header h1 { font-family: var(--font-heading); font-size: 28px; color: var(--navy); letter-spacing: 1px; }
   .back-link { font-size: 13px; color: var(--text-light); text-decoration: none; }
   .back-link:hover { color: var(--teal); }
 
-  .tabs { display: flex; gap: 4px; margin-bottom: 32px; border-bottom: 2px solid var(--border); }
-  .tab { padding: 10px 20px; font-family: var(--font-body); font-size: 14px; font-weight: 500; background: none; border: none; color: var(--text-light); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
-  .tab.active { color: var(--navy); border-bottom-color: var(--gold); }
+  .tabs { display: flex; gap: 2px; margin-bottom: 36px; border-bottom: 1px solid var(--border); }
+  .tab { padding: 12px 22px; font-family: var(--font-body); font-size: 13.5px; font-weight: 500; background: none; border: none; color: var(--text-light); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; letter-spacing: 0.5px; }
+  .tab.active { color: var(--navy); border-bottom-color: var(--teal); font-weight: 600; }
   .tab:hover { color: var(--navy); }
   .tab-content { display: none; }
   .tab-content.active { display: block; }
 
   .admin-form { display: flex; flex-direction: column; gap: 16px; }
-  .admin-form h3 { font-family: var(--font-heading); font-size: 17px; color: var(--navy); margin-top: 12px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+  .admin-form h3 { font-family: var(--font-heading); font-size: 17px; font-weight: 700; color: var(--navy); margin-top: 16px; padding-top: 20px; border-top: 1px solid var(--border); letter-spacing: 0.5px; }
   .field { display: flex; flex-direction: column; gap: 4px; flex: 1; }
   .field label { font-size: 12px; font-weight: 600; color: var(--text-mid); letter-spacing: 0.5px; }
-  .field input, .field textarea, .field select { padding: 10px 12px; font-family: var(--font-body); font-size: 14.5px; border: 1px solid var(--border); border-radius: 6px; background: var(--cream); color: var(--text-dark); outline: none; }
-  .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--teal); background: #fff; }
+  .field input, .field textarea, .field select { padding: 11px 14px; font-family: var(--font-body); font-size: 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--cream); color: var(--text-dark); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(74,138,158,0.08); background: #fff; }
   .row { display: flex; gap: 16px; }
 
   .cover-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
@@ -421,26 +455,51 @@ const currentCover = site.coverImage || '';
   .list-row { display: flex; gap: 8px; align-items: flex-start; }
   .list-row textarea { flex: 1; padding: 8px 10px; font-family: var(--font-body); font-size: 14px; border: 1px solid var(--border); border-radius: 4px; background: var(--cream); resize: vertical; }
 
-  .btn-save { padding: 11px 36px; font-family: var(--font-body); font-size: 14px; font-weight: 600; letter-spacing: 2px; background: var(--navy); color: #fff; border: none; border-radius: 6px; cursor: pointer; align-self: flex-start; }
-  .btn-save:hover { background: #243548; }
-  .btn-sm { padding: 5px 12px; font-size: 12px; font-weight: 500; border: 1px solid var(--border); border-radius: 4px; background: #fff; cursor: pointer; }
-  .btn-sm:hover { background: var(--cream); }
-  .btn-sm.danger { color: #c44; border-color: #ecc; } .btn-sm.danger:hover { background: #fef0f0; }
-  .btn-del { padding: 2px 8px; font-size: 14px; color: #c44; border: none; background: none; cursor: pointer; font-weight: bold; }
-  .btn-add { padding: 10px 24px; font-family: var(--font-body); font-size: 14px; font-weight: 600; background: var(--teal); color: #fff; border: none; border-radius: 6px; cursor: pointer; margin-bottom: 20px; }
-  .btn-add:hover { background: var(--teal-deep); }
-  .btn-cancel { padding: 8px 20px; font-size: 13px; border: 1px solid var(--border); border-radius: 6px; background: #fff; cursor: pointer; }
-  .msg { font-size: 13px; color: #4a8a4a; margin-left: 12px; }
+  .btn-save { padding: 13px 40px; font-family: var(--font-body); font-size: 14px; font-weight: 600; letter-spacing: 2px; background: var(--navy); color: #fff; border: none; border-radius: 8px; cursor: pointer; align-self: flex-start; transition: all 0.2s; }
+  .btn-save:hover { background: #1a2d40; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .btn-sm {
+    padding: 6px 16px; font-size: 12.5px; font-weight: 500;
+    border: 1px solid var(--border); border-radius: 20px;
+    background: #fff; cursor: pointer; transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .btn-sm:hover { background: var(--cream); border-color: var(--teal); color: var(--teal); }
+  .btn-sm.danger { color: #c44; border-color: #ecc; } .btn-sm.danger:hover { background: #fef0f0; border-color: #c44; color: #c44; }
+  .btn-del { padding: 3px 10px; font-size: 14px; color: #c44; border: none; background: none; cursor: pointer; font-weight: bold; opacity: 0.6; transition: opacity 0.15s; }
+  .btn-del:hover { opacity: 1; }
+  .btn-add {
+    padding: 11px 28px; font-family: var(--font-body); font-size: 14px; font-weight: 600;
+    background: var(--teal); color: #fff; border: none; border-radius: 8px;
+    cursor: pointer; margin-bottom: 24px; transition: all 0.2s; letter-spacing: 0.5px;
+  }
+  .btn-add:hover { background: var(--teal-deep); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(46,92,110,0.3); }
+  .btn-cancel { padding: 10px 24px; font-size: 13px; border: 1px solid var(--border); border-radius: 8px; background: #fff; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+  .btn-cancel:hover { background: var(--cream); border-color: #ccc; }
+  .msg { font-size: 13px; color: #4a8a4a; margin-left: 14px; font-weight: 500; }
 
-  .card-list { display: flex; flex-direction: column; gap: 10px; }
-  .card { padding: 16px; border: 1px solid var(--border-light); border-radius: 8px; background: #fff; display: flex; flex-direction: column; gap: 6px; }
-  .card strong { font-family: var(--font-heading); color: var(--navy); }
-  .card .tag { font-size: 11px; padding: 2px 8px; background: var(--sand-light); border-radius: 3px; color: var(--text-light); margin-left: 8px; }
+  .card-list { display: flex; flex-direction: column; gap: 12px; }
+  .card {
+    padding: 22px 28px; border: 1px solid var(--border); border-radius: 12px;
+    background: #fff; display: flex; flex-direction: column; gap: 10px;
+    transition: all 0.2s; position: relative;
+    border-left: 4px solid var(--teal);
+  }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); border-color: var(--teal-light); }
+  .card strong { font-family: var(--font-heading); font-size: 17px; color: var(--navy); letter-spacing: 0.5px; }
+  .card .tag { font-size: 11px; padding: 3px 10px; background: var(--sand-light); border-radius: 20px; color: var(--text-mid); margin-left: 10px; font-weight: 500; }
   .card .tag.draft { background: #fef3cd; color: #856404; }
-  .card-summary { font-size: 13.5px; color: var(--text-mid); }
-  .card-actions { display: flex; gap: 6px; margin-top: 4px; }
-  .empty-msg { color: var(--text-light); padding: 24px 0; }
-  .editor-panel { margin-top: 16px; padding: 24px; border: 2px solid var(--teal-light); border-radius: 10px; background: #fff; }
+  .card-summary { font-size: 14px; color: var(--text-mid); line-height: 1.75; padding-left: 0; }
+  .card-note { font-size: 13px; color: #e67e22; background: #fef9f3; padding: 10px 14px; border-radius: 8px; margin-top: 6px; border-left: 3px solid #e67e22; }
+  .card-actions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .empty-msg {
+    color: var(--text-light); padding: 60px 0; text-align: center; font-size: 14px;
+    background: var(--white); border-radius: 12px; border: 1px dashed var(--border);
+  }
+  .editor-panel {
+    margin-top: 24px; padding: 32px;
+    border: 1px solid var(--border); border-radius: 14px;
+    background: var(--white); box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+  }
 
   @media (max-width: 640px) {
     .admin-wrapper { padding: 20px 16px 60px; }

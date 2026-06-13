@@ -1,0 +1,110 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="card-top">
+        <h1>文学社</h1>
+        <p class="sub">注册作者</p>
+      </div>
+      <div class="card-body">
+        <form id="regForm" class="login-form">
+          <div class="field">
+            <label for="nickname">昵称</label>
+            <input type="text" id="nickname" name="nickname" placeholder="2-20 个字符" maxlength="20" autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for="password">密码</label>
+            <input type="password" id="password" name="password" placeholder="至少 4 位" />
+          </div>
+          <p id="error" class="error" style="display:none"></p>
+          <p id="okMsg" class="ok-msg" style="display:none"></p>
+          <button type="submit">注 册</button>
+        </form>
+      </div>
+      <div class="card-bottom">
+        <a href="/login">已有账号？登录</a>
+        <a href="/">&larr; 返回首页</a>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const form = document.getElementById('regForm');
+  const errorEl = document.getElementById('error');
+  const okEl = document.getElementById('okMsg');
+  const btn = form.querySelector('button');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nickname = document.getElementById('nickname').value.trim();
+    const password = document.getElementById('password').value;
+
+    errorEl.style.display = 'none'; okEl.style.display = 'none';
+    if (nickname.length < 2) { errorEl.textContent = '昵称至少 2 个字符'; errorEl.style.display = 'block'; return; }
+    if (password.length < 4) { errorEl.textContent = '密码至少 4 位'; errorEl.style.display = 'block'; return; }
+
+    btn.disabled = true; btn.textContent = '注册中...';
+
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'register', nickname, password })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        okEl.textContent = '注册成功！3 秒后跳转登录...';
+        okEl.style.display = 'block';
+        form.reset();
+        setTimeout(() => { window.location.href = '/login'; }, 3000);
+      } else {
+        errorEl.textContent = data.error || '注册失败';
+        errorEl.style.display = 'block';
+      }
+    } catch {
+      errorEl.textContent = '网络错误，请稍后再试';
+      errorEl.style.display = 'block';
+    }
+    btn.disabled = false; btn.textContent = '注 册';
+  });
+</script>
+
+<style>
+  .login-wrapper {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(160deg, #1b2a3a 0%, #2e5c6e 100%);
+    padding: 40px 24px;
+  }
+  .login-card {
+    background: var(--white); border-radius: 16px; padding: 0;
+    width: 100%; max-width: 420px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.2); overflow: hidden;
+  }
+  .card-top {
+    background: linear-gradient(135deg, #1b2a3a 0%, #2e5c6e 100%);
+    padding: 40px 40px 32px; text-align: center;
+  }
+  .card-top h1 {
+    font-family: var(--font-heading); font-size: 24px; font-weight: 700;
+    color: #fff; letter-spacing: 4px; margin-bottom: 6px;
+  }
+  .card-top .sub { font-size: 12px; color: rgba(255,255,255,0.6); letter-spacing: 2px; }
+  .card-body { padding: 36px 40px 40px; }
+  .login-form { display: flex; flex-direction: column; gap: 18px; }
+  .field { text-align: left; }
+  .field label { display: block; font-family: var(--font-body); font-size: 11px; font-weight: 600; color: var(--text-light); letter-spacing: 1px; margin-bottom: 6px; text-transform: uppercase; }
+  .field input { width: 100%; padding: 13px 14px; font-family: var(--font-body); font-size: 15px; border: 1px solid var(--border); border-radius: 8px; background: var(--cream); color: var(--text-dark); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+  .field input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(74,138,158,0.1); background: var(--white); }
+  .error { font-size: 13px; color: #c44; text-align: center; }
+  .ok-msg { font-size: 13px; color: #4a8a4a; text-align: center; }
+  .login-form button { padding: 14px; font-family: var(--font-body); font-size: 14px; font-weight: 600; letter-spacing: 4px; background: var(--navy); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; margin-top: 6px; }
+  .login-form button:hover { background: #243548; }
+  .login-form button:disabled { opacity: 0.6; cursor: not-allowed; }
+  .card-bottom { padding: 20px 40px; border-top: 1px solid var(--border-light); display: flex; justify-content: center; gap: 24px; }
+  .card-bottom a { font-size: 13px; color: var(--text-light); text-decoration: none; transition: color 0.2s; }
+  .card-bottom a:hover { color: var(--teal); }
+</style>

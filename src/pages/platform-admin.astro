@@ -1,0 +1,278 @@
+---
+export const prerender = false;
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+<div class="admin-wrapper">
+  <div class="admin-header">
+    <h1>平台管理</h1>
+    <a href="/" class="back-link">&larr; 返回网站</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="users">作者管理</button>
+    <button class="tab" data-tab="works">作品审核</button>
+    <button class="tab" data-tab="comments">评论管理</button>
+  </div>
+
+  <!-- ===== 作者管理 ===== -->
+  <div id="tab-users" class="tab-content active">
+    <div id="userList" class="card-list"></div>
+  </div>
+
+  <!-- ===== 作品审核 ===== -->
+  <div id="tab-works" class="tab-content">
+    <div class="drill-row"><div class="field"><label>选择作者</label><select id="worksAuthorSelect"><option value="">-- 请选择 --</option></select></div></div>
+    <div id="worksReviewList" class="card-list" style="margin-top:16px"></div>
+  </div>
+
+  <!-- ===== 评论管理 ===== -->
+  <div id="tab-comments" class="tab-content">
+    <div class="drill-row">
+      <div class="field"><label>选择作者</label><select id="commentAuthorSelect"><option value="">-- 请选择 --</option></select></div>
+      <div class="field"><label>选择作品</label><select id="commentWorkSelect"><option value="">-- 先选作者 --</option></select></div>
+    </div>
+    <div id="commentList" class="card-list" style="margin-top:16px"></div>
+  </div>
+</div>
+</Layout>
+
+<script>
+  const userStr = sessionStorage.getItem('linshen_user');
+  const auth = sessionStorage.getItem('linshen_auth');
+  if (auth !== 'true' || !userStr) { window.location.href = '/login'; }
+  const user = JSON.parse(userStr);
+  if (user.role !== 'admin') { window.location.href = '/admin'; }
+
+  // Tab 切换
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      document.getElementById('tab-' + t.dataset.tab)?.classList.add('active');
+      if (t.dataset.tab === 'users') loadUsers();
+      if (t.dataset.tab === 'works') loadAuthorsForWorks();
+      if (t.dataset.tab === 'comments') loadAuthorsForComments();
+    });
+  });
+
+  // ====== 通用：加载作者列表 ======
+  async function fetchAuthors() {
+    const res = await fetch('/api/auth', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'list', adminId: user.id }) });
+    return await res.json();
+  }
+
+  // ====== 作者管理 ======
+  async function loadUsers() {
+    const users = await fetchAuthors();
+    const list = document.getElementById('userList');
+    const statusLabel: Record<string, string> = { active: '正常', muted: '禁言中', banned: '已封禁' };
+    const statusColor: Record<string, string> = { active: '#4a8a4a', muted: '#e6a817', banned: '#c44' };
+    list.innerHTML = users.map((u: any) => {
+      const isAdmin = u.role === 'admin';
+      const isRec = u.recommended;
+      const actions = `
+        <button class="btn-sm rec-btn" data-id="${u.id}">${isRec ? '★ 已推荐' : '☆ 推荐'}</button>
+        ${isAdmin ? '' : `
+          <button class="btn-sm reset-pwd" data-id="${u.id}">重置密码</button>
+          ${u.status !== 'banned' ? `<button class="btn-sm danger ban-user" data-id="${u.id}">封禁</button>` : ''}
+          ${u.status !== 'muted' && u.status !== 'banned' ? `<button class="btn-sm mute-user" data-id="${u.id}">禁言</button>` : ''}
+          ${u.status !== 'active' ? `<button class="btn-sm unban-user" data-id="${u.id}">解封</button>` : ''}
+        `}
+      `;
+      return `<div class="card">
+        <div><strong>${esc(u.nickname)}</strong> <span class="tag">${u.role === 'admin' ? '管理员' : '作者'}</span> <span class="tag" style="color:${statusColor[u.status]}">${statusLabel[u.status]}</span></div>
+        <div class="card-summary">注册于 ${u.createdAt}${u.intro ? ' · ' + esc(u.intro) : ''}</div>
+        <div class="card-actions">${actions}</div>
+      </div>`;
+    }).join('');
+    document.querySelectorAll('.rec-btn').forEach(b => b.addEventListener('click', () => manageUser((b as HTMLElement).dataset.id!, 'toggleRecommend', '')));
+    document.querySelectorAll('.reset-pwd').forEach(b => b.addEventListener('click', () => manageUser((b as HTMLElement).dataset.id!, 'resetPassword', '123456')));
+    document.querySelectorAll('.ban-user').forEach(b => b.addEventListener('click', () => { if (confirm('确定封禁此作者？')) manageUser((b as HTMLElement).dataset.id!, 'setStatus', 'banned'); }));
+    document.querySelectorAll('.mute-user').forEach(b => b.addEventListener('click', () => { if (confirm('确定禁言此作者？')) manageUser((b as HTMLElement).dataset.id!, 'setStatus', 'muted'); }));
+    document.querySelectorAll('.unban-user').forEach(b => b.addEventListener('click', () => manageUser((b as HTMLElement).dataset.id!, 'setStatus', 'active')));
+  }
+
+  async function manageUser(targetId: string, operation: string, value: string) {
+    const res = await fetch('/api/auth', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'manage', adminId: user.id, targetId, operation, value }) });
+    const data = await res.json();
+    alert(data.msg || data.error || '操作完成');
+    loadUsers();
+  }
+
+  // ====== 作品审核 ======
+  async function loadAuthorsForWorks() {
+    const authors = await fetchAuthors();
+    const sel = document.getElementById('worksAuthorSelect') as HTMLSelectElement;
+    sel.innerHTML = '<option value="">-- 请选择 --</option>' + authors.map((a: any) => `<option value="${a.id}">${esc(a.nickname)}${a.role === 'admin' ? ' (管理员)' : ''}</option>`).join('');
+    sel.onchange = () => {
+      const authorId = sel.value;
+      if (!authorId) { document.getElementById('worksReviewList')!.innerHTML = ''; return; }
+      loadWorksForAuthor(authorId);
+    };
+  }
+
+  async function loadWorksForAuthor(authorId: string) {
+    const res = await fetch('/api/works?authorId=' + authorId);
+    const works = await res.json();
+    const list = document.getElementById('worksReviewList')!;
+    if (!works.length) { list.innerHTML = '<p class="empty-msg">该作者暂无作品</p>'; return; }
+    const statusLabel: Record<string, string> = { pending: '待审核', approved: '已通过', rejected: '未通过', violation_modified: '违规·已修改', violation_deleted: '违规·已删除' };
+    const statusColor: Record<string, string> = { pending: '#e6a817', approved: '#4a8a4a', rejected: '#c44', violation_modified: '#e67e22', violation_deleted: '#999' };
+    list.innerHTML = works.map((w: any) => {
+      const s = w.reviewStatus || 'pending';
+      const isRec = w.recommended;
+      const note = w.reviewNote || '';
+      return `<div class="card">
+        <div><strong>${esc(w.title)}</strong> <span class="tag">${esc(w.type)}</span> <span class="tag" style="color:${statusColor[s] || '#999'}">${statusLabel[s] || s}</span></div>
+        <div class="card-summary">${esc(w.summary || '')}</div>
+        ${note ? `<div class="card-note">📝 ${esc(note)}</div>` : ''}
+        <div class="card-actions">
+          <button class="btn-sm approve-btn" data-id="${w.id}">通过</button>
+          <button class="btn-sm reject-btn" data-id="${w.id}">不通过</button>
+          <button class="btn-sm violation-mod-btn" data-id="${w.id}">违规·已修改</button>
+          <button class="btn-sm danger violation-del-btn" data-id="${w.id}">违规·已删除</button>
+          <button class="btn-sm work-rec-btn" data-id="${w.id}" data-rec="${isRec ? '1' : '0'}">${isRec ? '★ 取消推荐' : '☆ 推荐作品'}</button>
+        </div>
+        <div class="card-note-input" style="margin-top:8px">
+          <input type="text" class="note-input" data-id="${w.id}" placeholder="添加备注（作者可见）" style="width:100%;padding:8px 12px;font-size:12px;border:1px solid var(--border);border-radius:8px;background:var(--cream)" />
+          <button class="btn-sm save-note-btn" data-id="${w.id}" style="margin-top:4px">保存备注</button>
+        </div>
+      </div>`;
+    }).join('');
+    document.querySelectorAll('.approve-btn').forEach(b => b.addEventListener('click', () => reviewWork((b as HTMLElement).dataset.id!, 'approved')));
+    document.querySelectorAll('.reject-btn').forEach(b => b.addEventListener('click', () => reviewWork((b as HTMLElement).dataset.id!, 'rejected')));
+    document.querySelectorAll('.violation-mod-btn').forEach(b => b.addEventListener('click', () => { if (confirm('标记为违规已修改？')) reviewWork((b as HTMLElement).dataset.id!, 'violation_modified'); }));
+    document.querySelectorAll('.violation-del-btn').forEach(b => b.addEventListener('click', () => { if (confirm('标记为违规已删除？')) reviewWork((b as HTMLElement).dataset.id!, 'violation_deleted'); }));
+    document.querySelectorAll('.work-rec-btn').forEach(b => b.addEventListener('click', () => {
+      const isRec = (b as HTMLElement).dataset.rec === '1';
+      reviewWorkRec((b as HTMLElement).dataset.id!, !isRec);
+    }));
+    document.querySelectorAll('.save-note-btn').forEach(b => b.addEventListener('click', async () => {
+      const workId = (b as HTMLElement).dataset.id!;
+      const input = document.querySelector(`.note-input[data-id="${workId}"]`) as HTMLInputElement;
+      const note = input?.value || '';
+      await fetch('/api/works', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'review', id: workId, reviewNote: note }) });
+      alert('备注已保存');
+      loadWorksForAuthor((document.getElementById('worksAuthorSelect') as HTMLSelectElement).value);
+    }));
+  }
+
+  async function reviewWork(workId: string, status: string) {
+    await fetch('/api/works', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'review', id: workId, reviewStatus: status }) });
+    const sel = document.getElementById('worksAuthorSelect') as HTMLSelectElement;
+    if (sel.value) loadWorksForAuthor(sel.value);
+  }
+
+  async function reviewWorkRec(workId: string, recommended: boolean) {
+    await fetch('/api/works', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'review', id: workId, recommended }) });
+    const sel = document.getElementById('worksAuthorSelect') as HTMLSelectElement;
+    if (sel.value) loadWorksForAuthor(sel.value);
+  }
+
+  // ====== 评论管理 ======
+  async function loadAuthorsForComments() {
+    const authors = await fetchAuthors();
+    const sel = document.getElementById('commentAuthorSelect') as HTMLSelectElement;
+    sel.innerHTML = '<option value="">-- 请选择 --</option>' + authors.map((a: any) => `<option value="${a.id}">${esc(a.nickname)}${a.role === 'admin' ? ' (管理员)' : ''}</option>`).join('');
+    sel.onchange = () => {
+      const authorId = sel.value;
+      const workSel = document.getElementById('commentWorkSelect') as HTMLSelectElement;
+      document.getElementById('commentList')!.innerHTML = '';
+      if (!authorId) { workSel.innerHTML = '<option value="">-- 先选作者 --</option>'; return; }
+      loadWorksForCommentAuthor(authorId);
+    };
+  }
+
+  async function loadWorksForCommentAuthor(authorId: string) {
+    const res = await fetch('/api/works?authorId=' + authorId);
+    const works = await res.json();
+    const sel = document.getElementById('commentWorkSelect') as HTMLSelectElement;
+    sel.innerHTML = '<option value="">-- 请选择 --</option>' +
+      '<option value="__site__">留言板（全局）</option>' +
+      works.map((w: any) => `<option value="works/${w.id}">${esc(w.title)}</option>`).join('');
+    sel.onchange = () => {
+      const val = sel.value;
+      if (!val) { document.getElementById('commentList')!.innerHTML = ''; return; }
+      loadCommentsForTarget(val);
+    };
+  }
+
+  async function loadCommentsForTarget(target: string) {
+    const list = document.getElementById('commentList')!;
+    let msgs: any[] = [];
+    if (target === '__site__') {
+      const r = await fetch('/api/messages');
+      const data = await r.json();
+      msgs = data.map((m: any, i: number) => ({ ...m, source: 'site', index: i }));
+    } else {
+      const r = await fetch('/api/work-messages?slug=' + encodeURIComponent(target));
+      const data = await r.json();
+      msgs = data.map((m: any, i: number) => ({ ...m, source: 'work', slug: target, index: i }));
+    }
+    if (!msgs.length) { list.innerHTML = '<p class="empty-msg">暂无评论</p>'; return; }
+    list.innerHTML = msgs.map((m: any) => `<div class="card">
+      <div><strong>${esc(m.author)}</strong> <span class="tag">${m.time}</span></div>
+      <div class="card-summary">${esc(m.body)}</div>
+      <div class="card-actions"><button class="btn-sm danger del-comment" data-source="${m.source}" data-slug="${m.slug || ''}" data-idx="${m.index}">删除</button></div>
+    </div>`).join('');
+    document.querySelectorAll('.del-comment').forEach(b => b.addEventListener('click', async () => {
+      if (!confirm('确定删除？')) return;
+      const { source, slug, idx } = (b as HTMLElement).dataset;
+      const api = source === 'work' ? '/api/work-messages' : '/api/messages';
+      await fetch(api, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ slug, action: 'delete', index: Number(idx) }) });
+      loadCommentsForTarget(target);
+    }));
+  }
+
+  function esc(s: string) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  loadUsers();
+</script>
+
+<style is:global>
+  .admin-wrapper { max-width: 900px; margin: 0 auto; padding: 60px 28px 80px; }
+  .admin-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 36px; }
+  .admin-header h1 { font-family: var(--font-heading); font-size: 28px; color: var(--navy); letter-spacing: 1px; }
+  .back-link { font-size: 13px; color: var(--text-light); text-decoration: none; }
+  .back-link:hover { color: var(--teal); }
+  .tabs { display: flex; gap: 2px; margin-bottom: 36px; border-bottom: 1px solid var(--border); }
+  .tab { padding: 12px 22px; font-family: var(--font-body); font-size: 13.5px; font-weight: 500; background: none; border: none; color: var(--text-light); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; letter-spacing: 0.5px; }
+  .tab.active { color: var(--navy); border-bottom-color: var(--teal); font-weight: 600; }
+  .tab:hover { color: var(--navy); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .drill-row { display: flex; gap: 16px; }
+  .card-list { display: flex; flex-direction: column; gap: 12px; }
+  .card {
+    padding: 22px 28px; border: 1px solid var(--border); border-radius: 12px;
+    background: #fff; display: flex; flex-direction: column; gap: 10px;
+    transition: all 0.2s; border-left: 4px solid var(--teal);
+  }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+  .card strong { font-family: var(--font-heading); font-size: 17px; color: var(--navy); }
+  .card .tag { font-size: 11px; padding: 3px 10px; background: var(--sand-light); border-radius: 20px; color: var(--text-mid); margin-left: 10px; font-weight: 500; }
+  .card-summary { font-size: 14px; color: var(--text-mid); line-height: 1.75; }
+  .card-actions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .btn-sm {
+    padding: 6px 16px; font-size: 12.5px; font-weight: 500;
+    border: 1px solid var(--border); border-radius: 20px;
+    background: #fff; cursor: pointer; white-space: nowrap;
+    transition: all 0.2s; letter-spacing: 0.3px;
+  }
+  .btn-sm:hover { background: var(--cream); border-color: var(--teal); color: var(--teal); }
+  .btn-sm.danger { color: #c44; border-color: #ecc; } .btn-sm.danger:hover { background: #fef0f0; border-color: #c44; color: #c44; }
+  .btn-sm.approve-btn { color: #4a8a4a; border-color: #a8d8a8; } .btn-sm.approve-btn:hover { background: #f0faf0; border-color: #4a8a4a; color: #4a8a4a; }
+  .btn-sm.reject-btn { color: #c44; border-color: #ecc; } .btn-sm.reject-btn:hover { background: #fef0f0; border-color: #c44; color: #c44; }
+  .btn-sm.violation-mod-btn { color: #e67e22; border-color: #f5d6b3; } .btn-sm.violation-mod-btn:hover { background: #fef9f3; border-color: #e67e22; color: #e67e22; }
+  .btn-sm.violation-del-btn { color: #999; border-color: #ddd; } .btn-sm.violation-del-btn:hover { background: #f5f5f5; border-color: #999; color: #999; }
+  .btn-sm.work-rec-btn, .btn-sm.rec-btn { color: #e6a817; border-color: #f5d6b3; } .btn-sm.work-rec-btn:hover, .btn-sm.rec-btn:hover { background: #fef9f3; border-color: #e6a817; color: #e6a817; }
+  .empty-msg { color: var(--text-light); padding: 60px 0; text-align: center; font-size: 14px; background: var(--white); border-radius: 12px; border: 1px dashed var(--border); }
+  .field { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .field label { font-size: 12px; font-weight: 600; color: var(--text-mid); letter-spacing: 0.5px; }
+  .field select { padding: 10px 12px; font-family: var(--font-body); font-size: 14.5px; border: 1px solid var(--border); border-radius: 6px; background: var(--cream); color: var(--text-dark); outline: none; }
+  .empty-msg { color: var(--text-light); padding: 24px 0; }
+  @media (max-width: 640px) { .admin-wrapper { padding: 20px 16px 60px; } .tabs { overflow-x: auto; } .drill-row { flex-direction: column; } }
+</style>
