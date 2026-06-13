@@ -6,8 +6,6 @@ import Hero from '../../components/Hero.astro';
 import Works from '../../components/Works.astro';
 import Blog from '../../components/Blog.astro';
 import About from '../../components/About.astro';
-import Contact from '../../components/Contact.astro';
-import Messages from '../../components/Messages.astro';
 import Footer from '../../components/Footer.astro';
 import { getCollection } from 'astro:content';
 import fs from 'node:fs';
@@ -41,21 +39,7 @@ function loadInteractions() {
 }
 const interactions = loadInteractions();
 
-function loadMessages() {
-  try {
-    const fp = path.join(process.cwd(), 'src/data/messages.json');
-    return JSON.parse(fs.readFileSync(fp, 'utf-8'));
-  } catch { return []; }
-}
-const messages = loadMessages();
-
 import siteData from '../../data/site.json';
-const contactItems = [
-  { label: '邮箱', value: author.email || '' },
-  { label: '微博', value: author.weibo || '' },
-  { label: '豆瓣', value: author.douban || '' },
-  { label: '公众号', value: author.wechat || '' },
-];
 const aboutParagraphs = [author.intro || '这个人很懒，什么都没写...'];
 ---
 
@@ -70,7 +54,5 @@ const aboutParagraphs = [author.intro || '这个人很懒，什么都没写...']
   <Works works={authorWorks} interactions={interactions} />
   <Blog posts={authorPosts} interactions={interactions} />
   <About paragraphs={aboutParagraphs} />
-  <Contact items={contactItems} />
-  <Messages messages={messages} />
   <Footer author={author.nickname} tagline="由内而外地安静生长" />
 </Layout>
