@@ -140,8 +140,8 @@ const currentCover = site.coverImage || '';
   if (!isAdmin) {
     const siteTab = document.querySelector('[data-tab="site"]') as HTMLElement;
     if (siteTab) siteTab.style.display = 'none';
-    document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
-    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.admin-tab-content').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.admin-tab').forEach(x => x.classList.remove('active'));
     const worksTab = document.querySelector('[data-tab="works"]') as HTMLElement;
     if (worksTab) worksTab.classList.add('active');
     const worksContent = document.getElementById('tab-works');
@@ -156,10 +156,10 @@ const currentCover = site.coverImage || '';
   if (headerH1) headerH1.textContent = currentUser.nickname + ' 的后台';
 
   // ---- Tab 切换 ----
-  document.querySelectorAll('.tab').forEach(t => {
+  document.querySelectorAll('.admin-tab').forEach(t => {
     t.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll('.admin-tab').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll('.admin-tab-content').forEach(x => x.classList.remove('active'));
       t.classList.add('active');
       document.getElementById('tab-' + t.dataset.tab)?.classList.add('active');
       if (t.dataset.tab === 'works') loadWorks();
