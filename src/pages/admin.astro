@@ -28,6 +28,7 @@ const currentCover = site.coverImage || '';
     <button class="tab" data-tab="messages">留言管理</button>
     <button class="tab" data-tab="workmsgs">作品评论</button>
     <button class="tab" data-tab="password">密码修改</button>
+    <button class="tab" data-tab="profile">个人设置</button>
   </div>
 
   <!-- ===== 网站设置 ===== -->
@@ -125,6 +126,19 @@ const currentCover = site.coverImage || '';
       <span id="pwdMsg" class="admin-msg"></span>
     </form>
   </div>
+
+  <!-- ===== 个人设置 ===== -->
+  <div id="tab-profile" class="tab-content">
+    <form id="profileForm" class="admin-form" style="max-width:500px">
+      <div class="field"><label>个人简介</label><textarea name="profileIntro" rows="3" placeholder="介绍一下你自己..."></textarea></div>
+      <div class="field"><label>邮箱</label><input name="profileEmail" placeholder="your@email.com" /></div>
+      <div class="field"><label>微博</label><input name="profileWeibo" placeholder="@你的微博" /></div>
+      <div class="field"><label>豆瓣</label><input name="profileDouban" placeholder="豆瓣主页链接" /></div>
+      <div class="field"><label>公众号</label><input name="profileWechat" placeholder="公众号名称" /></div>
+      <button type="submit" class="admin-btn-save">保存设置</button>
+      <span id="profileMsg" class="admin-msg"></span>
+    </form>
+  </div>
 </div>
 </Layout>
 
@@ -135,18 +149,18 @@ const currentCover = site.coverImage || '';
   const currentUser = currentUserStr ? JSON.parse(currentUserStr) : null;
   if (!currentUser) { window.location.href = '/login'; }
 
-  // 非管理员：隐藏网站设置 tab，默认显示作品管理
+  // 非管理员：隐藏网站设置 tab，默认显示个人设置
   const isAdmin = currentUser.role === 'admin';
   if (!isAdmin) {
     const siteTab = document.querySelector('[data-tab="site"]') as HTMLElement;
     if (siteTab) siteTab.style.display = 'none';
     document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-    const worksTab = document.querySelector('[data-tab="works"]') as HTMLElement;
-    if (worksTab) worksTab.classList.add('active');
-    const worksContent = document.getElementById('tab-works');
-    if (worksContent) worksContent.classList.add('active');
-    loadWorks();
+    const profileTab = document.querySelector('[data-tab="profile"]') as HTMLElement;
+    if (profileTab) profileTab.classList.add('active');
+    const profileContent = document.getElementById('tab-profile');
+    if (profileContent) profileContent.classList.add('active');
+    loadProfile();
   } else {
     loadSite();
   }
@@ -166,6 +180,7 @@ const currentCover = site.coverImage || '';
       if (t.dataset.tab === 'blog') loadBlog();
       if (t.dataset.tab === 'messages') loadMessages();
       if (t.dataset.tab === 'workmsgs') loadWorkMsgs();
+      if (t.dataset.tab === 'profile') loadProfile();
     });
   });
 
@@ -374,6 +389,40 @@ const currentCover = site.coverImage || '';
     // auto-select first work
     if (myWorks.length > 0) { sel.value = 'works/' + myWorks[0].id; sel.onchange(); }
   }
+
+  // ====== 个人设置 ======
+  function loadProfile() {
+    // 通过API获取当前用户信息
+    var stored = sessionStorage.getItem('linshen_user');
+    if (!stored) return;
+    var u = JSON.parse(stored);
+    setVal('profileIntro', u.intro || '');
+    setVal('profileEmail', u.email || '');
+    setVal('profileWeibo', u.weibo || '');
+    setVal('profileDouban', u.douban || '');
+    setVal('profileWechat', u.wechat || '');
+  }
+  document.getElementById('profileForm')?.addEventListener('submit', async e => {
+    e.preventDefault();
+    var data = {
+      intro: getVal('profileIntro'),
+      email: getVal('profileEmail'),
+      weibo: getVal('profileWeibo'),
+      douban: getVal('profileDouban'),
+      wechat: getVal('profileWechat'),
+    };
+    var res = await fetch('/api/auth', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'updateProfile', userId: currentUser.id, ...data }) });
+    var r = await res.json();
+    if (r.ok) {
+      showMsg('profileMsg', '✓ 已保存');
+      // 更新 sessionStorage 里的用户信息，导航栏同步显示
+      var storedUser = JSON.parse(sessionStorage.getItem('linshen_user') || '{}');
+      Object.assign(storedUser, data);
+      sessionStorage.setItem('linshen_user', JSON.stringify(storedUser));
+      loadProfile();
+    }
+    else showMsg('profileMsg', r.error || '保存失败');
+  });
 
   // ====== 密码修改 ======
   document.getElementById('pwdForm').addEventListener('submit', async e => {

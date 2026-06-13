@@ -61,6 +61,21 @@ export async function POST({ request }: { request: Request }) {
       return new Response(JSON.stringify({ ok: true }), { status: 200 });
     }
 
+    // ===== 更新个人信息 =====
+    if (action === 'updateProfile') {
+      const { userId, intro, email, weibo, douban, wechat } = body;
+      const users = readUsers();
+      const idx = users.findIndex((u: any) => u.id === userId);
+      if (idx === -1) return new Response(JSON.stringify({ error: '用户不存在' }), { status: 404 });
+      if (intro !== undefined) users[idx].intro = intro;
+      if (email !== undefined) users[idx].email = email;
+      if (weibo !== undefined) users[idx].weibo = weibo;
+      if (douban !== undefined) users[idx].douban = douban;
+      if (wechat !== undefined) users[idx].wechat = wechat;
+      writeUsers(users);
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    }
+
     // 以下操作需要管理员权限
     const { adminId } = body;
     const users = readUsers();
