@@ -1,0 +1,92 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>文学社 · 色彩丰富版</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;background:#f9f7f4;color:#2c2c2c}
+nav{display:flex;justify-content:space-between;align-items:center;padding:18px 48px;background:#fff;border-bottom:1px solid #eee}
+nav .logo{font-size:16px;font-weight:800;letter-spacing:4px;background:linear-gradient(135deg,#5b5ea6,#9b59b6,#e0567a);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+nav .links{display:flex;gap:28px}
+nav a{font-size:12px;color:#888;text-decoration:none;letter-spacing:1px;transition:color .2s}
+nav a:hover{color:#2c2c2c}
+
+.hero{padding:100px 48px 80px;display:grid;grid-template-columns:1fr 1fr;gap:48px;max-width:1100px;margin:0 auto}
+.hero-left h1{font-size:54px;font-weight:800;line-height:1.15;margin-bottom:16px}
+.hero-left .highlight{background:linear-gradient(135deg,#5b5ea6,#9b59b6,#e0567a);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-left .desc{font-size:15px;line-height:1.8;color:#777}
+.hero-right{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hero-color{height:100%;border-radius:2px}
+.hero-color:nth-child(1){background:linear-gradient(135deg,#5b5ea6,#9b59b6)}
+.hero-color:nth-child(2){background:linear-gradient(135deg,#45b7a0,#5fbb9e)}
+.hero-color:nth-child(3){background:linear-gradient(135deg,#e0567a,#f0976c)}
+.hero-color:nth-child(4){background:linear-gradient(135deg,#3b5998,#6b8fc4)}
+
+.section{max-width:1100px;margin:0 auto;padding:0 48px 80px}
+.section-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:24px;padding-bottom:10px;border-bottom:2px solid #2c2c2c}
+.section-header h2{font-size:22px;font-weight:800}
+.section-header a{font-size:12px;color:#999;text-decoration:none}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+
+.card{background:#fff;border:1px solid #eee;border-radius:3px;padding:26px;border-top:3px solid transparent;transition:all .2s}
+.card:nth-child(1){border-top-color:#5b5ea6}
+.card:nth-child(2){border-top-color:#45b7a0}
+.card:nth-child(3){border-top-color:#e0567a}
+.card:nth-child(4){border-top-color:#3b5998}
+.card:hover{box-shadow:0 8px 30px rgba(0,0,0,.08)}
+.card .tag{font-size:10px;font-weight:700;letter-spacing:2px;margin-bottom:10px}
+.card:nth-child(1) .tag{color:#5b5ea6}
+.card:nth-child(2) .tag{color:#45b7a0}
+.card:nth-child(3) .tag{color:#e0567a}
+.card:nth-child(4) .tag{color:#3b5998}
+.card h3{font-size:20px;font-weight:700;margin-bottom:8px}
+.card .meta{font-size:12px;color:#aaa;margin-bottom:10px}
+.card .desc{font-size:13px;line-height:1.7;color:#666}
+
+.author-card{text-align:center;padding:28px 16px;background:#fff;border:1px solid #eee;border-radius:3px;transition:all .2s}
+.author-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.author-card .circle{width:52px;height:52px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff}
+.author-card:nth-child(1) .circle{background:linear-gradient(135deg,#5b5ea6,#9b59b6)}
+.author-card:nth-child(2) .circle{background:linear-gradient(135deg,#45b7a0,#5fbb9e)}
+.author-card:nth-child(3) .circle{background:linear-gradient(135deg,#e0567a,#f0976c)}
+.author-card:nth-child(4) .circle{background:linear-gradient(135deg,#3b5998,#6b8fc4)}
+.author-card .name{font-size:15px;font-weight:700}
+.author-card .role{font-size:11px;color:#999;margin-top:4px}
+
+.essay-list{max-width:700px}
+.essay-item{display:flex;gap:20px;padding:18px 0;border-bottom:1px solid #f0f0f0}
+.essay-item:nth-child(1){border-left:3px solid #5b5ea6;padding-left:16px}
+.essay-item:nth-child(2){border-left:3px solid #45b7a0;padding-left:16px}
+.essay-item:nth-child(3){border-left:3px solid #e0567a;padding-left:16px}
+.essay-date{font-size:11px;color:#bbb;min-width:80px;letter-spacing:1px}
+.essay-item h4{font-size:16px;font-weight:700;margin-bottom:4px}
+.essay-item .author{font-size:12px;color:#aaa}
+
+footer{text-align:center;padding:40px;font-size:11px;color:#ccc;border-top:1px solid #f0f0f0}
+</style></head><body>
+<nav><span class="logo">文学社</span><div class="links"><a href="#">作品</a><a href="#">作者</a><a href="#">随笔</a><a href="#">活动</a><a href="#">社团</a></div><a href="#" style="font-size:11px;color:#ccc">登录</a></nav>
+<div class="hero">
+<div class="hero-left">
+<h1>发现好文字<br><span class="highlight">遇见好作者</span></h1>
+<p class="desc">文学社是一个开放的文字平台。每一篇作品都是一次相遇——安静地读，认真地写。</p>
+</div>
+<div class="hero-right"><div class="hero-color"></div><div class="hero-color"></div><div class="hero-color"></div><div class="hero-color"></div></div>
+</div>
+<div class="section"><div class="section-header"><h2>推荐作品</h2><a href="#">查看全部 →</a></div><div class="grid-2">
+<div class="card"><div class="tag">长篇</div><h3>南方有雨</h3><p class="meta">蒲瑞昇 · 2024</p><p class="desc">一个关于南方小城三代女性的故事。雨水贯穿始终。</p></div>
+<div class="card"><div class="tag">散文</div><h3>桂花落</h3><p class="meta">苏晚 · 2026</p><p class="desc">桂花的气味有一种穿透力，悄悄渗进鼻腔。</p></div>
+<div class="card"><div class="tag">中篇</div><h3>渡口</h3><p class="meta">蒲瑞昇 · 2022</p><p class="desc">长江边一个小渡口的最后一年。</p></div>
+<div class="card"><div class="tag">诗歌</div><h3>月光落在左手边</h3><p class="meta">江月 · 2025</p><p class="desc">二十六首诗，关于月光、失眠和远方。</p></div>
+</div></div>
+<div class="section"><div class="section-header"><h2>推荐作者</h2><a href="#">查看全部 →</a></div><div class="grid-4">
+<div class="author-card"><div class="circle">蒲</div><div class="name">蒲瑞昇</div><div class="role">创办人</div></div>
+<div class="author-card"><div class="circle">苏</div><div class="name">苏晚</div><div class="role">小说作者</div></div>
+<div class="author-card"><div class="circle">江</div><div class="name">江月</div><div class="role">诗人</div></div>
+<div class="author-card"><div class="circle">云</div><div class="name">云栖</div><div class="role">散文作者</div></div>
+</div></div>
+<div class="section"><div class="section-header"><h2>最新随笔</h2></div><div class="essay-list">
+<div class="essay-item"><span class="essay-date">Jun 10</span><div><h4>写作者的书桌</h4><p class="author">蒲瑞昇</p></div></div>
+<div class="essay-item"><span class="essay-date">May 28</span><div><h4>重读《边城》</h4><p class="author">苏晚</p></div></div>
+<div class="essay-item"><span class="essay-date">May 12</span><div><h4>在菜市场学到的写作课</h4><p class="author">江月</p></div></div>
+</div></div>
+<footer>© 2026 文学社 · 发现好文字 · 遇见好作者</footer>
+</body></html>

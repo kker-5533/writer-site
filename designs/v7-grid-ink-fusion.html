@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>文学社 · 网格水墨融合</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;background:#f8f5ef;color:#2c2416}
+
+nav{display:flex;justify-content:space-between;align-items:center;padding:20px 48px;background:rgba(248,245,239,.95);border-bottom:1px solid rgba(0,0,0,.05)}
+nav .logo{font-family:"Songti SC","STSong",serif;font-size:18px;font-weight:700;letter-spacing:8px;color:#2c2416}
+nav .links{display:flex;gap:32px}
+nav a{font-size:12px;color:#8a7a68;text-decoration:none;letter-spacing:2px;transition:color .2s}
+nav a:hover{color:#2c2416}
+
+.hero{padding:100px 48px 80px;display:grid;grid-template-columns:1fr 200px;gap:60px;max-width:1100px;margin:0 auto;align-items:center}
+.hero-left h1{font-family:"Songti SC","STSong",serif;font-size:52px;font-weight:400;letter-spacing:12px;line-height:1.25;margin-bottom:20px}
+.hero-left .desc{font-size:15px;line-height:2;color:#8a7a68;max-width:440px}
+.hero-right .ink-seal{width:160px;height:160px;border:2px solid #2c2416;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Songti SC","STSong",serif;font-size:36px;letter-spacing:8px;color:#2c2416;opacity:.7;writing-mode:vertical-rl}
+
+.ink-divider{text-align:center;padding:0 0 20px}
+.ink-divider span{display:inline-block;width:80px;height:2px;background:linear-gradient(90deg,transparent,#c0b0a0,transparent)}
+
+.section{max-width:1100px;margin:0 auto;padding:0 48px 80px}
+.section-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:28px;padding-bottom:10px;border-bottom:1px solid #2c2416}
+.section-header h2{font-family:"Songti SC","STSong",serif;font-size:20px;font-weight:400;letter-spacing:6px}
+.section-header a{font-size:11px;color:#b0a090;text-decoration:none;letter-spacing:2px}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+
+.card{background:#fff;border:1px solid #e8e0d0;padding:28px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,#c0b0a0,transparent)}
+.card .tag{font-family:"Songti SC",serif;font-size:11px;letter-spacing:3px;color:#b0a090;margin-bottom:12px;display:block}
+.card h3{font-family:"Songti SC","STSong",serif;font-size:22px;font-weight:400;letter-spacing:3px;margin-bottom:8px}
+.card .meta{font-size:12px;color:#b0a090;margin-bottom:10px}
+.card .desc{font-size:13px;line-height:1.9;color:#5a5044}
+
+.author-card{text-align:center;padding:28px 16px;background:#fff;border:1px solid #e8e0d0}
+.author-card .seal{width:56px;height:56px;border:1.5px solid #2c2416;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-family:"Songti SC",serif;font-size:18px;color:#2c2416}
+.author-card .name{font-family:"Songti SC",serif;font-size:16px;letter-spacing:2px;color:#2c2416}
+.author-card .role{font-size:11px;color:#b0a090;margin-top:4px;letter-spacing:1px}
+
+.essay-list{max-width:700px}
+.essay-item{display:flex;gap:20px;padding:18px 0;border-bottom:1px solid rgba(0,0,0,.05);position:relative}
+.essay-item::before{content:'';position:absolute;left:0;top:50%;width:6px;height:6px;border-radius:50%;background:#c0b0a0;margin-top:-3px}
+.essay-item{padding-left:18px}
+.essay-date{font-family:"Songti SC",serif;font-size:11px;color:#c0b0a0;min-width:80px;letter-spacing:1px}
+.essay-item h4{font-size:16px;font-weight:600;margin-bottom:4px}
+.essay-item .author{font-size:11px;color:#b0a090;letter-spacing:1px}
+
+.footer-seal{text-align:center;padding:40px 0 60px}
+.footer-seal .seal-mark{width:40px;height:40px;border:1px solid #2c2416;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:"Songti SC",serif;font-size:14px;opacity:.4;margin-bottom:12px}
+.footer-seal p{font-size:11px;color:#c0b8a8;letter-spacing:3px}
+</style></head><body>
+<nav><span class="logo">文 学 社</span><div class="links"><a href="#">作品</a><a href="#">作者</a><a href="#">随笔</a><a href="#">活动</a><a href="#">社团</a></div><a href="#" style="font-size:11px;color:#c0b0a0;text-decoration:none">登录</a></nav>
+
+<div class="hero">
+<div class="hero-left">
+<h1>发现好文字<br>遇见好作者</h1>
+<p class="desc">文学社是一个开放的文字平台。每一篇作品都是一次相遇——安静地读，认真地写。文字是林间的光，深浅不一，却总能照亮些什么。</p>
+</div>
+<div class="hero-right"><div class="ink-seal">文学社印</div></div>
+</div>
+
+<div class="ink-divider"><span></span></div>
+
+<div class="section"><div class="section-header"><h2>推荐作品</h2><a href="#">全 部 →</a></div><div class="grid-2">
+<div class="card"><span class="tag">长篇小说</span><h3>南方有雨</h3><p class="meta">蒲瑞昇 · 2024</p><p class="desc">一个关于南方小城三代女性的故事。雨水贯穿始终，冲刷出被遗忘的记忆。</p></div>
+<div class="card"><span class="tag">散文</span><h3>桂花落</h3><p class="meta">苏晚 · 2026</p><p class="desc">桂花的气味有一种穿透力。不是扑面而来的香，悄悄渗进鼻腔。</p></div>
+<div class="card"><span class="tag">中篇小说</span><h3>渡口</h3><p class="meta">蒲瑞昇 · 2022</p><p class="desc">长江边一个小渡口的最后一年。摆渡人老周与来往过客。</p></div>
+<div class="card"><span class="tag">诗歌</span><h3>月光落在左手边</h3><p class="meta">江月 · 2025</p><p class="desc">二十六首诗，关于月光、失眠和远方。凌晨三点。</p></div>
+</div></div>
+
+<div class="section"><div class="section-header"><h2>推荐作者</h2><a href="#">全 部 →</a></div><div class="grid-4">
+<div class="author-card"><div class="seal">蒲</div><div class="name">蒲瑞昇</div><div class="role">创办人</div></div>
+<div class="author-card"><div class="seal">苏</div><div class="name">苏晚</div><div class="role">小说作者</div></div>
+<div class="author-card"><div class="seal">江</div><div class="name">江月</div><div class="role">诗人</div></div>
+<div class="author-card"><div class="seal">云</div><div class="name">云栖</div><div class="role">散文作者</div></div>
+</div></div>
+
+<div class="section"><div class="section-header"><h2>最新随笔</h2></div><div class="essay-list">
+<div class="essay-item"><span class="essay-date">六月十日</span><div><h4>写作者的书桌</h4><p class="author">蒲瑞昇</p></div></div>
+<div class="essay-item"><span class="essay-date">五月廿八</span><div><h4>重读《边城》</h4><p class="author">苏晚</p></div></div>
+<div class="essay-item"><span class="essay-date">五月十二</span><div><h4>在菜市场学到的写作课</h4><p class="author">江月</p></div></div>
+</div></div>
+
+<div class="footer-seal"><div class="seal-mark">文</div><p>由 内 而 外 地 安 静 生 长</p></div>
+</body></html>
