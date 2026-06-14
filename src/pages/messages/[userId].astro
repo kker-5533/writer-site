@@ -20,11 +20,11 @@ if (!partner) return Astro.redirect('/messages');
 
 <Layout>
   <PlatformNav />
-  <div class="page">
+  <div class="chat-page">
     <div class="container">
-      <a href="/messages" class="back">&larr; 收件箱</a>
+      <a href="/messages" class="chat-back">&larr; 收件箱</a>
       <h1>{partner.nickname}</h1>
-      <div class="chat-box" id="chatBox"><p class="empty">暂无消息</p></div>
+      <div class="chat-box" id="chatBox"><p class="inbox-empty">暂无消息</p></div>
       <form class="chat-form" id="chatForm">
         <textarea id="chatInput" placeholder="输入消息..." rows="2" maxlength="2000"></textarea>
         <button type="submit">发送</button>
@@ -74,15 +74,15 @@ if (!partner) return Astro.redirect('/messages');
       await loadUserMap();
       var res = await fetch('/api/private-messages?userId=' + me.id + '&with=' + partnerId);
       var msgs = await res.json();
-      if (!msgs.length) { chatBox.innerHTML = '<p class="empty">暂无消息，发送第一条吧</p>'; return; }
+      if (!msgs.length) { chatBox.innerHTML = '<p class="inbox-empty">暂无消息，发送第一条吧</p>'; return; }
 
       chatBox.innerHTML = msgs.map(function(m) {
         var s = getSender(m.from);
         var roleLabel = s.role === 'admin' ? '管理员' : '作者';
         var isRead = m.read ? '已读' : '未读';
-        return '<div class="cm-card">' +
-          '<div class="cm-head"><strong>' + esc(s.name) + '</strong><em>' + roleLabel + '</em><span class="cm-time">' + fmtTime(m.time) + '</span><span class="cm-status ' + (m.read ? 'read' : '') + '">' + isRead + '</span></div>' +
-          '<p class="cm-body">' + esc(m.body) + '</p>' +
+        return '<div class="chat-card">' +
+          '<div class="chat-card-head"><strong>' + esc(s.name) + '</strong><em>' + roleLabel + '</em><span class="chat-card-time">' + fmtTime(m.time) + '</span><span class="chat-card-status ' + (m.read ? 'read' : '') + '">' + isRead + '</span></div>' +
+          '<p class="chat-card-body">' + esc(m.body) + '</p>' +
         '</div>';
       }).join('');
       chatBox.scrollTop = chatBox.scrollHeight;

@@ -7,10 +7,10 @@ import Footer from '../../components/Footer.astro';
 
 <Layout>
   <PlatformNav />
-  <div class="page">
+  <div class="inbox-page">
     <div class="container">
       <h1>我的来信</h1>
-      <div id="inboxList"><p class="empty">加载中...</p></div>
+      <div id="inboxList"><p class="inbox-empty">加载中...</p></div>
     </div>
   </div>
   <Footer author="文学社" tagline="发现好文字，遇见好作者" />
@@ -33,7 +33,7 @@ import Footer from '../../components/Footer.astro';
       var h1 = document.querySelector('h1');
       if (h1) h1.textContent = '我的来信' + (unread > 0 ? '（' + unread + ' 条未读）' : '');
 
-      if (!convs.length) { list.innerHTML = '<p class="empty">暂无来信</p>'; return; }
+      if (!convs.length) { list.innerHTML = '<p class="inbox-empty">暂无来信</p>'; return; }
 
       // 获取用户列表以确定角色
       var usersRes = await fetch('/api/auth', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'list', adminId: me.id }) });
@@ -47,15 +47,15 @@ import Footer from '../../components/Footer.astro';
         var partner = userMap[c.partner] || {};
         var name = partner.nickname || c.partnerName || '未知';
         var roleLabel = partner.role === 'admin' ? '管理员' : '作者';
-        return '<a href="/messages/' + c.partner + '" class="msg-card' + (isUnread ? ' unread' : '') + '">' +
-          '<span class="card-dot"></span>' +
-          '<span class="card-body">' +
-            '<span class="card-line1"><strong>' + esc(name) + '</strong><em>' + roleLabel + '</em><span class="card-time">' + fmtTime(c.time) + ' 来信</span></span>' +
-            '<span class="card-line2">' + esc(c.lastMsg || '').slice(0, 80) + '</span>' +
+        return '<a href="/messages/' + c.partner + '" class="inbox-card' + (isUnread ? ' unread' : '') + '">' +
+          '<span class="inbox-dot"></span>' +
+          '<span class="inbox-body">' +
+            '<span class="inbox-line1"><strong>' + esc(name) + '</strong><em>' + roleLabel + '</em><span class="inbox-time">' + fmtTime(c.time) + ' 来信</span></span>' +
+            '<span class="inbox-line2">' + esc(c.lastMsg || '').slice(0, 80) + '</span>' +
           '</span>' +
         '</a>';
       }).join('');
-    } catch(e) { list.innerHTML = '<p class="empty">加载失败</p>'; }
+    } catch(e) { list.innerHTML = '<p class="inbox-empty">加载失败</p>'; }
   }
 
   function fmtTime(t) {
@@ -75,24 +75,5 @@ import Footer from '../../components/Footer.astro';
 </script>
 
 <style>
-  .page { padding: 100px 0 60px; min-height: 70vh; }
-  .page h1 { font-family: var(--font-heading); font-size: 26px; color: var(--navy); margin-bottom: 28px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-  .empty { color: var(--text-light); padding: 60px 0; text-align: center; font-size: 15px; }
-  .msg-card {
-    display: flex; align-items: flex-start; gap: 10px;
-    padding: 16px 20px; margin-bottom: 8px;
-    border: 1px solid var(--border); border-radius: 10px;
-    background: #fff; text-decoration: none; transition: all 0.15s;
-  }
-  .msg-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
-  .msg-card.unread { background: #fdfdf7; }
-  .card-dot { width: 8px; height: 8px; border-radius: 50%; background: #c44; flex-shrink: 0; margin-top: 5px; }
-  .msg-card:not(.unread) .card-dot { visibility: hidden; }
-  .card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-  .card-line1 { display: flex; align-items: center; gap: 8px; }
-  .card-line1 strong { font-size: 15px; color: var(--navy); }
-  .card-line1 em { font-style: normal; font-size: 11px; padding: 1px 6px; border-radius: 3px; background: var(--teal); color: #fff; }
-  .card-time { font-size: 12px; color: var(--text-light); margin-left: auto; }
-  .card-line2 { font-size: 13.5px; color: var(--text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  @media (max-width: 640px) { .page { padding: 80px 0 40px; } .msg-card { padding: 14px 16px; } }
+  @media (max-width: 640px) { .inbox-page { padding: 80px 0 40px; } .inbox-card { padding: 14px 16px; } }
 </style>
