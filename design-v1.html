@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>方案一：杂志式</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f5f0e8;color:#2c2416;padding:40px}
+h2{text-align:center;font-size:14px;color:#999;margin-bottom:30px;letter-spacing:4px}
+.frame{max-width:1100px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 40px rgba(0,0,0,.1)}
+.nav{display:flex;justify-content:space-between;padding:16px 40px;background:#1a1f2e;color:#fff;font-size:13px;letter-spacing:1px}
+.nav span{opacity:.7}
+.hero{height:420px;background:linear-gradient(160deg,#1a1f2e,#3d6b7a,#5a8797);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.hero h1{font-size:52px;color:#fff;letter-spacing:16px;font-weight:900}
+.hero p{color:rgba(255,255,255,.6);font-size:14px;letter-spacing:6px;margin-top:16px}
+.content{display:grid;grid-template-columns:1fr 300px;gap:0}
+.main{padding:40px}
+.sidebar{padding:40px 30px;background:#faf8f5;border-left:1px solid #eee}
+.section-title{font-size:11px;text-transform:uppercase;letter-spacing:3px;color:#5a8797;margin-bottom:20px;font-weight:700}
+.card{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid #eee}
+.card img{width:160px;height:100px;object-fit:cover;border-radius:8px}
+.card h3{font-size:18px;font-weight:700;margin-bottom:4px}
+.card .meta{font-size:12px;color:#8a949c;margin-bottom:4px}
+.card .desc{font-size:13px;color:#666;line-height:1.6}
+.author-list{display:flex;flex-direction:column;gap:12px}
+.author{display:flex;align-items:center;gap:10px}
+.author .ava{width:36px;height:36px;border-radius:50%;background:#5a8797;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.author .name{font-size:14px;font-weight:600}
+.author .role{font-size:10px;padding:1px 6px;border-radius:3px;background:#eee;color:#888;margin-left:4px}
+.featured{background:#faf8f5;padding:30px 40px;border-top:1px solid #eee}
+.featured h3{font-size:11px;text-transform:uppercase;letter-spacing:3px;color:#5a8797;margin-bottom:16px}
+.tags{display:flex;gap:8px;flex-wrap:wrap}.tags span{padding:6px 14px;border:1px solid #ddd;border-radius:20px;font-size:12px;color:#666}
+</style></head><body>
+<h2>方案一：杂志式 — 左内容右边栏</h2>
+<div class="frame">
+<div class="nav"><span>文学社</span><span>作品推荐</span><span>作者推荐</span><span>文学活动</span><span>文学社团</span><span style="opacity:.4">登录</span></div>
+<div class="hero"><h1>文学社</h1><p>发现好文字，遇见好作者</p></div>
+<div class="content">
+<div class="main">
+<div class="section-title">推荐作品</div>
+<div class="card"><img src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=320&q=80"><div><h3>南方有雨</h3><p class="meta">长篇小说 ·蒲瑞昇</p><p class="desc">一个关于南方小城三代女性的故事。雨水贯穿始终...<p></div></div>
+<div class="card"><img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=320&q=80"><div><h3>渡口</h3><p class="meta">中篇小说 ·蒲瑞昇</p><p class="desc">长江边一个小渡口的最后一年...</div></div>
+</div>
+<div class="sidebar">
+<div class="section-title">推荐作者</div>
+<div class="author-list">
+<div class="author"><div class="ava">蒲</div><span class="name">蒲瑞昇</span><span class="role">管理员</span></div>
+<div class="author"><div class="ava">苏</div><span class="name">苏晚</span><span class="role">作者</span></div>
+<div class="author"><div class="ava">江</div><span class="name">江月</span><span class="role">作者</span></div>
+</div>
+</div>
+</div>
+<div class="featured"><h3>热门标签</h3><div class="tags"><span>小说</span><span>散文</span><span>诗歌</span><span>创作谈</span><span>文学评论</span><span>新人推荐</span></div></div>
+</div>
+</body></html>

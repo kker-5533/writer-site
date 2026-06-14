@@ -400,7 +400,6 @@ const currentCover = site.coverImage || '';
   }
 
   // ====== 个人设置 ======
-  var profilePresets = ${JSON.stringify(presets)};
   function loadProfile() {
     var stored = sessionStorage.getItem('linshen_user');
     if (!stored) return;
@@ -412,11 +411,21 @@ const currentCover = site.coverImage || '';
     setVal('profileDouban', u.douban || '');
     setVal('profileWechat', u.wechat || '');
     // 渲染封面预设
+    loadProfilePresets(u.coverImage || '');
+  }
+
+  async function loadProfilePresets(currentCover) {
     var grid = document.getElementById('profilePresetGrid');
     if (!grid) return;
     grid.innerHTML = '';
-    var currentCover = u.coverImage || '';
-    profilePresets.forEach(function(p) {
+    // 从 site API 获取预设封面列表
+    var presets = [];
+    try {
+      var siteRes = await fetch('/api/site');
+      var siteData = await siteRes.json();
+      presets = siteData.coverPresets || [];
+    } catch(e) {}
+    presets.forEach(function(p) {
       var box = document.createElement('div');
       box.className = 'admin-cover-box' + (p.url === currentCover ? ' selected' : '');
       box.title = p.name;
