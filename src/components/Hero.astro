@@ -9,76 +9,71 @@ interface Props {
 const { author, subtitle, intro, coverImage } = Astro.props;
 ---
 
-<header id="hero" style={`background-image: linear-gradient(160deg, rgba(27,42,58,0.78) 0%, rgba(27,42,58,0.4) 35%, rgba(46,92,110,0.3) 70%, rgba(139,191,204,0.25) 100%), url('${coverImage}')`}>
+<header id="hero" style={`background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.3)), url('${coverImage}')`}>
   <div class="hero-inner">
+    <div class="hero-avatar">{author[0]}</div>
     <h1>{author}</h1>
     <p class="subtitle">{subtitle}</p>
     <p class="intro" set:html={intro.replace(/\n/g, '<br>')} />
   </div>
-  <div class="scroll-dot"></div>
 </header>
 
 <style>
   #hero {
     position: relative;
-    min-height: 90vh;
+    min-height: 70vh;
     display: flex; align-items: center; justify-content: center;
-    background-position: center 40%;
+    background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
     text-align: center;
-    overflow: hidden;
+    padding: 80px 0;
   }
   #hero::after {
     content: '';
     position: absolute; bottom: 0; left: 0; right: 0;
-    height: 80px;
-    background: linear-gradient(to top, var(--cream) 0%, transparent 100%);
+    height: 60px;
+    background: linear-gradient(to top, var(--bg) 0%, transparent 100%);
   }
   #hero .hero-inner {
     position: relative; z-index: 2;
     display: flex; flex-direction: column; align-items: center;
     padding: 40px 28px;
   }
+  .hero-avatar {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: rgba(255,255,255,.15); backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px; font-weight: 700; color: #fff;
+    border: 2px solid rgba(255,255,255,.3);
+    margin-bottom: 18px;
+  }
   #hero h1 {
     font-family: var(--font-heading);
-    font-size: 58px; font-weight: 900;
-    color: #fff;
-    letter-spacing: 12px;
-    margin-bottom: 18px;
-    text-shadow: 0 2px 30px rgba(0,0,0,0.35);
+    font-size: 42px; font-weight: 800;
+    color: #fff; letter-spacing: 4px;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 8px rgba(0,0,0,.3);
   }
   #hero .subtitle {
     font-family: var(--font-body);
-    font-size: 15px; font-weight: 300;
-    color: rgba(255,255,255,0.78);
-    letter-spacing: 6px;
-    margin-bottom: 32px;
+    font-size: 15px; font-weight: 500;
+    color: rgba(255,255,255,.8);
+    letter-spacing: 4px;
+    margin-bottom: 16px;
   }
   #hero .intro {
-    font-family: var(--font-heading);
-    max-width: 520px; margin: 0;
-    font-size: 16.5px; font-weight: 400;
-    color: rgba(255,255,255,0.7);
-    line-height: 2.3;
+    font-family: var(--font-body);
+    max-width: 480px; margin: 0 auto;
+    font-size: 14px; font-weight: 400;
+    color: rgba(255,255,255,.7);
+    line-height: 2;
     letter-spacing: 0.5px;
-  }
-  #hero .scroll-dot {
-    position: absolute; bottom: 128px; left: 50%; transform: translateX(-50%); z-index: 2;
-    width: 6px; height: 6px;
-    background: rgba(255,255,255,0.5);
-    border-radius: 50%;
-    animation: dotPulse 2.5s ease-in-out infinite;
-  }
-  @keyframes dotPulse {
-    0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
-    50% { opacity: 1; transform: translateX(-50%) translateY(10px); }
   }
 
   @media (max-width: 640px) {
-    #hero { min-height: 75vh; }
-    #hero h1 { font-size: 38px; letter-spacing: 6px; }
-    #hero .subtitle { font-size: 13px; letter-spacing: 3px; }
-    #hero .intro { font-size: 15px; }
+    #hero { min-height: 50vh; }
+    #hero h1 { font-size: 32px; letter-spacing: 2px; }
+    .hero-avatar { width: 60px; height: 60px; font-size: 22px; }
   }
 </style>
