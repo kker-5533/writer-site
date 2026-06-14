@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>方案一 · 有机排版</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+  background:url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.025'/%3E%3C/svg%3E"),#faf7f3;
+  color:#1e1e1e;-webkit-font-smoothing:antialiased
+}
+nav{display:flex;justify-content:space-between;padding:18px 52px;background:#fff;border-bottom:1px solid #ebe5d9}
+nav .logo{font-size:18px;font-weight:800;letter-spacing:9px;color:#1a1a1a}
+nav .links{display:flex;gap:34px}
+nav a{font-size:13.5px;color:#7a7165;text-decoration:none;font-weight:500;letter-spacing:1.2px;transition:color .25s}
+nav a:hover{color:#1a1a1a}
+
+.hero{padding:130px 52px 100px;max-width:880px;margin:0 auto}
+.hero .overline{font-size:10.5px;font-weight:700;letter-spacing:5px;color:#c0764a;margin-bottom:28px}
+.hero h1{font-size:54px;font-weight:800;letter-spacing:-.5px;line-height:1.15;color:#1a1a1a;margin-bottom:22px}
+.hero h1 em{font-style:normal;border-bottom:3px solid #e0cdb0;padding-bottom:2px}
+.hero .desc{font-size:17px;line-height:1.85;color:#6b6058;max-width:540px;margin-bottom:40px}
+.hero .desc .orn{display:inline-block;width:20px;height:1px;background:#c0764a;margin:0 6px;vertical-align:middle}
+.cta{display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:700;letter-spacing:3px;color:#1a1a1a;text-decoration:none;border-bottom:2px solid #c0764a;padding-bottom:6px;transition:all .25s}
+.cta::after{content:'→';font-size:16px;transition:transform .25s}
+.cta:hover::after{transform:translateX(4px)}
+.cta:hover{color:#c0764a}
+
+section{padding:90px 52px;max-width:1080px;margin:0 auto}
+.sec-head{margin-bottom:40px;display:flex;align-items:baseline;gap:14px}
+.sec-head .num{font-family:"Songti SC",serif;font-size:48px;color:#e8dcc8;font-weight:700;line-height:1;margin-right:4px}
+.sec-head h2{font-size:21px;font-weight:800;letter-spacing:3px;color:#1a1a1a}
+.sec-head .rule{flex:1;height:1px;background:#e0d8c8;margin-left:8px}
+.sec-head a{font-size:12px;font-weight:600;color:#999;text-decoration:none;white-space:nowrap}
+.sec-head a:hover{color:#1a1a1a}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.card{background:#fff;border:1px solid #e8e0d2;padding:34px;position:relative}
+.card::before{content:'';position:absolute;top:14px;left:14px;right:14px;bottom:14px;border:1px solid rgba(192,118,74,.06);pointer-events:none}
+.card .tag{font-size:10.5px;font-weight:700;letter-spacing:3px;color:#c0764a;margin-bottom:14px;display:block}
+.card h3{font-size:22px;font-weight:700;color:#1a1a1a;margin-bottom:8px;letter-spacing:-.3px}
+.card .meta{font-size:12.5px;color:#999;font-weight:500;margin-bottom:12px}
+.card .desc{font-size:14.5px;line-height:1.75;color:#555}
+.authors-row{display:flex;gap:18px}
+.author{flex:1;text-align:center;padding:34px 16px;background:#fff;border:1px solid #e8e0d2}
+.author .ava{width:58px;height:58px;border-radius:50%;background:#f0e8d8;color:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:700;margin:0 auto 14px}
+.author .name{font-size:15px;font-weight:700;color:#1a1a1a}
+.author .role{font-size:12px;color:#999;margin-top:4px}
+.blog{max-width:700px}
+.blog-item{display:flex;gap:20px;padding:22px 0;border-bottom:1px dashed #e0d8c8}
+.blog-item:last-child{border-bottom:none}
+.blog-date{font-size:12px;color:#c0764a;font-weight:700;min-width:82px}
+.blog-item h4{font-size:17.5px;font-weight:700;color:#1a1a1a;margin-bottom:4px}
+.blog-author{font-size:12px;color:#999;font-weight:500}
+footer{padding:42px 52px;text-align:center;font-size:12px;color:#bbb;border-top:1px solid #ebe5d9}
+footer .sep{display:inline-block;width:6px;height:6px;border-radius:50%;background:#c0764a;margin:0 10px;vertical-align:middle;opacity:.5}
+</style></head><body>
+<nav><span class="logo">文 学 社</span><div class="links"><a href="#">作品</a><a href="#">作者</a><a href="#">随笔</a><a href="#">活动</a><a href="#">社团</a></div><a href="#" style="font-size:13.5px;color:#999;text-decoration:none">登录</a></nav>
+<div class="hero">
+<div class="overline">LITERARY SOCIETY</div>
+<h1>在<em>文字</em>中相遇<br>在<em>阅读</em>中重逢</h1>
+<p class="desc">文学社是一个安静的文字栖息地<span class="orn"></span>每一篇作品都是一次相遇<span class="orn"></span>每一个作者都值得被阅读</p>
+<a href="#" class="cta">开始阅读</a>
+</div>
+<section>
+<div class="sec-head"><span class="num">01</span><h2>推荐作品</h2><span class="rule"></span><a href="#">全部 →</a></div>
+<div class="grid">
+<div class="card"><span class="tag">长篇小说</span><h3>南方有雨</h3><p class="meta">蒲瑞昇 · 2024 · 约12万字</p><p class="desc">一个关于南方小城三代女性的故事。雨水贯穿始终，冲刷出被遗忘的记忆与未曾说出口的爱。</p></div>
+<div class="card"><span class="tag">散文</span><h3>桂花落</h3><p class="meta">苏晚 · 2026</p><p class="desc">桂花的气味有一种穿透力。不是扑面而来的香，而是悄悄渗进鼻腔，直达记忆深处。</p></div>
+<div class="card"><span class="tag">中篇小说</span><h3>渡口</h3><p class="meta">蒲瑞昇 · 2022</p><p class="desc">长江边一个小渡口的最后一年。摆渡人老周与来往过客之间的短暂相遇与长久告别。</p></div>
+<div class="card"><span class="tag">诗歌集</span><h3>月光落在左手边</h3><p class="meta">江月 · 2025</p><p class="desc">二十六首诗，关于月光、失眠和远方。凌晨三点，世界安静得像一个巨大的录音棚。</p></div>
+</div>
+</section>
+<section>
+<div class="sec-head"><span class="num">02</span><h2>推荐作者</h2><span class="rule"></span><a href="#">全部 →</a></div>
+<div class="authors-row">
+<div class="author"><div class="ava">蒲</div><div class="name">蒲瑞昇</div><div class="role">创办人</div></div>
+<div class="author"><div class="ava">苏</div><div class="name">苏晚</div><div class="role">小说作者</div></div>
+<div class="author"><div class="ava">江</div><div class="name">江月</div><div class="role">诗人</div></div>
+<div class="author"><div class="ava">云</div><div class="name">云栖</div><div class="role">散文作者</div></div>
+</div>
+</section>
+<section>
+<div class="sec-head"><span class="num">03</span><h2>最新随笔</h2><span class="rule"></span></div>
+<div class="blog">
+<div class="blog-item"><span class="blog-date">2026 · 06 · 10</span><div><h4>写作者的书桌</h4><p class="blog-author">蒲瑞昇</p></div></div>
+<div class="blog-item"><span class="blog-date">2026 · 05 · 28</span><div><h4>重读《边城》</h4><p class="blog-author">苏晚</p></div></div>
+<div class="blog-item"><span class="blog-date">2026 · 05 · 12</span><div><h4>孤独的夜晚</h4><p class="blog-author">江月</p></div></div>
+</div>
+</section>
+<footer>2026<span class="sep"></span>文学社<span class="sep"></span>由内而外地安静生长</footer>
+</body></html>
