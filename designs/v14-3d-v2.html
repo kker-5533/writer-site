@@ -1,0 +1,139 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>文学社 · 立体景深 v2</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#efe9de;color:#1a1817;perspective:1200px;-webkit-font-smoothing:antialiased}
+nav{display:flex;justify-content:space-between;padding:16px 48px;background:#fff;border-bottom:1px solid #e0d8c8;position:relative;z-index:20}
+nav .logo{font-size:17px;font-weight:800;letter-spacing:8px}
+nav .links{display:flex;gap:34px}
+nav a{font-size:13px;font-weight:500;color:#7a7165;text-decoration:none;letter-spacing:1px}
+nav a:hover{color:#1a1817}
+
+/* ===== HERO ===== */
+.hero{padding:100px 48px 80px;display:grid;grid-template-columns:1fr 1fr;gap:56px;max-width:1100px;margin:0 auto;align-items:center}
+.hero-text .overline{font-size:10px;font-weight:700;letter-spacing:5px;color:#c0764a;margin-bottom:24px}
+.hero-text h1{font-size:50px;font-weight:800;letter-spacing:-1px;line-height:1.12;margin-bottom:18px}
+.hero-text .desc{font-size:16px;line-height:1.8;color:#6b6058;margin-bottom:36px}
+.btn{display:inline-block;padding:15px 38px;background:#1a1817;color:#fff;text-decoration:none;font-size:14px;font-weight:700;letter-spacing:3px;box-shadow:0 8px 0 rgba(0,0,0,.1);transition:all .2s}
+.btn:hover{transform:translateY(2px);box-shadow:0 4px 0 rgba(0,0,0,.1)}
+
+/* 三张旋转卡片 */
+.hero-cards{position:relative;height:340px}
+.hc{position:absolute;background:#fff;padding:24px;border:1px solid #e0d8c8;width:220px;cursor:pointer;transition:transform .5s cubic-bezier(.25,.1,.25,1),box-shadow .5s;transform-style:preserve-3d}
+.hc:hover{z-index:10!important;box-shadow:0 8px 32px rgba(0,0,0,.15)!important}
+.hc1{top:10px;left:30px;z-index:3;transform:rotate(-3deg);box-shadow:0 2px 8px rgba(0,0,0,.04),0 12px 32px rgba(0,0,0,.06)}
+.hc1:hover{transform:rotate(0deg) scale(1.05)}
+.hc2{top:50px;right:10px;z-index:2;transform:rotate(2deg);box-shadow:0 2px 8px rgba(0,0,0,.04),0 12px 32px rgba(0,0,0,.06)}
+.hc2:hover{transform:rotate(-1deg) scale(1.05)}
+.hc3{bottom:30px;left:70px;z-index:1;transform:rotate(-1.5deg);box-shadow:0 2px 8px rgba(0,0,0,.04),0 12px 32px rgba(0,0,0,.06)}
+.hc3:hover{transform:rotate(1deg) scale(1.05)}
+.hc .tag{font-size:10px;font-weight:700;letter-spacing:3px;color:#c0764a;margin-bottom:8px}
+.hc h3{font-size:16px;font-weight:700;margin-bottom:4px}
+.hc .author{font-size:11px;color:#999}
+.hc .excerpt{font-size:12px;line-height:1.6;color:#666;margin-top:8px}
+
+/* ===== 通用 ===== */
+section{padding:80px 48px;max-width:1100px;margin:0 auto}
+.sec-head{margin-bottom:40px;display:flex;align-items:baseline;gap:12px}
+.sec-head h2{font-size:21px;font-weight:800;letter-spacing:3px}
+.sec-head .line{flex:1;height:1px;background:#d5cdbc}
+.sec-head a{font-size:12px;font-weight:600;color:#999;text-decoration:none}
+.sec-head a:hover{color:#1a1817}
+
+/* ===== 作品卡片 ===== */
+.works{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.work-card{background:#fff;padding:36px;border:1px solid #e0d8c8;box-shadow:0 2px 4px rgba(0,0,0,.02),0 8px 24px rgba(0,0,0,.04),0 16px 48px rgba(0,0,0,.03);transition:all .35s;position:relative}
+.work-card::after{content:'';position:absolute;bottom:0;left:8px;right:8px;height:12px;background:rgba(0,0,0,.03);filter:blur(8px);z-index:-1;transition:all .35s}
+.work-card:hover{transform:translateY(-6px);box-shadow:0 4px 8px rgba(0,0,0,.04),0 12px 36px rgba(0,0,0,.06),0 24px 64px rgba(0,0,0,.05)}
+.work-card:hover::after{bottom:-8px;height:16px;opacity:.6}
+.work-card .tag{font-size:10px;font-weight:700;letter-spacing:3px;color:#c0764a;margin-bottom:12px;display:block}
+.work-card h3{font-size:22px;font-weight:700;margin-bottom:6px}
+.work-card .meta{font-size:12px;color:#999;font-weight:500;margin-bottom:12px}
+.work-card .desc{font-size:14px;line-height:1.7;color:#555}
+
+/* ===== 作者卡片 ===== */
+.authors{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.author-card{text-align:center;background:#fff;padding:36px 16px;border:1px solid #e0d8c8;box-shadow:0 2px 4px rgba(0,0,0,.02),0 8px 20px rgba(0,0,0,.04);transition:all .35s}
+.author-card:hover{transform:translateY(-8px);box-shadow:0 4px 12px rgba(0,0,0,.06),0 16px 40px rgba(0,0,0,.08)}
+.author-card .ava{width:62px;height:62px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;box-shadow:inset 0 2px 4px rgba(255,255,255,.2),0 4px 8px rgba(0,0,0,.1)}
+.author-card:nth-child(1) .ava{background:linear-gradient(145deg,#3d3858,#5a5280)}
+.author-card:nth-child(2) .ava{background:linear-gradient(145deg,#5a6b5a,#7a907a)}
+.author-card:nth-child(3) .ava{background:linear-gradient(145deg,#8a6b4a,#b08a5e)}
+.author-card:nth-child(4) .ava{background:linear-gradient(145deg,#5a6b6a,#7a9090)}
+.author-card .name{font-size:15px;font-weight:700}
+.author-card .role{font-size:12px;color:#999;margin-top:4px}
+
+/* ===== 随笔卡片（作者在外面）===== */
+.blog-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.blog-item{display:flex;flex-direction:column;gap:8px}
+.blog-card{background:#fff;padding:32px;border:1px solid #e0d8c8;box-shadow:0 2px 4px rgba(0,0,0,.02),0 8px 20px rgba(0,0,0,.04);transition:all .35s;flex:1}
+.blog-card:hover{transform:translateY(-4px);box-shadow:0 4px 8px rgba(0,0,0,.04),0 16px 36px rgba(0,0,0,.06)}
+.blog-card .date{font-size:10px;font-weight:700;letter-spacing:3px;color:#c0764a;margin-bottom:12px}
+.blog-card h4{font-size:19px;font-weight:700;margin-bottom:8px}
+.blog-card .excerpt{font-size:14px;line-height:1.7;color:#666}
+.blog-author{display:flex;align-items:center;gap:8px;padding-left:4px}
+.blog-author .dot{width:7px;height:7px;border-radius:50%;background:#c0764a}
+.blog-author .name{font-size:12.5px;font-weight:600;color:#7a7165}
+.blog-author .role{font-size:11px;color:#aaa;margin-left:4px}
+
+footer{padding:48px;text-align:center;font-size:12px;color:#bbb;border-top:1px solid #e0d8c8}
+</style></head><body>
+<nav><span class="logo">文 学 社</span><div class="links"><a href="#">作品</a><a href="#">作者</a><a href="#">随笔</a><a href="#">活动</a><a href="#">社团</a></div><a href="#" style="font-size:13px;color:#999;text-decoration:none">登录</a></nav>
+
+<div class="hero">
+<div class="hero-text">
+<div class="overline">LITERARY SOCIETY</div>
+<h1>发现好文字<br>遇见好作者</h1>
+<p class="desc">文学社是一个开放的文字栖息地。每一篇作品都是一次相遇，每一个作者都值得被阅读。</p>
+<a href="#" class="btn">开 始 阅 读</a>
+</div>
+<div class="hero-cards">
+<div class="hc hc1"><div class="tag">本期力荐</div><h3>南方有雨</h3><p class="author">蒲瑞昇</p><p class="excerpt">一个关于南方小城三代女性的故事。雨水贯穿始终，冲刷出被遗忘的记忆。</p></div>
+<div class="hc hc2"><div class="tag">编辑精选</div><h3>桂花落</h3><p class="author">苏晚</p><p class="excerpt">桂花的气味有一种穿透力，悄悄渗进鼻腔，直达记忆深处。</p></div>
+<div class="hc hc3"><div class="tag">读者力荐</div><h3>渡口</h3><p class="author">蒲瑞昇</p><p class="excerpt">长江边一个小渡口的最后一年。摆渡人老周。</p></div>
+</div>
+</div>
+
+<section>
+<div class="sec-head"><h2>推荐作品</h2><span class="line"></span><a href="#">全部 →</a></div>
+<div class="works">
+<div class="work-card"><span class="tag">长篇小说</span><h3>南方有雨</h3><p class="meta">蒲瑞昇 · 2024 · 约12万字</p><p class="desc">一个关于南方小城三代女性的故事。雨水贯穿始终，冲刷出被遗忘的记忆与未曾说出口的爱。</p></div>
+<div class="work-card"><span class="tag">散文</span><h3>桂花落</h3><p class="meta">苏晚 · 2026</p><p class="desc">桂花的气味有一种穿透力。不是扑面而来的香，而是悄悄渗进鼻腔，直达记忆深处。</p></div>
+<div class="work-card"><span class="tag">中篇小说</span><h3>渡口</h3><p class="meta">蒲瑞昇 · 2022</p><p class="desc">长江边一个小渡口的最后一年。摆渡人老周与来往过客之间的短暂相遇与长久告别。</p></div>
+<div class="work-card"><span class="tag">诗歌集</span><h3>月光落在左手边</h3><p class="meta">江月 · 2025</p><p class="desc">二十六首诗，关于月光、失眠和远方。凌晨三点，世界安静得像一个巨大的录音棚。</p></div>
+</div>
+</section>
+
+<section>
+<div class="sec-head"><h2>推荐作者</h2><span class="line"></span><a href="#">全部 →</a></div>
+<div class="authors">
+<div class="author-card"><div class="ava">蒲</div><div class="name">蒲瑞昇</div><div class="role">创办人</div></div>
+<div class="author-card"><div class="ava">苏</div><div class="name">苏晚</div><div class="role">小说作者</div></div>
+<div class="author-card"><div class="ava">江</div><div class="name">江月</div><div class="role">诗人</div></div>
+<div class="author-card"><div class="ava">云</div><div class="name">云栖</div><div class="role">散文作者</div></div>
+</div>
+</section>
+
+<section>
+<div class="sec-head"><h2>最新随笔</h2><span class="line"></span></div>
+<div class="blog-grid">
+<div class="blog-item">
+<div class="blog-card"><div class="date">2026 · 06 · 10</div><h4>写作者的书桌</h4><p class="excerpt">一张书桌能透露多少秘密？半杯凉茶、散落的便利贴、三支没墨的笔。写作从来不是体面的事，但它需要的只是一个坐下的人。</p></div>
+<div class="blog-author"><span class="dot"></span><span class="name">蒲瑞昇</span><span class="role">创办人</span></div>
+</div>
+<div class="blog-item">
+<div class="blog-card"><div class="date">2026 · 05 · 28</div><h4>重读《边城》</h4><p class="excerpt">时隔十年再读沈从文。年轻时只读到翠翠的爱情，现在读到的却是那条河本身——它带走一切，又包容一切。</p></div>
+<div class="blog-author"><span class="dot"></span><span class="name">苏晚</span><span class="role">作者</span></div>
+</div>
+<div class="blog-item">
+<div class="blog-card"><div class="date">2026 · 05 · 12</div><h4>在菜市场学到的写作课</h4><p class="excerpt">最好的对话不在书里，在菜市场。摊贩的吆喝、大妈的讨价还价——每一句都带着生活的纹理。</p></div>
+<div class="blog-author"><span class="dot"></span><span class="name">江月</span><span class="role">作者</span></div>
+</div>
+<div class="blog-item">
+<div class="blog-card"><div class="date">2026 · 04 · 25</div><h4>关于「南方有雨」的创作谈</h4><p class="excerpt">编辑问我为什么要写三代女性。我说，因为我的外婆、母亲和我——我们从未真正交谈过。写作是一种迟到的对话。</p></div>
+<div class="blog-author"><span class="dot"></span><span class="name">蒲瑞昇</span><span class="role">创办人</span></div>
+</div>
+</div>
+</section>
+
+<footer>© 2026 文学社 · 由内而外地安静生长</footer>
+</body></html>
