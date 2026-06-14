@@ -49,6 +49,17 @@ export async function POST({ request }: { request: { json: () => Promise<any> } 
     users[idx].role = 'author'; writeJSON(USERS_FILE, users);
     return new Response(JSON.stringify({ ok: true }), { status: 200 });
   }
+  if (action === 'resetPassword') {
+    const idx = users.findIndex((u: any) => u.id === body.userId);
+    if (idx === -1) return new Response(JSON.stringify({ error: '用户不存在' }), { status: 404 });
+    users[idx].password = '123456';
+    writeJSON(USERS_FILE, users);
+    return new Response(JSON.stringify({ ok: true, msg: '密码已重置为 123456' }), { status: 200 });
+  }
+  if (action === 'listAll') {
+    const safe = users.map((u: any) => ({ id: u.id, nickname: u.nickname, role: u.role, status: u.status }));
+    return new Response(JSON.stringify(safe), { status: 200 });
+  }
   if (action === 'backup') {
     const backup: any = {};
     fs.readdirSync(DATA_DIR).filter((f: string) => f.endsWith('.json')).forEach((f: string) => { backup[f] = readJSON(path.join(DATA_DIR, f)); });

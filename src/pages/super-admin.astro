@@ -22,12 +22,14 @@ import Layout from '../layouts/Layout.astro';
       <button class="su-tab" data-tab="dashboard">数据看板</button>
       <button class="su-tab" data-tab="backup">备份恢复</button>
       <button class="su-tab" data-tab="homepage">首页编辑</button>
+      <button class="su-tab" data-tab="users">用户管理</button>
       <button class="su-tab" data-tab="settings">系统设置</button>
     </div>
     <div id="tab-admins" class="su-content active"></div>
     <div id="tab-dashboard" class="su-content"></div>
     <div id="tab-backup" class="su-content"></div>
     <div id="tab-homepage" class="su-content"></div>
+    <div id="tab-users" class="su-content"></div>
     <div id="tab-settings" class="su-content"></div>
   </div>
 </div>
@@ -55,6 +57,7 @@ document.querySelectorAll('.su-tab').forEach(function(t){ t.addEventListener('cl
   if (tab === 'dashboard') loadDashboard();
   if (tab === 'backup') loadBackup();
   if (tab === 'homepage') loadHomepage();
+  if (tab === 'users') loadUsers();
   if (tab === 'settings') loadSettings();
 });});
 window.verify = verify;
@@ -101,6 +104,18 @@ async function loadBackup() {
 }
 async function doBackup() { var d = await api({action:'backup'}); if (!d.ok) return; var blob = new Blob([JSON.stringify(d.data,null,2)],{type:'application/json'}); var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup-'+new Date().toISOString().slice(0,10)+'.json'; a.click(); }
 async function doRestore() { var file = document.getElementById('restoreFile').files[0]; if (!file) return; if (!confirm('恢复会覆盖所有数据，确定？')) return; var text = await file.text(); var d = await api({action:'restore',data:JSON.parse(text)}); alert(d.ok ? '恢复成功' : d.error); }
+async function loadUsers() {
+  var d = await api({action: 'listAll'});
+  var el = document.getElementById('tab-users');
+  el.innerHTML = '<div style="margin-bottom:16px"><strong style="font-size:14px;color:var(--navy)">所有用户</strong></div>' +
+    d.map(function(u){ return '<div class="su-card"><span><strong>'+esc(u.nickname)+'</strong><span class="su-tag" style="background:var(--teal)">'+u.role+'</span><span style="font-size:12px;color:var(--text-light);margin-left:8px">'+(u.status||'active')+'</span></span><button class="su-btn-sm" onclick="resetPassword(\''+u.id+'\'")">重置密码</button></div>'; }).join('');
+}
+window.resetPassword = async function(uid) {
+  if (!confirm('确定重置密码为123456？')) return;
+  var d = await api({action: 'resetPassword', userId: uid});
+  alert(d.msg || d.error || '已重置');
+};
+
 async function loadHomepage() {
   var res = await fetch('/api/site');
   var d = await res.json();
@@ -109,8 +124,12 @@ async function loadHomepage() {
   '<div class="su-card"><div style="flex:1"><label style="font-size:13px;font-weight:600;color:var(--navy)">副标题</label><input id="hpSubtitle" value="'+esc(d.subtitle||'')+'" style="width:100%;padding:10px;border:1px solid var(--border);background:var(--bg);font-size:14px;margin-top:4px"></div></div>'+
   '<div class="su-card"><div style="flex:1"><label style="font-size:13px;font-weight:600;color:var(--navy)">简介</label><textarea id="hpIntro" rows="3" style="width:100%;padding:10px;border:1px solid var(--border);background:var(--bg);font-size:14px;margin-top:4px;font-family:inherit">'+esc(d.intro||'')+'</textarea></div></div>'+
   '<div class="su-card"><div style="flex:1"><label style="font-size:13px;font-weight:600;color:var(--navy)">封面图片URL</label><input id="hpCover" value="'+esc(d.coverImage||'')+'" style="width:100%;padding:10px;border:1px solid var(--border);background:var(--bg);font-size:14px;margin-top:4px"></div></div>'+
-  '<button class="su-btn-sm" style="margin-top:12px" onclick="saveHomepage()">保存修改</button><span id="hpMsg" style="font-size:13px;color:#4a8a4a;margin-left:12px;font-weight:600"></span>';
-  window._hpData = d;
+  '<button class="su-btn-sm" style="margin-top:12px" onclick="saveHomepage()">保存修改</button><span id="hpMsg" style="font-size:13px;color:#4a8a4a;margin-left:12px;font-weight:600"></span>'+
+  '<hr style="margin:20px 0;border-color:var(--border)">'+
+  '<strong style="font-size:14px;color:var(--navy)">推荐作品管理</strong><p style="font-size:12px;color:var(--text-muted);margin:4px 0 12px">勾选的作品会显示在首页</p><div id="hpWorks"></div>'+
+  '<strong style="font-size:14px;color:var(--navy);margin-top:20px;display:block">推荐作者管理</strong><p style="font-size:12px;color:var(--text-muted);margin:4px 0 12px">勾选的作者会显示在首页</p><div id="hpAuthors"></div>';
+  loadHPWorks();
+  loadHPAuthors();
 }
 async function saveHomepage() {
   var body = { author: document.getElementById('hpAuthor').value, subtitle: document.getElementById('hpSubtitle').value, intro: document.getElementById('hpIntro').value, coverImage: document.getElementById('hpCover').value };
@@ -120,6 +139,30 @@ async function saveHomepage() {
   setTimeout(function(){ document.getElementById('hpMsg').textContent = ''; }, 3000);
 }
 window.saveHomepage = saveHomepage;
+async function loadHPWorks() {
+  var res = await fetch('/api/works'); var works = await res.json();
+  var el = document.getElementById('hpWorks');
+  el.innerHTML = works.map(function(w){
+    return '<div class="su-card"><span><strong>'+esc(w.title)+'</strong><span style="font-size:12px;color:var(--text-light);margin-left:8px">'+esc(w.authorName||'')+'</span></span><button class="su-btn-sm'+(w.recommended?'':'')+'" onclick="toggleRec(\''+w.id+'\',\'work\','+w.recommended+')">'+(w.recommended?'★ 已推荐':'☆ 推荐')+'</button></div>';
+  }).join('');
+}
+async function loadHPAuthors() {
+  var res = await fetch('/api/auth', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'list',adminId:'admin-001'}) });
+  var users = await res.json();
+  var el = document.getElementById('hpAuthors');
+  el.innerHTML = users.map(function(u){
+    return '<div class="su-card"><span><strong>'+esc(u.nickname)+'</strong><span style="font-size:12px;color:var(--text-light);margin-left:8px">'+esc(u.role||'')+'</span></span><button class="su-btn-sm'+(u.recommended?'':'')+'" onclick="toggleRec(\''+u.id+'\',\'user\','+u.recommended+')">'+(u.recommended?'★ 已推荐':'☆ 推荐')+'</button></div>';
+  }).join('');
+}
+window.toggleRec = async function(id, type, current) {
+  if (type === 'work') {
+    await fetch('/api/works', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'review',id:id,recommended:!current}) });
+    loadHPWorks();
+  } else {
+    await fetch('/api/auth', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'manage',adminId:'admin-001',targetId:id,operation:'toggleRecommend',value:''}) });
+    loadHPAuthors();
+  }
+};
 
 async function loadSettings() {
   document.getElementById('tab-settings').innerHTML =
