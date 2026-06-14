@@ -33,21 +33,25 @@ import Footer from '../../components/Footer.astro';
       var h1 = document.querySelector('h1');
       if (h1) h1.textContent = '我的来信' + (unread > 0 ? '（' + unread + ' 条未读）' : '');
 
-      if (!convs.length) { list.innerHTML = '<p class="empty">暂无来信<br><span class="hint">在作者主页下方可发送私信</span></p>'; return; }
+      if (!convs.length) { list.innerHTML = '<p class="empty">暂无来信</p>'; return; }
+
+      // 获取用户列表以确定角色
+      var usersRes = await fetch('/api/auth', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'list', adminId: me.id }) });
+      var users = [];
+      if (usersRes.ok) users = await usersRes.json();
+      var userMap = {};
+      users.forEach(function(u) { userMap[u.id] = u; });
 
       list.innerHTML = convs.map(function(c) {
         var isUnread = !c.read && c.from !== me.id;
-        var name = c.partnerName || '未知用户';
-        var initials = (name || '?')[0];
-        var hue = (name.charCodeAt(0) || 0) * 137 % 360;
+        var partner = userMap[c.partner] || {};
+        var name = partner.nickname || c.partnerName || '未知';
+        var roleLabel = partner.role === 'admin' ? '管理员' : '作者';
         return '<a href="/messages/' + c.partner + '" class="msg-card' + (isUnread ? ' unread' : '') + '">' +
-          '<span class="card-avatar" style="background:hsl(' + hue + ',45%,55%)">' + initials + '</span>' +
+          '<span class="card-dot"></span>' +
           '<span class="card-body">' +
-            '<span class="card-top"><strong>' + esc(name) + '</strong>' +
-            (isUnread ? '<em class="card-badge">未读</em>' : '') +
-            '</span>' +
-            '<span class="card-time">' + fmtTime(c.time) + ' 来信</span>' +
-            '<span class="card-text">' + esc(c.lastMsg || '').slice(0, 60) + '</span>' +
+            '<span class="card-line1"><strong>' + esc(name) + '</strong><em>' + roleLabel + '</em><span class="card-time">' + fmtTime(c.time) + ' 来信</span></span>' +
+            '<span class="card-line2">' + esc(c.lastMsg || '').slice(0, 80) + '</span>' +
           '</span>' +
         '</a>';
       }).join('');
@@ -61,9 +65,8 @@ import Footer from '../../components/Footer.astro';
     var diff = now.getTime() - d.getTime();
     if (diff < 60000) return '刚刚';
     if (diff < 3600000) return Math.floor(diff / 60000) + ' 分钟前';
-    if (diff < 86400000) return Math.floor(diff / 3600000) + ' 小时前';
-    if (diff < 604800000) return Math.floor(diff / 86400000) + ' 天前';
-    return d.toISOString().slice(0, 10);
+    if (diff >= 3600000) return d.toISOString().slice(0, 10) + ' ' + d.toTimeString().slice(0, 5);
+    return '';
   }
 
   function esc(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -75,25 +78,21 @@ import Footer from '../../components/Footer.astro';
   .page { padding: 100px 0 60px; min-height: 70vh; }
   .page h1 { font-family: var(--font-heading); font-size: 26px; color: var(--navy); margin-bottom: 28px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
   .empty { color: var(--text-light); padding: 60px 0; text-align: center; font-size: 15px; }
-  .hint { font-size: 13px; color: var(--text-light); display: block; margin-top: 6px; }
   .msg-card {
-    display: flex; align-items: flex-start; gap: 14px;
+    display: flex; align-items: flex-start; gap: 10px;
     padding: 16px 20px; margin-bottom: 8px;
     border: 1px solid var(--border); border-radius: 10px;
     background: #fff; text-decoration: none; transition: all 0.15s;
   }
-  .msg-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.05); border-color: var(--teal-light); }
-  .msg-card.unread { background: #fafefe; border-left: 3px solid var(--teal); }
-  .card-avatar {
-    width: 42px; height: 42px; border-radius: 50%; color: #fff;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 17px; font-weight: 700; flex-shrink: 0;
-  }
-  .card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-  .card-top { display: flex; align-items: center; gap: 8px; }
-  .card-top strong { font-size: 15px; color: var(--navy); }
-  .card-badge { font-style: normal; font-size: 11px; padding: 1px 7px; border-radius: 8px; background: var(--teal); color: #fff; font-weight: 600; }
-  .card-time { font-size: 12px; color: var(--text-light); }
-  .card-text { font-size: 13.5px; color: var(--text-mid); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .msg-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+  .msg-card.unread { background: #fdfdf7; }
+  .card-dot { width: 8px; height: 8px; border-radius: 50%; background: #c44; flex-shrink: 0; margin-top: 5px; }
+  .msg-card:not(.unread) .card-dot { visibility: hidden; }
+  .card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .card-line1 { display: flex; align-items: center; gap: 8px; }
+  .card-line1 strong { font-size: 15px; color: var(--navy); }
+  .card-line1 em { font-style: normal; font-size: 11px; padding: 1px 6px; border-radius: 3px; background: var(--teal); color: #fff; }
+  .card-time { font-size: 12px; color: var(--text-light); margin-left: auto; }
+  .card-line2 { font-size: 13.5px; color: var(--text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   @media (max-width: 640px) { .page { padding: 80px 0 40px; } .msg-card { padding: 14px 16px; } }
 </style>
