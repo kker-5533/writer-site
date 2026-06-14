@@ -131,7 +131,15 @@ const currentCover = site.coverImage || '';
   <div id="tab-profile" class="tab-content">
     <form id="profileForm" class="admin-form" style="max-width:500px">
       <div class="field"><label>个人简介</label><textarea name="profileIntro" rows="3" placeholder="介绍一下你自己..."></textarea></div>
-      <div class="field"><label>主页封面图 URL</label><input name="profileCover" placeholder="https://... 图片链接" /></div>
+      <div class="field"><label>主页封面</label>
+        <div class="admin-cover-grid" id="profilePresetGrid"></div>
+        <div class="admin-cover-custom">
+          <span>自定义：</span>
+          <input type="file" id="profileCoverUpload" accept="image/*" />
+          <span id="profileCoverUploadMsg" class="admin-msg"></span>
+        </div>
+        <input type="hidden" name="profileCover" />
+      </div>
       <div class="field"><label>邮箱</label><input name="profileEmail" placeholder="your@email.com" /></div>
       <div class="field"><label>微博</label><input name="profileWeibo" placeholder="@你的微博" /></div>
       <div class="field"><label>豆瓣</label><input name="profileDouban" placeholder="豆瓣主页链接" /></div>
@@ -392,8 +400,8 @@ const currentCover = site.coverImage || '';
   }
 
   // ====== 个人设置 ======
+  var profilePresets = ${JSON.stringify(presets)};
   function loadProfile() {
-    // 通过API获取当前用户信息
     var stored = sessionStorage.getItem('linshen_user');
     if (!stored) return;
     var u = JSON.parse(stored);
@@ -403,7 +411,40 @@ const currentCover = site.coverImage || '';
     setVal('profileWeibo', u.weibo || '');
     setVal('profileDouban', u.douban || '');
     setVal('profileWechat', u.wechat || '');
+    // 渲染封面预设
+    var grid = document.getElementById('profilePresetGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    var currentCover = u.coverImage || '';
+    profilePresets.forEach(function(p) {
+      var box = document.createElement('div');
+      box.className = 'admin-cover-box' + (p.url === currentCover ? ' selected' : '');
+      box.title = p.name;
+      box.setAttribute('data-url', p.url);
+      box.innerHTML = '<img src="' + p.url.split('?')[0] + '?w=240&q=30&fit=crop" alt="' + p.name + '" loading="lazy" /><span class="admin-cover-check">&#10003;</span>';
+      box.addEventListener('click', function() {
+        setVal('profileCover', p.url);
+        document.querySelectorAll('#profilePresetGrid .admin-cover-box').forEach(function(x) { x.classList.remove('selected'); });
+        box.classList.add('selected');
+      });
+      grid.appendChild(box);
+    });
   }
+  // 个人封面自定义上传
+  var profileUpload = document.getElementById('profileCoverUpload');
+  if (profileUpload) profileUpload.addEventListener('change', async function() {
+    var file = this.files && this.files[0];
+    if (!file) return;
+    var msgEl = document.getElementById('profileCoverUploadMsg');
+    msgEl.textContent = '上传中...';
+    var fd = new FormData(); fd.append('file', file);
+    try {
+      var res = await fetch('/api/upload-cover', { method: 'POST', body: fd });
+      var data = await res.json();
+      if (data.ok) { setVal('profileCover', data.url); msgEl.textContent = '✓ 已上传，记得保存'; }
+      else msgEl.textContent = data.error || '失败';
+    } catch(e) { msgEl.textContent = '上传失败'; }
+  });
   document.getElementById('profileForm')?.addEventListener('submit', async e => {
     e.preventDefault();
     var data = {
