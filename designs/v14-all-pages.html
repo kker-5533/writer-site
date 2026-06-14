@@ -1,0 +1,147 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>文学社 · 全部页面方案</title>
+<style>
+:root{--bg:#efe9de;--card:#fff;--border:#e0d8c8;--ink:#1a1817;--accent:#c0764a;--muted:#7a7165;--light:#999}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;perspective:1200px}
+nav{display:flex;justify-content:space-between;padding:16px 48px;background:var(--card);border-bottom:1px solid var(--border);position:relative;z-index:20}
+nav .logo{font-size:17px;font-weight:800;letter-spacing:8px}
+nav .links{display:flex;gap:34px}
+nav a{font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;letter-spacing:1px}
+nav a:hover{color:var(--ink)}
+.page-label{text-align:center;padding:60px 0 20px;font-size:13px;color:var(--accent);letter-spacing:4px;font-weight:700}
+.page-label span{display:block;font-size:22px;color:var(--ink);margin-top:8px;letter-spacing:2px;font-weight:800}
+.page{max-width:780px;margin:0 auto 80px;padding:0 32px}
+
+/* ===== 卡片系统 ===== */
+.card{background:var(--card);border:1px solid var(--border);box-shadow:0 2px 4px rgba(0,0,0,.02),0 8px 24px rgba(0,0,0,.04),0 16px 48px rgba(0,0,0,.03);position:relative;transition:all .35s}
+.card::after{content:'';position:absolute;bottom:0;left:6px;right:6px;height:10px;background:rgba(0,0,0,.03);filter:blur(6px);z-index:-1;transition:all .35s}
+.card:hover{transform:translateY(-4px);box-shadow:0 4px 8px rgba(0,0,0,.04),0 12px 36px rgba(0,0,0,.06),0 24px 64px rgba(0,0,0,.05)}
+.card:hover::after{bottom:-6px;height:14px;opacity:.6}
+
+/* ===== 登录页 ===== */
+.login-box{max-width:420px;margin:0 auto;padding:48px 40px;text-align:center}
+.login-box h2{font-size:24px;font-weight:800;letter-spacing:6px;margin-bottom:32px}
+.login-box .field{text-align:left;margin-bottom:18px}
+.login-box .field label{display:block;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:6px}
+.login-box .field input{width:100%;padding:12px 14px;font-size:14px;border:1px solid var(--border);background:var(--bg);color:var(--ink);outline:none;font-family:inherit}
+.login-box .field input:focus{border-color:var(--accent);background:var(--card)}
+.login-box .btn{display:block;width:100%;padding:14px;font-size:14px;font-weight:700;letter-spacing:4px;background:var(--ink);color:#fff;border:none;cursor:pointer;margin-top:24px;box-shadow:0 6px 0 rgba(0,0,0,.1);transition:all .2s}
+.login-box .btn:hover{transform:translateY(2px);box-shadow:0 3px 0 rgba(0,0,0,.1)}
+.login-box .alt{display:block;margin-top:18px;font-size:12px;color:var(--light);text-decoration:none;letter-spacing:1px}
+.login-box .alt:hover{color:var(--accent)}
+
+/* ===== 阅读页 ===== */
+.reader-header{text-align:center;padding:48px 0 36px}
+.reader-header .back{font-size:12px;color:var(--light);text-decoration:none;letter-spacing:1px}
+.reader-header h1{font-size:32px;font-weight:800;letter-spacing:3px;margin:20px 0 12px}
+.reader-header .meta-row{display:flex;justify-content:center;gap:12px;font-size:13px;color:var(--light);font-weight:500}
+.reader-header .tag{padding:2px 10px;background:var(--bg);border:1px solid var(--border);font-size:11px;font-weight:700;letter-spacing:1px;color:var(--accent)}
+.reader-body{font-size:17px;line-height:2.1;color:var(--ink);padding:0 0 40px}
+.reader-body p{margin-bottom:24px}
+.actions{display:flex;justify-content:center;gap:20px;padding:24px 0;border-top:1px solid var(--border);margin-bottom:32px}
+.act-btn{padding:12px 28px;border:1px solid var(--border);background:var(--card);font-size:14px;font-weight:600;letter-spacing:1px;color:var(--muted);cursor:pointer;transition:all .2s;box-shadow:0 4px 0 rgba(0,0,0,.06)}
+.act-btn:hover{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.06);color:var(--accent);border-color:var(--accent)}
+.act-btn:active{transform:translateY(4px);box-shadow:none}
+
+/* ===== 评论区 ===== */
+.comments{padding:32px 0}
+.comments h3{font-size:19px;font-weight:800;letter-spacing:2px;margin-bottom:24px}
+.comment-item{padding:22px 24px;margin-bottom:10px}
+.comment-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.comment-head .dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.comment-head .name{font-size:13px;font-weight:700}
+.comment-head .badge{font-size:10px;padding:2px 6px;background:var(--bg);border:1px solid var(--border);font-weight:600;color:var(--accent)}
+.comment-head .time{font-size:11px;color:var(--light);margin-left:auto}
+.comment-body{font-size:14px;line-height:1.8;color:var(--ink)}
+.comment-form{padding:24px}
+.comment-form textarea{width:100%;padding:12px 14px;border:1px solid var(--border);background:var(--bg);font-size:14px;font-family:inherit;outline:none;resize:vertical;min-height:80px}
+.comment-form textarea:focus{border-color:var(--accent);background:var(--card)}
+.comment-form .btn-row{display:flex;justify-content:flex-end;margin-top:10px}
+.comment-form .btn{display:inline-block;padding:10px 28px;font-size:13px;font-weight:700;letter-spacing:2px;background:var(--ink);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.1)}
+.comment-form .btn:hover{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.1)}
+
+/* ===== 作者页 ===== */
+.author-hero{text-align:center;padding:60px 0 40px}
+.author-hero .ava{width:80px;height:80px;border-radius:50%;margin:0 auto 18px;background:linear-gradient(145deg,#3d3858,#5a5280);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;color:#fff;box-shadow:inset 0 2px 4px rgba(255,255,255,.2),0 4px 12px rgba(0,0,0,.1)}
+.author-hero h2{font-size:28px;font-weight:800;letter-spacing:3px;margin-bottom:6px}
+.author-hero .bio{font-size:14px;color:var(--muted);max-width:400px;margin:0 auto}
+.works-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0 32px}
+.work-mini{padding:24px 28px}
+.work-mini .tag{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent);margin-bottom:8px;display:block}
+.work-mini h4{font-size:18px;font-weight:700;margin-bottom:4px}
+.work-mini .meta{font-size:12px;color:var(--light)}
+
+/* ===== 作品列表 ===== */
+.list-header{padding:24px 0;border-bottom:1px solid var(--border);margin-bottom:24px}
+.list-header h2{font-size:22px;font-weight:800;letter-spacing:3px}
+.list-item{padding:28px 32px;margin-bottom:12px;display:flex;gap:20px}
+.list-item .thumb{width:120px;height:90px;background:var(--bg);flex-shrink:0;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--light);font-size:11px;letter-spacing:2px}
+.list-item .info{flex:1}
+.list-item .tag{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent);margin-bottom:8px;display:block}
+.list-item h3{font-size:20px;font-weight:700;margin-bottom:4px}
+.list-item .meta{font-size:12px;color:var(--light);margin-bottom:8px}
+.list-item .desc{font-size:13px;line-height:1.7;color:var(--muted)}
+</style></head><body>
+<nav><span class="logo">文 学 社</span><div class="links"><a href="#">作品</a><a href="#">作者</a><a href="#">随笔</a><a href="#">活动</a><a href="#">社团</a></div><a href="#" style="font-size:13px;color:var(--light);text-decoration:none">登录</a></nav>
+
+<!-- ===== 登录页 ===== -->
+<div class="page-label">PAGE 01<span>登录</span></div>
+<div class="page"><div class="card login-box">
+<h2>欢迎回来</h2>
+<div class="field"><label>昵称</label><input type="text" placeholder="输入昵称"></div>
+<div class="field"><label>密码</label><input type="password" placeholder="输入密码"></div>
+<button class="btn">登 录</button>
+<a href="#" class="alt">没有账号？注册作者 →</a>
+</div></div>
+
+<!-- ===== 阅读页 ===== -->
+<div class="page-label">PAGE 02<span>作品阅读页</span></div>
+<div class="page">
+<div class="reader-header">
+<a href="#" class="back">← 返回列表</a>
+<h1>南方有雨</h1>
+<div class="meta-row"><span class="tag">长篇小说</span><span>蒲瑞昇</span><span>2024</span><span>约12万字</span></div>
+</div>
+<div class="reader-body">
+<p>雨下了整整三天。</p>
+<p>外婆坐在廊檐下，膝上摊着一本泛黄的相册。她翻页的速度极慢，慢到我以为她在每一页上睡着了。但她没有——她只是在每一张照片上停留，像一只疲倦的鸟停在枝头。</p>
+<p>「这是你曾祖母。」她的手指点在一个模糊的影子上。那女人的眉眼和我母亲有几分相似，又和外婆也像。三代人，像同一条河在不同季节的样子。</p>
+</div>
+<div class="actions">
+<button class="act-btn">♥ 点赞</button><button class="act-btn">⚡ 催更</button>
+</div>
+<div class="comments">
+<h3>作品留言</h3>
+<div class="comment-item card"><div class="comment-head"><span class="dot"></span><span class="name">苏晚</span><span class="badge">作者</span><span class="time">2026 · 06 · 14</span></div><p class="comment-body">渡口这篇文章写得太好了，读了三遍，每次都有新的感受。老周这个人物塑造得非常立体。</p></div>
+<div class="comment-item card"><div class="comment-head"><span class="dot"></span><span class="name">匿名读者</span><span class="time">2026 · 06 · 13</span></div><p class="comment-body">江水还在流——这句话让我沉默了很久。</p></div>
+<div class="comment-form card">
+<textarea placeholder="写下你想说的话..."></textarea>
+<div class="btn-row"><button class="btn">发布留言</button></div>
+</div>
+</div>
+</div>
+
+<!-- ===== 作者页 ===== -->
+<div class="page-label">PAGE 03<span>作者主页</span></div>
+<div class="page">
+<div class="author-hero"><div class="ava">蒲</div><h2>蒲瑞昇</h2><p class="bio">创办人 · 写小说和散文。相信好的文字应该像冬日阳光——不灼人，但有温度。</p></div>
+<div class="works-grid">
+<div class="work-mini card"><span class="tag">长篇小说</span><h4>南方有雨</h4><p class="meta">2024 · 约12万字</p></div>
+<div class="work-mini card"><span class="tag">中篇小说</span><h4>渡口</h4><p class="meta">2022 · 《收获》发表</p></div>
+<div class="work-mini card"><span class="tag">诗歌集</span><h4>失眠者手记</h4><p class="meta">2021</p></div>
+<div class="work-mini card"><span class="tag">散文</span><h4>傍晚的十三种写法</h4><p class="meta">2023 · 已出版</p></div>
+</div>
+</div>
+
+<!-- ===== 作品列表页 ===== -->
+<div class="page-label">PAGE 04<span>推荐作品列表</span></div>
+<div class="page">
+<div class="list-header"><h2>推荐作品</h2></div>
+<div class="list-item card"><div class="thumb">封面</div><div class="info"><span class="tag">长篇小说</span><h3>南方有雨</h3><p class="meta">蒲瑞昇 · 2024 · 约12万字</p><p class="desc">一个关于南方小城三代女性的故事。雨水贯穿始终，冲刷出被遗忘的记忆。</p></div></div>
+<div class="list-item card"><div class="thumb">封面</div><div class="info"><span class="tag">散文</span><h3>桂花落</h3><p class="meta">苏晚 · 2026</p><p class="desc">桂花的气味有一种穿透力。不是扑面而来的香，悄悄渗进鼻腔。</p></div></div>
+<div class="list-item card"><div class="thumb">封面</div><div class="info"><span class="tag">中篇小说</span><h3>渡口</h3><p class="meta">蒲瑞昇 · 2022</p><p class="desc">长江边一个小渡口的最后一年。摆渡人老周与来往过客。</p></div></div>
+<div class="list-item card"><div class="thumb">封面</div><div class="info"><span class="tag">诗歌集</span><h3>月光落在左手边</h3><p class="meta">江月 · 2025</p><p class="desc">二十六首诗，关于月光、失眠和远方。</p></div></div>
+</div>
+
+<footer style="padding:48px;text-align:center;font-size:12px;color:#bbb;border-top:1px solid var(--border)">© 2026 文学社 · 由内而外地安静生长</footer>
+</body></html>
