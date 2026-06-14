@@ -35,18 +35,10 @@ import Footer from '../../components/Footer.astro';
 
       if (!convs.length) { list.innerHTML = '<p class="inbox-empty">暂无来信</p>'; return; }
 
-      // 获取用户列表以确定角色
-      var usersRes = await fetch('/api/auth', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'list', adminId: me.id }) });
-      var users = [];
-      if (usersRes.ok) users = await usersRes.json();
-      var userMap = {};
-      users.forEach(function(u) { userMap[u.id] = u; });
-
       list.innerHTML = convs.map(function(c) {
         var isUnread = !c.read && c.from !== me.id;
-        var partner = userMap[c.partner] || {};
-        var name = partner.nickname || c.partnerName || '未知';
-        var roleLabel = partner.role === 'admin' ? '管理员' : '作者';
+        var name = c.partnerName || '未知';
+        var roleLabel = c.partnerRole === 'admin' ? '管理员' : '作者';
         return '<a href="/messages/' + c.partner + '" class="inbox-card' + (isUnread ? ' unread' : '') + '">' +
           '<span class="inbox-dot"></span>' +
           '<span class="inbox-body">' +

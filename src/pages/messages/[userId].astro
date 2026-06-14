@@ -34,7 +34,7 @@ if (!partner) return Astro.redirect('/messages');
   <Footer author="文学社" tagline="发现好文字，遇见好作者" />
 </Layout>
 
-<script define:vars={{ partnerId: userId }}>
+<script define:vars={{ partnerId: userId, partnerName: partner.nickname, partnerRole: partner.role }}>
   var userStr = sessionStorage.getItem('linshen_user');
   var auth = sessionStorage.getItem('linshen_auth');
   if (auth !== 'true' || !userStr) { window.location.href = '/login'; }
@@ -43,15 +43,6 @@ if (!partner) return Astro.redirect('/messages');
   var chatBox = document.getElementById('chatBox');
   var chatForm = document.getElementById('chatForm');
   var chatInput = document.getElementById('chatInput');
-
-  // 获取用户角色
-  var userMap = {};
-  async function loadUserMap() {
-    try {
-      var res = await fetch('/api/auth', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'list', adminId: me.id }) });
-      if (res.ok) { var users = await res.json(); users.forEach(function(u) { userMap[u.id] = u; }); }
-    } catch(e) {}
-  }
 
   function fmtTime(t) {
     if (!t) return '';
@@ -65,13 +56,11 @@ if (!partner) return Astro.redirect('/messages');
 
   function getSender(id) {
     if (id === me.id) return { name: '我', role: me.role };
-    var u = userMap[id] || {};
-    return { name: u.nickname || '未知', role: u.role || 'author' };
+    return { name: partnerName, role: partnerRole };
   }
 
   async function loadMessages() {
     try {
-      await loadUserMap();
       var res = await fetch('/api/private-messages?userId=' + me.id + '&with=' + partnerId);
       var msgs = await res.json();
       if (!msgs.length) { chatBox.innerHTML = '<p class="inbox-empty">暂无消息，发送第一条吧</p>'; return; }

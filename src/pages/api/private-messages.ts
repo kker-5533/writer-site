@@ -44,7 +44,7 @@ export async function GET({ url }: { url: URL }) {
     });
     const list = Object.values(convMap).sort((a: any, b: any) => b.time.localeCompare(a.time));
     const userMap = getUserMap();
-    const withNames = list.map((c: any) => ({ ...c, partnerName: (userMap[c.partner] || {}).nickname || '未知用户' }));
+    const withNames = list.map((c: any) => ({ ...c, partnerName: (userMap[c.partner] || {}).nickname || '未知用户', partnerRole: (userMap[c.partner] || {}).role || 'author' }));
     const unread = userMsgs.filter((m: any) => m.to === userId && !m.read).length;
     return new Response(JSON.stringify({ conversations: withNames, unread }), { status: 200 });
   }
