@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>方案C：层次景深</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f5f1ea;color:#2c2416}
+nav{display:flex;justify-content:space-between;padding:16px 48px;background:#fff;border-bottom:1px solid #e8e0d4}
+nav .logo{font-size:17px;font-weight:800;letter-spacing:8px;color:#111}
+nav .links{display:flex;gap:36px}
+nav a{font-size:13px;font-weight:500;color:#8a7e72;text-decoration:none;letter-spacing:1px}
+nav a:hover{color:#111}
+
+.hero{padding:140px 48px 120px;display:grid;grid-template-columns:1fr 1fr;gap:60px;max-width:1100px;margin:0 auto;align-items:center}
+.hero-text h1{font-size:48px;font-weight:800;letter-spacing:1px;line-height:1.15;color:#111;margin-bottom:20px}
+.hero-text .desc{font-size:16px;line-height:1.8;color:#6b6058;max-width:420px;margin-bottom:32px}
+.hero-text .cta{display:inline-block;padding:14px 36px;background:#111;color:#fff;text-decoration:none;font-size:14px;font-weight:700;letter-spacing:3px}
+.hero-text .cta:hover{background:#b8976e}
+.hero-img{background:linear-gradient(135deg,#e8dcc8 0%,#d5c8ae 100%);height:340px;position:relative}
+.hero-img::before{content:'';position:absolute;top:-16px;left:-16px;right:-16px;bottom:-16px;border:1px solid rgba(0,0,0,.06)}
+
+.section{max-width:1040px;margin:0 auto;padding:0 48px 80px}
+.sec-head{margin-bottom:32px}
+.sec-head h2{font-size:20px;font-weight:800;letter-spacing:4px;color:#111;display:inline-block;border-bottom:3px solid #b8976e;padding-bottom:8px}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+
+.card{background:#fff;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.04);border-radius:1px;position:relative;transition:all .3s}
+.card:hover{box-shadow:0 1px 3px rgba(0,0,0,.06),0 16px 48px rgba(0,0,0,.08);transform:translateY(-2px)}
+.card .tag{font-size:10px;font-weight:700;letter-spacing:3px;color:#b8976e;margin-bottom:12px}
+.card h3{font-size:21px;font-weight:700;color:#111;margin-bottom:6px}
+.card .meta{font-size:12px;color:#999;font-weight:500;margin-bottom:12px}
+.card .desc{font-size:14px;line-height:1.7;color:#555}
+
+.author{text-align:center;background:#fff;padding:32px 16px;box-shadow:0 1px 3px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.04);transition:all .3s}
+.author:hover{box-shadow:0 1px 3px rgba(0,0,0,.06),0 16px 48px rgba(0,0,0,.08);transform:translateY(-2px)}
+.author .ava{width:60px;height:60px;border-radius:50%;background:#f0e8d8;color:#111;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;margin:0 auto 14px}
+.author .name{font-size:15px;font-weight:700;color:#111}
+.author .role{font-size:12px;color:#999;font-weight:500;margin-top:4px}
+
+.blog-list{max-width:700px}
+.blog-item{display:flex;gap:20px;padding:20px 0;border-bottom:1px solid #e8e0d4}
+.blog-date{font-size:12px;color:#b8976e;font-weight:700;min-width:80px}
+.blog-item h4{font-size:17px;font-weight:700;color:#111;margin-bottom:4px}
+.blog-author{font-size:12px;color:#999;font-weight:500}
+
+footer{padding:40px 48px;text-align:center;font-size:12px;color:#bbb;font-weight:500;border-top:1px solid #e8e0d4}
+</style></head><body>
+<nav><span class="logo">文 学 社</span><div class="links"><a href="#">作品</a><a href="#">作者</a><a href="#">随笔</a><a href="#">活动</a><a href="#">社团</a></div><a href="#" style="font-size:13px;color:#999;text-decoration:none;font-weight:500">登录</a></nav>
+<div class="hero">
+<div class="hero-text"><h1>发现好文字<br>遇见好作者</h1><p class="desc">文学社是一个开放的文字平台。每一篇作品都是一次相遇——安静地读，认真地写。</p><a href="#" class="cta">开 始 阅 读</a></div>
+<div class="hero-img"></div>
+</div>
+<div class="section"><div class="sec-head"><h2>推荐作品</h2></div><div class="grid2">
+<div class="card"><div class="tag">长篇小说</div><h3>南方有雨</h3><p class="meta">蒲瑞昇 · 2024</p><p class="desc">一个关于南方小城三代女性的故事。雨水贯穿始终，冲刷出被遗忘的记忆与未曾说出口的爱。</p></div>
+<div class="card"><div class="tag">散文</div><h3>桂花落</h3><p class="meta">苏晚 · 2026</p><p class="desc">桂花的气味有一种穿透力。不是扑面而来的香，而是悄悄渗进鼻腔，直达记忆深处。</p></div>
+<div class="card"><div class="tag">中篇小说</div><h3>渡口</h3><p class="meta">蒲瑞昇 · 2022</p><p class="desc">长江边一个小渡口的最后一年。摆渡人老周与来往过客之间的短暂相遇与长久告别。</p></div>
+<div class="card"><div class="tag">诗歌集</div><h3>月光落在左手边</h3><p class="meta">江月 · 2025</p><p class="desc">二十六首诗，关于月光、失眠和远方。凌晨三点，世界安静得像一个巨大的录音棚。</p></div>
+</div></div>
+<div class="section"><div class="sec-head"><h2>推荐作者</h2></div><div class="grid4">
+<div class="author"><div class="ava">蒲</div><div class="name">蒲瑞昇</div><div class="role">创办人</div></div>
+<div class="author"><div class="ava">苏</div><div class="name">苏晚</div><div class="role">小说作者</div></div>
+<div class="author"><div class="ava">江</div><div class="name">江月</div><div class="role">诗人</div></div>
+<div class="author"><div class="ava">云</div><div class="name">云栖</div><div class="role">散文作者</div></div>
+</div></div>
+<div class="section"><div class="sec-head"><h2>最新随笔</h2></div><div class="blog-list">
+<div class="blog-item"><span class="blog-date">2026.06.10</span><div><h4>写作者的书桌</h4><p class="blog-author">蒲瑞昇</p></div></div>
+<div class="blog-item"><span class="blog-date">2026.05.28</span><div><h4>重读《边城》</h4><p class="blog-author">苏晚</p></div></div>
+</div></div>
+<footer>© 2026 文学社 · 由内而外地安静生长</footer>
+</body></html>
