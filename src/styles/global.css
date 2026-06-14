@@ -2,21 +2,23 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --navy: #1b2a3a;
-  --teal-deep: #2e5c6e;
-  --teal: #4a8a9e;
-  --teal-light: #8bbfcc;
-  --sand: #e6dccf;
-  --sand-light: #f2ece3;
-  --cream: #fdfaf6;
+  --navy: #151d2c;
+  --teal-deep: #2d5a68;
+  --teal: #5a8797;
+  --teal-light: #a3c4cf;
+  --sand: #e8ded0;
+  --sand-light: #f3ede4;
+  --cream: #fdfaf5;
   --white: #ffffff;
-  --gold: #b8936e;
-  --gold-light: #d4b896;
-  --text-dark: #1e2d35;
-  --text-mid: #4d5c64;
-  --text-light: #88959d;
-  --border: #e8e2d8;
-  --border-light: #f0ebe3;
+  --gold: #b09778;
+  --gold-light: #cfbaa0;
+  --purple: #7c5cbf;
+  --purple-light: #a088d0;
+  --text-dark: #1a262e;
+  --text-mid: #4d5860;
+  --text-light: #8a949c;
+  --border: #e6e0d6;
+  --border-light: #f0ebe2;
   --font-heading: "Songti SC", "STSong", "SimSun", "KaiTi", "楷体", serif;
   --font-body: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "STHeiti", sans-serif;
 }
@@ -75,7 +77,7 @@ section.alt { background: var(--white); }
 .user-trigger { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 10px 0; }
 .uname { color: rgba(255,255,255,0.85); font-size: 12.5px; font-weight: 500; }
 .role-badge { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; letter-spacing: 0; }
-.badge-admin { background: #c0745c; color: #fff; }
+.badge-admin { background: var(--purple); color: #fff; }
 .badge-author { background: var(--teal); color: #fff; }
 .user-dropdown { position: absolute; top: 100%; right: 0; margin-top: 6px; background: rgba(27,42,58,0.97); backdrop-filter: blur(16px); border-radius: 10px; box-shadow: 0 4px 24px rgba(0,0,0,0.25); min-width: 160px; padding: 8px 0; z-index: 30; border: 1px solid rgba(255,255,255,0.08); }
 .user-dropdown a { display: block; padding: 10px 20px; font-size: 13px; color: rgba(255,255,255,0.7) !important; letter-spacing: 0.5px; text-decoration: none; transition: all 0.2s; }
@@ -186,6 +188,7 @@ section.alt { background: var(--white); }
 .inbox-line1 { display: flex; align-items: center; gap: 8px; }
 .inbox-line1 strong { font-size: 15px; color: var(--navy); }
 .inbox-line1 em { font-style: normal; font-size: 11px; padding: 1px 6px; border-radius: 3px; background: var(--teal); color: #fff; }
+.inbox-line1 em.badge-admin, .chat-card-head em.badge-admin { background: var(--purple); }
 .inbox-time { font-size: 12px; color: var(--text-light); margin-left: auto; }
 .inbox-line2 { font-size: 13.5px; color: var(--text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 

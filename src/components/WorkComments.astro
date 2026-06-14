@@ -54,7 +54,7 @@ const safeId = slug.replace(/[^a-zA-Z0-9一-鿿]/g, '-');
     if (!msgs.length) { list.innerHTML = '<p class="wc-empty">暂无留言，来做第一个留言的读者吧。</p>'; return; }
     var html = msgs.map(function(m) {
       var badgeHtml = '';
-      if (m.role === 'admin') badgeHtml = '<span style="font-size:10px;padding:1px 6px;border-radius:3px;font-weight:600;background:#c0745c;color:#fff;margin-left:6px;">管理员</span>';
+      if (m.role === 'admin') badgeHtml = '<span style="font-size:10px;padding:1px 6px;border-radius:3px;font-weight:600;background:#7c5cbf;color:#fff;margin-left:6px;">管理员</span>';
       else if (m.role === 'author') badgeHtml = '<span style="font-size:10px;padding:1px 6px;border-radius:3px;font-weight:600;background:#4a8a9e;color:#fff;margin-left:6px;">作者</span>';
       return '<div style="padding:20px 24px;margin-bottom:12px;background:#fff;border:1px solid #e0dcd5;border-radius:10px;">' +
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">' +
@@ -120,7 +120,7 @@ const safeId = slug.replace(/[^a-zA-Z0-9一-鿿]/g, '-');
   .wc-left { display: flex; align-items: center; gap: 0; }
   .wc-author { font-size: 12px; font-weight: 600; color: var(--navy); }
   .wc-role-badge { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; letter-spacing: 0; flex-shrink: 0; margin-left: 6px; }
-  .badge-admin { background: #c0745c; color: #fff; }
+  .badge-admin { background: #7c5cbf; color: #fff; }
   .badge-author { background: var(--teal); color: #fff; }
   .wc-time { font-size: 12px; color: var(--text-light); white-space: nowrap; }
   .wc-body { font-size: 15px; color: var(--text-dark); line-height: 1.9; word-break: break-word; }

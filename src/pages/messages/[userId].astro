@@ -70,7 +70,7 @@ if (!partner) return Astro.redirect('/messages');
         var roleLabel = s.role === 'admin' ? '管理员' : '作者';
         var isRead = m.read ? '已读' : '未读';
         return '<div class="chat-card">' +
-          '<div class="chat-card-head"><strong>' + esc(s.name) + '</strong><em>' + roleLabel + '</em><span class="chat-card-time">' + fmtTime(m.time) + '</span><span class="chat-card-status ' + (m.read ? 'read' : '') + '">' + isRead + '</span></div>' +
+          '<div class="chat-card-head"><strong>' + esc(s.name) + '</strong><em class="' + (s.role === 'admin' ? 'badge-admin' : '') + '">' + roleLabel + '</em><span class="chat-card-time">' + fmtTime(m.time) + '</span><span class="chat-card-status ' + (m.read ? 'read' : '') + '">' + isRead + '</span></div>' +
           '<p class="chat-card-body">' + esc(m.body) + '</p>' +
         '</div>';
       }).join('');

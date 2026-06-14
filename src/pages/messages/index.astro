@@ -42,7 +42,7 @@ import Footer from '../../components/Footer.astro';
         return '<a href="/messages/' + c.partner + '" class="inbox-card' + (isUnread ? ' unread' : '') + '">' +
           '<span class="inbox-dot"></span>' +
           '<span class="inbox-body">' +
-            '<span class="inbox-line1"><strong>' + esc(name) + '</strong><em>' + roleLabel + '</em><span class="inbox-time">' + fmtTime(c.time) + ' 来信</span></span>' +
+            '<span class="inbox-line1"><strong>' + esc(name) + '</strong><em class="' + (c.partnerRole === 'admin' ? 'badge-admin' : '') + '">' + roleLabel + '</em><span class="inbox-time">' + fmtTime(c.time) + ' 来信</span></span>' +
             '<span class="inbox-line2">' + esc(c.lastMsg || '').slice(0, 80) + '</span>' +
           '</span>' +
         '</a>';
