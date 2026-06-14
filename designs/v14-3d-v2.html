@@ -73,6 +73,13 @@ section{padding:80px 48px;max-width:1100px;margin:0 auto}
 .blog-card .meta{font-size:12px;color:#999;font-weight:500;margin-bottom:12px}
 .blog-card .excerpt{font-size:14px;line-height:1.7;color:#555}
 
+.carousel-btn{
+  display:block;text-align:center;margin-top:24px;padding:14px 0;
+  font-size:14px;font-weight:700;color:#c0764a;cursor:pointer;
+  letter-spacing:4px;border:1px solid #e0d8c8;background:#fff;
+  border-radius:2px;transition:all .25s;user-select:none
+}
+.carousel-btn:hover{background:#1a1817;color:#fff;border-color:#1a1817}
 footer{padding:48px;text-align:center;font-size:12px;color:#bbb;border-top:1px solid #e0d8c8}
 </style></head><body>
 <nav><span class="logo">文 学 社</span><div class="links"><a href="#">作品</a><a href="#">作者</a><a href="#">随笔</a><a href="#">活动</a><a href="#">社团</a></div><a href="#" style="font-size:13px;color:#999;text-decoration:none">登录</a></nav>
@@ -139,15 +146,16 @@ footer{padding:48px;text-align:center;font-size:12px;color:#bbb;border-top:1px s
     var batches = Math.ceil(total / batchSize);
     if (batches <= 1) return;
     var current = 0;
-    // 创建翻页按钮
-    var btn = document.createElement('span');
+    // 创建大按钮放在 grid 下方
+    var btn = document.createElement('div');
     btn.className = 'carousel-btn';
-    btn.textContent = '换一批';
-    btn.style.cssText = 'font-size:12px;font-weight:600;color:#c0764a;cursor:pointer;letter-spacing:2px;white-space:nowrap;margin-left:8px;user-select:none';
-    // 把按钮放到这个 grid 前面的 sec-head 里
-    var section = grid.closest('section');
-    var head = section ? section.querySelector('.sec-head') : null;
-    if (head) head.appendChild(btn);
+    btn.textContent = '换 一 批';
+    btn.addEventListener('click', function() {
+      current = (current + 1) % batches;
+      show(current);
+      btn.textContent = '换 一 批（' + (current + 1) + '/' + batches + '）';
+    });
+    grid.parentNode.insertBefore(btn, grid.nextSibling);
     function show(batch) {
       for (var i = 0; i < total; i++) {
         var start = batch * batchSize;
@@ -156,10 +164,6 @@ footer{padding:48px;text-align:center;font-size:12px;color:#bbb;border-top:1px s
       }
     }
     show(0);
-    btn.addEventListener('click', function() {
-      current = (current + 1) % batches;
-      show(current);
-    });
   }
   makeCarousel('worksGrid', 4);
   makeCarousel('authorsGrid', 4);
