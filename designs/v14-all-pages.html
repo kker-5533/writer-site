@@ -123,15 +123,17 @@ nav a:hover{color:var(--ink)}
 
 <!-- ===== 作者页 ===== -->
 <div class="page-label">PAGE 03<span>作者主页</span></div>
-<div class="page">
-<div class="author-hero"><div class="ava">蒲</div><h2>蒲瑞昇</h2><p class="bio">创办人 · 写小说和散文。相信好的文字应该像冬日阳光——不灼人，但有温度。</p></div>
-<div class="works-grid">
+<div class="author-hero-bg" style="background:linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),url(https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80) center/cover;padding:100px 0 80px;text-align:center;color:#fff;border:1px solid var(--border);margin-bottom:32px">
+<div class="ava" style="width:80px;height:80px;border-radius:50%;margin:0 auto 18px;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;color:#fff;border:2px solid rgba(255,255,255,.3)">蒲</div>
+<h2 style="font-size:28px;font-weight:800;letter-spacing:4px;margin-bottom:8px">蒲瑞昇</h2>
+<p style="font-size:14px;opacity:.7;max-width:400px;margin:0 auto">创办人 · 写小说和散文。相信好的文字应该像冬日阳光——不灼人，但有温度。</p>
+</div>
+<div class="page"><div class="works-grid">
 <div class="work-mini card"><span class="tag">长篇小说</span><h4>南方有雨</h4><p class="meta">2024 · 约12万字</p></div>
 <div class="work-mini card"><span class="tag">中篇小说</span><h4>渡口</h4><p class="meta">2022 · 《收获》发表</p></div>
 <div class="work-mini card"><span class="tag">诗歌集</span><h4>失眠者手记</h4><p class="meta">2021</p></div>
 <div class="work-mini card"><span class="tag">散文</span><h4>傍晚的十三种写法</h4><p class="meta">2023 · 已出版</p></div>
-</div>
-</div>
+</div></div>
 
 <!-- ===== 作品列表页 ===== -->
 <div class="page-label">PAGE 04<span>推荐作品列表</span></div>
@@ -141,6 +143,46 @@ nav a:hover{color:var(--ink)}
 <div class="list-item card"><div class="thumb">封面</div><div class="info"><span class="tag">散文</span><h3>桂花落</h3><p class="meta">苏晚 · 2026</p><p class="desc">桂花的气味有一种穿透力。不是扑面而来的香，悄悄渗进鼻腔。</p></div></div>
 <div class="list-item card"><div class="thumb">封面</div><div class="info"><span class="tag">中篇小说</span><h3>渡口</h3><p class="meta">蒲瑞昇 · 2022</p><p class="desc">长江边一个小渡口的最后一年。摆渡人老周与来往过客。</p></div></div>
 <div class="list-item card"><div class="thumb">封面</div><div class="info"><span class="tag">诗歌集</span><h3>月光落在左手边</h3><p class="meta">江月 · 2025</p><p class="desc">二十六首诗，关于月光、失眠和远方。</p></div></div>
+</div>
+
+<!-- ===== 作者后台 ===== -->
+<div class="page-label">PAGE 05<span>作者后台</span></div>
+<style>
+.admin-wrap{max-width:860px;margin:0 auto 80px;padding:0 32px}
+.admin-tabs{display:flex;gap:0;margin-bottom:28px;border-bottom:1px solid var(--border)}
+.admin-tab{padding:10px 18px;font-size:12px;font-weight:600;color:var(--light);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;letter-spacing:1px;transition:all .2s}
+.admin-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.admin-tab:hover{color:var(--ink)}
+.admin-card{padding:20px 24px;margin-bottom:10px;display:flex;align-items:center;gap:14px}
+.admin-card .title{font-size:15px;font-weight:700;flex:1}
+.admin-card .tag{font-size:10px;padding:3px 8px;border:1px solid var(--border);font-weight:600;letter-spacing:1px}
+.admin-card .tag.pending{color:#b8972e;border-color:#e8d89e;background:#fef9ee}
+.admin-card .tag.approved{color:#4a8a4a;border-color:#a8d8a8;background:#f0faf0}
+.admin-card .btns{display:flex;gap:6px}
+.admin-btn{padding:5px 12px;font-size:11px;font-weight:600;border:1px solid var(--border);background:var(--card);cursor:pointer;letter-spacing:1px;transition:all .15s;box-shadow:0 2px 0 rgba(0,0,0,.04)}
+.admin-btn:hover{transform:translateY(1px);box-shadow:none}
+.admin-btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.admin-btn.danger{color:#c44;border-color:#ecc}
+.admin-form-card{padding:28px}
+.admin-form-card .row{display:flex;gap:14px;margin-bottom:14px}
+.admin-form-card .col{flex:1;display:flex;flex-direction:column;gap:4px}
+.admin-form-card label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px}
+.admin-form-card input,.admin-form-card textarea,.admin-form-card select{padding:10px 12px;border:1px solid var(--border);background:var(--bg);font-size:13px;font-family:inherit;outline:none}
+.admin-form-card input:focus,.admin-form-card textarea:focus,.admin-form-card select:focus{border-color:var(--accent);background:var(--card)}
+</style>
+<div class="admin-wrap">
+<div class="admin-tabs"><span class="admin-tab active">作品管理</span><span class="admin-tab">随笔管理</span><span class="admin-tab">个人设置</span><span class="admin-tab">密码修改</span></div>
+<div class="admin-card card"><span class="title">南方有雨</span><span class="tag approved">审核通过</span><span class="tag">长篇小说</span><span style="font-size:12px;color:var(--light)">2024</span><div class="btns"><button class="admin-btn">编辑</button><button class="admin-btn danger">删除</button></div></div>
+<div class="admin-card card"><span class="title">秋水</span><span class="tag pending">待审核</span><span class="tag">短篇小说</span><span style="font-size:12px;color:var(--light)">2025</span><div class="btns"><button class="admin-btn">编辑</button><button class="admin-btn danger">删除</button></div></div>
+<div style="margin-top:16px"><button class="admin-btn primary" style="padding:10px 24px;font-size:13px">+ 新增作品</button></div>
+</div>
+
+<!-- ===== 平台后台 ===== -->
+<div class="page-label">PAGE 06<span>平台管理后台</span></div>
+<div class="admin-wrap">
+<div class="admin-tabs"><span class="admin-tab active">作者管理</span><span class="admin-tab">作品审核</span><span class="admin-tab">评论管理</span></div>
+<div class="admin-card card"><span class="title">苏晚</span><span class="tag" style="color:#4a8a4a;border-color:#a8d8a8">正常</span><span style="font-size:12px;color:var(--light)">注册于 2026-06-13</span><div class="btns"><button class="admin-btn">重置密码</button><button class="admin-btn danger">封禁</button><button class="admin-btn" style="color:#c0764a;border-color:#e0c8a0">禁言</button></div></div>
+<div class="admin-card card"><span class="title">江月</span><span class="tag" style="color:#e6a817;border-color:#f5d6b3">禁言中</span><span style="font-size:12px;color:var(--light)">注册于 2026-06-13</span><div class="btns"><button class="admin-btn">重置密码</button><button class="admin-btn">解封</button></div></div>
 </div>
 
 <footer style="padding:48px;text-align:center;font-size:12px;color:#bbb;border-top:1px solid var(--border)">© 2026 文学社 · 由内而外地安静生长</footer>
