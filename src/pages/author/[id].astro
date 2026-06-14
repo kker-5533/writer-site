@@ -54,5 +54,8 @@ const aboutParagraphs = [author.intro || '这个人很懒，什么都没写...']
   <Works works={authorWorks} interactions={interactions} />
   <Blog posts={authorPosts} interactions={interactions} />
   <About paragraphs={aboutParagraphs} />
+  <div class="container" style="text-align:center;padding:24px 0 40px">
+    <a href={`/messages/${author.id}`} class="dm-btn" id="dmBtn">✉ 发私信</a>
+  </div>
   <Footer author={author.nickname} tagline="由内而外地安静生长" />
 </Layout>
