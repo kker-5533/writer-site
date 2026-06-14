@@ -4,6 +4,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const FILE = path.join(process.cwd(), 'src/data/private-messages.json');
+const USERS_FILE = path.join(process.cwd(), 'src/data/users.json');
+
+function getUserMap(): Record<string, any> {
+  try { const users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8')); const m: Record<string, any> = {}; users.forEach((u: any) => { m[u.id] = u; }); return m; } catch { return {}; }
+}
+const FILE = path.join(process.cwd(), 'src/data/private-messages.json');
 
 function read() {
   try { return JSON.parse(fs.readFileSync(FILE, 'utf-8')); } catch { return []; }
@@ -39,9 +45,10 @@ export async function GET({ url }: { url: Request['url'] extends string ? any : 
       }
     });
     const list = Object.values(convMap).sort((a: any, b: any) => b.time.localeCompare(a.time));
-    // 计算未读数
+    const userMap = getUserMap();
+    const withNames = list.map((c: any) => ({ ...c, partnerName: (userMap[c.partner] || {}).nickname || '未知用户' }));
     const unread = userMsgs.filter((m: any) => m.to === userId && !m.read).length;
-    return new Response(JSON.stringify({ conversations: list, unread }), { status: 200 });
+    return new Response(JSON.stringify({ conversations: withNames, unread }), { status: 200 });
   }
 
   return new Response(JSON.stringify([]), { status: 200 });

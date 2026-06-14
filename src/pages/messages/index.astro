@@ -34,36 +34,29 @@ const userMap = getUsers();
   if (auth !== 'true' || !userStr) { window.location.href = '/login'; }
   var me = JSON.parse(userStr);
 
-  var userMap = {} as Record<string, any>;
+  var userMap = {};
   // 把服务端数据放进页面
   var rawUserMap = JSON.parse(document.getElementById('__userMap')?.textContent || '{}');
 
   async function loadInbox() {
-    var list = document.getElementById('inboxList')!;
+    var list = document.getElementById('inboxList');
     try {
-      // 获取用户列表
-      var uRes = await fetch('/api/auth', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'list', adminId: me.id }) });
-      if (!uRes.ok) { list.innerHTML = '<p class="empty">暂无来信</p>'; return; }
-      var users = await uRes.json();
-      var userMap: Record<string, any> = {};
-      users.forEach(function(u: any) { userMap[u.id] = u; });
-
-      // 获取对话列表
       var res = await fetch('/api/private-messages?userId=' + me.id);
       var data = await res.json();
       var convs = data.conversations || [];
       var unread = data.unread || 0;
 
-      document.querySelector('h1')!.textContent = '我的来信' + (unread > 0 ? '（' + unread + ' 条未读）' : '');
+      var h1 = document.querySelector('h1');
+      if (h1) h1.textContent = '我的来信' + (unread > 0 ? '（' + unread + ' 条未读）' : '');
 
       if (!convs.length) { list.innerHTML = '<p class="empty">暂无来信<br><span class="hint">在作者主页或个人主页下方可以发送私信</span></p>'; return; }
 
-      list.innerHTML = convs.map(function(c: any) {
-        var partner = userMap[c.partner] || { nickname: '未知用户' };
+      list.innerHTML = convs.map(function(c) {
         var isUnread = !c.read && c.from !== me.id;
+        var name = c.partnerName || '未知用户';
         return '<a href="/messages/' + c.partner + '" class="conv-item' + (isUnread ? ' unread' : '') + '">' +
-          '<div class="conv-left"><div class="conv-avatar">' + (partner.nickname || '?')[0] + '</div></div>' +
-          '<div class="conv-main"><div class="conv-head"><span class="conv-name">' + esc(partner.nickname) + '</span><span class="conv-time">' + fmtTime(c.time) + '</span></div>' +
+          '<div class="conv-left"><div class="conv-avatar">' + (name || '?')[0] + '</div></div>' +
+          '<div class="conv-main"><div class="conv-head"><span class="conv-name">' + esc(name) + '</span><span class="conv-time">' + fmtTime(c.time) + '</span></div>' +
           '<p class="conv-preview">' + (c.from === me.id ? '我：' : '') + esc(c.lastMsg || '') + '</p></div>' +
           (isUnread ? '<span class="conv-dot"></span>' : '') +
           '</a>';
@@ -71,7 +64,7 @@ const userMap = getUsers();
     } catch(e) { list.innerHTML = '<p class="empty">加载失败</p>'; }
   }
 
-  function fmtTime(t: string) {
+  function fmtTime(t) {
     if (!t) return '';
     var d = new Date(t);
     var now = new Date();
@@ -82,7 +75,7 @@ const userMap = getUsers();
     return d.toISOString().slice(0, 10);
   }
 
-  function esc(s: string) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function esc(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   loadInbox();
 </script>
