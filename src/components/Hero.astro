@@ -4,14 +4,17 @@ interface Props {
   subtitle: string;
   intro: string;
   coverImage: string;
+  avatar?: string;
 }
 
-const { author, subtitle, intro, coverImage } = Astro.props;
+const { author, subtitle, intro, coverImage, avatar } = Astro.props;
 ---
 
 <header id="hero" style={`background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.3)), url('${coverImage}')`}>
   <div class="hero-inner">
-    <div class="hero-avatar">{author[0]}</div>
+    <div class="hero-avatar">
+      {avatar ? <img src={avatar} alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover" /> : author[0]}
+    </div>
     <h1>{author}</h1>
     <p class="subtitle">{subtitle}</p>
     <p class="intro" set:html={intro.replace(/\n/g, '<br>')} />

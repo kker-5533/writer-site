@@ -50,6 +50,7 @@ const aboutParagraphs = [author.intro || '这个人很懒，什么都没写...']
     subtitle="散 文 / 小 说 / 诗 歌"
     intro={`加入于 ${author.createdAt}`}
     coverImage={author.coverImage || siteData.coverImage}
+    avatar={author.avatar || ''}
   />
   <Works works={authorWorks} interactions={interactions} />
   <Blog posts={authorPosts} interactions={interactions} />
