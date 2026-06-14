@@ -6,11 +6,9 @@ import path from 'node:path';
 const FILE = path.join(process.cwd(), 'src/data/private-messages.json');
 const USERS_FILE = path.join(process.cwd(), 'src/data/users.json');
 
-function getUserMap(): Record<string, any> {
-  try { const users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8')); const m: Record<string, any> = {}; users.forEach((u: any) => { m[u.id] = u; }); return m; } catch { return {}; }
+function getUserMap(): any {
+  try { const users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8')); const m: any = {}; users.forEach((u: any) => { m[u.id] = u; }); return m; } catch { return {}; }
 }
-const FILE = path.join(process.cwd(), 'src/data/private-messages.json');
-
 function read() {
   try { return JSON.parse(fs.readFileSync(FILE, 'utf-8')); } catch { return []; }
 }
@@ -18,9 +16,9 @@ function write(data: any[]) {
   fs.writeFileSync(FILE, JSON.stringify(data, null, 2) + '\n', 'utf-8');
 }
 
-export async function GET({ url }: { url: Request['url'] extends string ? any : never }) {
-  const userId = new URL(url).searchParams.get('userId') || '';
-  const withUser = new URL(url).searchParams.get('with') || '';
+export async function GET({ url }: { url: URL }) {
+  const userId = url.searchParams.get('userId') || '';
+  const withUser = url.searchParams.get('with') || '';
   const messages = read();
 
   // 返回与特定用户的对话
@@ -54,7 +52,7 @@ export async function GET({ url }: { url: Request['url'] extends string ? any : 
   return new Response(JSON.stringify([]), { status: 200 });
 }
 
-export async function POST({ request }: { request: Request }) {
+export async function POST({ request }: { request: { json: () => Promise<any> } }) {
   try {
     const body = await request.json();
     const { from, to, body: msgBody } = body;
