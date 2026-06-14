@@ -41,12 +41,11 @@ const recommendedAuthors = users.filter((u: any) => u.recommended && u.status ==
       <a href="/recommended-works" class="cta-btn">开 始 阅 读</a>
     </div>
     <div class="hero-cards">
-      {featuredWorks.slice(0,3).map((w: any, i: number) => (
+      {approvedWorks.slice(0,7).map((w: any, i: number) => (
         <div class={`hc hc${i+1}`}>
-          <span class="hc-tag">{i === 0 ? '本期力荐' : i === 1 ? '编辑精选' : '读者推荐'}</span>
+          <span class="hc-tag">{['本期力荐','编辑精选','读者推荐','新作速递','经典重温','热门作品','编辑之选'][i]}</span>
           <a href={`/works/${w.id}`}><h3>{w.title}</h3></a>
           <p class="hc-author">{w.authorName || '佚名'}</p>
-          <p class="hc-excerpt">{(w.summary || '').slice(0,60)}</p>
         </div>
       ))}
     </div>
@@ -142,19 +141,25 @@ const recommendedAuthors = users.filter((u: any) => u.recommended && u.status ==
   }
   .cta-btn:hover { transform: translateY(2px); box-shadow: 0 4px 0 rgba(0,0,0,.1); }
 
-  .hero-cards { position: relative; height: 300px; }
+  .hero-cards { position: relative; height: 520px; margin-top: -20px; }
   .hc {
-    position: absolute; background: var(--white); padding: 24px; border: 1px solid var(--border);
-    width: 200px; cursor: pointer; transition: transform .5s cubic-bezier(.25,.1,.25,1),box-shadow .5s;
-    text-decoration: none; color: inherit;
+    position: absolute; background: rgba(255,255,255,.95); backdrop-filter: blur(4px);
+    padding: 14px 16px; border: 1px solid var(--border);
+    width: 160px; cursor: pointer; transition: transform .5s cubic-bezier(.25,.1,.25,1),box-shadow .5s;
+    text-decoration: none; color: inherit; font-size: 11px;
   }
-  .hc:hover { z-index: 10 !important; box-shadow: 0 8px 32px rgba(0,0,0,.15) !important; }
-  .hc1 { top: 10px; left: 30px; z-index: 3; transform: rotate(-3deg); box-shadow: var(--shadow-md); }
-  .hc1:hover { transform: rotate(0deg) scale(1.05); }
-  .hc2 { top: 50px; right: 10px; z-index: 2; transform: rotate(2deg); box-shadow: var(--shadow-md); }
-  .hc2:hover { transform: rotate(-1deg) scale(1.05); }
-  .hc3 { bottom: 30px; left: 70px; z-index: 1; transform: rotate(-1.5deg); box-shadow: var(--shadow-md); }
-  .hc3:hover { transform: rotate(1deg) scale(1.05); }
+  .hc:hover { z-index: 20 !important; box-shadow: 0 8px 32px rgba(0,0,0,.15) !important; transform: rotate(0deg) scale(1.08) !important; }
+  .hc h3 { font-size: 13px; margin-bottom: 2px; }
+  .hc-tag { font-size: 9px; letter-spacing: 2px; margin-bottom: 4px; }
+  .hc-author { font-size: 10px; }
+  /* 7 张卡片——层叠分布 */
+  .hc1 { top: 0; left: 20px; z-index: 7; transform: rotate(-4deg); box-shadow: var(--shadow-md); }
+  .hc2 { top: 20px; right: 20px; z-index: 6; transform: rotate(3deg); box-shadow: var(--shadow-md); }
+  .hc3 { top: 75px; left: 50px; z-index: 5; transform: rotate(-2deg); box-shadow: var(--shadow-md); }
+  .hc4 { top: 95px; right: 50px; z-index: 4; transform: rotate(1.5deg); box-shadow: var(--shadow-md); }
+  .hc5 { top: 150px; left: 20px; z-index: 3; transform: rotate(-1deg); box-shadow: var(--shadow-md); }
+  .hc6 { top: 170px; right: 20px; z-index: 2; transform: rotate(2.5deg); box-shadow: var(--shadow-md); }
+  .hc7 { top: 225px; left: 50%; transform: translateX(-50%) rotate(0.5deg); z-index: 1; box-shadow: var(--shadow-md); }
   .hc-tag { font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--accent); margin-bottom: 8px; display: block; }
   .hc h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--navy); }
   .hc a { text-decoration: none; color: inherit; }
