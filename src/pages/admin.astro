@@ -240,7 +240,7 @@ const currentCover = site.coverImage || '';
     const myWorks = currentUser.role === 'admin' ? works : works.filter((w: any) => w.authorId === currentUser.id);
     const list = document.getElementById('workList');
     list.innerHTML = myWorks.length === 0 ? '<p class="admin-empty">暂无作品</p>' : '';
-    const reviewLabel: Record<string, string> = { pending: '待审核', approved: '已通过', rejected: '未通过', violation_modified: '违规·已修改', violation_deleted: '违规·已删除' };
+    const reviewLabel: Record<string, string> = { pending: '待审核', approved: '已通过', rejected: '审核未通过', violation_modified: '违规·已修改', violation_deleted: '违规·已删除' };
     const reviewColor: Record<string, string> = { pending: '#e6a817', approved: '#4a8a4a', rejected: '#c44', violation_modified: '#e67e22', violation_deleted: '#999' };
     myWorks.forEach(w => {
       const s = w.reviewStatus || 'pending';

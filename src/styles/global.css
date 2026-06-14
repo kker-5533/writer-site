@@ -25,12 +25,13 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-body);
-  font-size: 15.5px;
+  font-size: 16px;
   font-weight: 400;
-  line-height: 1.95;
+  line-height: 1.9;
   color: var(--text-mid);
   background: var(--cream);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .container { max-width: 720px; margin: 0 auto; padding: 0 32px; }

@@ -119,7 +119,7 @@ import Layout from '../layouts/Layout.astro';
     const works = await res.json();
     const list = document.getElementById('worksReviewList')!;
     if (!works.length) { list.innerHTML = '<p class="empty-msg">该作者暂无作品</p>'; return; }
-    const statusLabel: Record<string, string> = { pending: '待审核', approved: '已通过', rejected: '未通过', violation_modified: '违规·已修改', violation_deleted: '违规·已删除' };
+    const statusLabel: Record<string, string> = { pending: '待审核', approved: '已通过', rejected: '审核未通过', violation_modified: '违规·已修改', violation_deleted: '违规·已删除' };
     const statusColor: Record<string, string> = { pending: '#e6a817', approved: '#4a8a4a', rejected: '#c44', violation_modified: '#e67e22', violation_deleted: '#999' };
     list.innerHTML = works.map((w: any) => {
       const s = w.reviewStatus || 'pending';

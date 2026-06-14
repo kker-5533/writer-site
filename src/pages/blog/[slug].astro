@@ -5,6 +5,7 @@ import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import InteractionBar from '../../components/InteractionBar.astro';
+import WorkComments from '../../components/WorkComments.astro';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -33,6 +34,7 @@ const bodyHtml = (post.body || '').replace(/\n/g, '<br>');
 
     <div class="reader-body" set:html={bodyHtml} />
     <InteractionBar slug={`blog/${slug}`} />
+    <WorkComments slug={`blog/${slug}`} />
   </article>
   <Footer author="林深" tagline="由内而外地安静生长" />
 </Layout>
