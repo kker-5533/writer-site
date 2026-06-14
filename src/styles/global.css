@@ -2,7 +2,8 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --navy: #151d2c;
+  --bg: #efe9de;
+  --navy: #1a1817;
   --teal-deep: #2d5a68;
   --teal: #5a8797;
   --teal-light: #a3c4cf;
@@ -12,15 +13,20 @@
   --white: #ffffff;
   --gold: #b09778;
   --gold-light: #cfbaa0;
+  --accent: #c0764a;
   --purple: #7c5cbf;
   --purple-light: #a088d0;
-  --text-dark: #1a262e;
-  --text-mid: #4d5860;
+  --text-dark: #1a1817;
+  --text-mid: #6b6058;
   --text-light: #8a949c;
-  --border: #e6e0d6;
+  --text-muted: #7a7165;
+  --border: #e0d8c8;
   --border-light: #f0ebe2;
   --font-heading: "Songti SC", "STSong", "SimSun", "KaiTi", "楷体", serif;
   --font-body: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "STHeiti", sans-serif;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,.02),0 8px 20px rgba(0,0,0,.04);
+  --shadow-md: 0 2px 4px rgba(0,0,0,.02),0 8px 24px rgba(0,0,0,.04),0 16px 48px rgba(0,0,0,.03);
+  --shadow-hover: 0 4px 8px rgba(0,0,0,.04),0 12px 36px rgba(0,0,0,.06),0 24px 64px rgba(0,0,0,.05);
 }
 
 html { scroll-behavior: smooth; }
@@ -28,10 +34,10 @@ html { scroll-behavior: smooth; }
 body {
   font-family: var(--font-body);
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.9;
   color: var(--text-mid);
-  background: var(--cream);
+  background: var(--bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

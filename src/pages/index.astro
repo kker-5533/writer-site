@@ -1,6 +1,5 @@
 ---
 export const prerender = false;
-
 import Layout from '../layouts/Layout.astro';
 import PlatformNav from '../components/PlatformNav.astro';
 import Footer from '../components/Footer.astro';
@@ -10,27 +9,21 @@ import path from 'node:path';
 function readJSON(fp: string) {
   try { return JSON.parse(fs.readFileSync(path.join(process.cwd(), fp), 'utf-8')); } catch { return null; }
 }
-
 function loadWorks() {
   const dir = path.join(process.cwd(), 'src/content/works');
-  try {
-    const files = fs.readdirSync(dir).filter((f: string) => f.endsWith('.json'));
-    return files.map((f: string) => ({ id: f.replace('.json', ''), ...JSON.parse(fs.readFileSync(path.join(dir, f), 'utf-8')) }));
-  } catch { return []; }
+  try { const files = fs.readdirSync(dir).filter((f: string) => f.endsWith('.json')); return files.map((f: string) => ({ id: f.replace('.json', ''), ...JSON.parse(fs.readFileSync(path.join(dir, f), 'utf-8')) })); } catch { return []; }
 }
 function loadBlog() {
   const dir = path.join(process.cwd(), 'src/content/blog');
-  try {
-    const files = fs.readdirSync(dir).filter((f: string) => f.endsWith('.json'));
-    return files.map((f: string) => ({ id: f.replace('.json', ''), ...JSON.parse(fs.readFileSync(path.join(dir, f), 'utf-8')) }));
-  } catch { return []; }
+  try { const files = fs.readdirSync(dir).filter((f: string) => f.endsWith('.json')); return files.map((f: string) => ({ id: f.replace('.json', ''), ...JSON.parse(fs.readFileSync(path.join(dir, f), 'utf-8')) })); } catch { return []; }
 }
 
 const allWorks: any[] = loadWorks();
-const featuredWorks = allWorks.filter((w: any) => (!w.reviewStatus || w.reviewStatus === 'approved') && w.recommended);
+const approvedWorks = allWorks.filter((w: any) => !w.reviewStatus || w.reviewStatus === 'approved');
+const featuredWorks = approvedWorks.filter((w: any) => w.recommended);
 
 const allPosts: any[] = loadBlog();
-const recentPosts = allPosts.filter((p: any) => !p.draft).sort((a: any, b: any) => b.date.localeCompare(a.date)).slice(0, 3);
+const publishedPosts = allPosts.filter((p: any) => !p.draft).sort((a: any, b: any) => b.date.localeCompare(a.date));
 
 const siteData = readJSON('src/data/site.json') || {};
 const users = readJSON('src/data/users.json') || [];
@@ -41,149 +34,196 @@ const recommendedAuthors = users.filter((u: any) => u.recommended && u.status ==
   <PlatformNav />
 
   <header class="hero">
-    <div class="hero-inner">
-      <h1>文学社</h1>
-      <p class="subtitle">发现好文字，遇见好作者</p>
+    <div class="hero-text">
+      <span class="overline">LITERARY SOCIETY</span>
+      <h1>发现好文字<br>遇见好作者</h1>
+      <p class="hero-desc">文学社是一个开放的文字栖息地。每一篇作品都是一次相遇，每一个作者都值得被阅读。</p>
+      <a href="/recommended-works" class="cta-btn">开 始 阅 读</a>
+    </div>
+    <div class="hero-cards">
+      {featuredWorks.slice(0,3).map((w: any, i: number) => (
+        <div class={`hc hc${i+1}`}>
+          <span class="hc-tag">{i === 0 ? '本期力荐' : i === 1 ? '编辑精选' : '读者推荐'}</span>
+          <a href={`/works/${w.id}`}><h3>{w.title}</h3></a>
+          <p class="hc-author">{w.authorName || '佚名'}</p>
+          <p class="hc-excerpt">{(w.summary || '').slice(0,60)}</p>
+        </div>
+      ))}
     </div>
   </header>
 
-  <main class="main">
-    <!-- 推荐作品 -->
-    <section class="sec">
-      <div class="container">
-        <div class="sec-header">
-          <h2>推荐作品</h2>
-          <a href="/recommended-works" class="more">查看全部 &rarr;</a>
-        </div>
-        {featuredWorks.length === 0 ? <p class="empty">暂无推荐作品</p> : (
-          <div class="work-grid">
-            {featuredWorks.map(w => (
-              <a href={`/works/${w.id}`} class="work-card">
-                <h3>{w.title}</h3>
-                <span class="meta">{w.type} · {w.year} · {w.authorName || '佚名'}</span>
-                <p class="desc">{w.summary}</p>
-              </a>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
-
-    <!-- 推荐作者 -->
-    <section class="sec alt">
-      <div class="container">
-        <div class="sec-header">
-          <h2>推荐作者</h2>
-          <a href="/recommended-authors" class="more">查看全部 &rarr;</a>
-        </div>
-        {recommendedAuthors.length === 0 ? <p class="empty">暂无推荐作者</p> : (
-          <div class="author-grid">
-            {recommendedAuthors.map((a: any) => (
-              <a href={`/author/${a.id}`} class="author-card">
-                <div class="avatar">{a.nickname[0]}</div>
-                <h3>{a.nickname}</h3>
-                {a.intro && <p class="desc">{a.intro}</p>}
-              </a>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
-
-    <!-- 最新随笔 -->
-    <section class="sec">
-      <div class="container">
-        <h2>最新随笔</h2>
-        {recentPosts.map(p => (
-          <div class="post-item">
-            <span class="date">{(p.date || '').replace(/-/g, '.')}</span>
-            <div class="post-content">
-              <a href={`/blog/${p.id}`} class="post-title">{p.title}</a>
-              <span class="post-author">{p.authorName || '佚名'}</span>
-              <p class="desc">{p.excerpt}</p>
-            </div>
-          </div>
+  <section class="sec">
+    <div class="sec-inner">
+      <div class="sec-head"><h2>推荐作品</h2><span class="sec-line"></span><a href="/recommended-works">全部 →</a></div>
+      <div class="card-grid2" id="worksGrid">
+        {approvedWorks.slice(0,8).map((w: any) => (
+          <a href={`/works/${w.id}`} class="c-card">
+            <span class="c-tag">{w.type}</span>
+            <h3>{w.title}</h3>
+            <p class="c-meta">{w.authorName || '佚名'} · {w.year}{w.wordCount ? ' · '+w.wordCount : ''}</p>
+            <p class="c-desc">{(w.summary || '').slice(0,80)}</p>
+          </a>
         ))}
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
-  <Footer author="文学社" tagline="发现好文字，遇见好作者" />
+  <section class="sec">
+    <div class="sec-inner">
+      <div class="sec-head"><h2>推荐作者</h2><span class="sec-line"></span><a href="/recommended-authors">全部 →</a></div>
+      <div class="author-grid" id="authorsGrid">
+        {recommendedAuthors.concat(users.filter((u: any) => u.role === 'author' && u.status === 'active' && !u.recommended)).slice(0,6).map((u: any, i: number) => (
+          <a href={`/author/${u.id}`} class="a-card">
+            <div class={`a-ava a-ava-${(i%4)+1}`}>{u.nickname[0]}</div>
+            <div class="a-name">{u.nickname}</div>
+            <div class="a-role">{u.role === 'admin' ? '创办人' : '作者'}</div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-inner">
+      <div class="sec-head"><h2>最新随笔</h2><span class="sec-line"></span></div>
+      <div class="card-grid2" id="blogGrid">
+        {publishedPosts.slice(0,6).map((p: any) => (
+          <a href={`/blog/${p.id}`} class="c-card">
+            <span class="c-date">{p.date}</span>
+            <h3>{p.title}</h3>
+            <p class="c-meta">{p.authorName || '佚名'}</p>
+            <p class="c-desc">{(p.excerpt || '').slice(0,80)}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Footer author={siteData.author || '文学社'} tagline="由内而外地安静生长" />
 </Layout>
 
+<script>
+(function(){
+  function makeCarousel(gridId, n) {
+    var grid = document.getElementById(gridId);
+    if (!grid || grid.children.length <= n) return;
+    var items = grid.children, total = items.length, batches = Math.ceil(total/n), cur = 0;
+    var btn = document.createElement('div');
+    btn.className = 'cycle-btn';
+    btn.textContent = '换 一 批';
+    btn.addEventListener('click', function(){
+      cur = (cur + 1) % batches;
+      for (var i = 0; i < total; i++) { items[i].style.display = (i >= cur*n && i < cur*n+n) ? '' : 'none'; }
+      btn.textContent = '换 一 批（' + (cur+1) + '/' + batches + '）';
+    });
+    grid.parentNode.insertBefore(btn, grid.nextSibling);
+    for (var i = 0; i < total; i++) { if (i >= n) items[i].style.display = 'none'; }
+  }
+  makeCarousel('worksGrid', 4);
+  makeCarousel('authorsGrid', 4);
+  makeCarousel('blogGrid', 4);
+})();
+</script>
+
 <style>
+  /* ===== Hero ===== */
   .hero {
-    min-height: 60vh; display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(160deg, #1b2a3a 0%, #2e5c6e 60%, #3a7b8c 100%);
-    text-align: center; padding: 60px 0;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 56px;
+    max-width: 1100px; margin: 0 auto; padding: 80px 48px 60px;
+    align-items: center; min-height: 70vh;
   }
-  .hero-inner { display: flex; flex-direction: column; align-items: center; }
-  .hero h1 {
-    font-family: var(--font-heading); font-size: 56px; font-weight: 900;
-    color: #fff; letter-spacing: 16px;
-    text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+  .hero-text .overline { font-size: 10px; font-weight: 700; letter-spacing: 5px; color: var(--accent); margin-bottom: 24px; display: block; }
+  .hero-text h1 { font-size: 50px; font-weight: 800; letter-spacing: -1px; line-height: 1.12; color: var(--navy); margin-bottom: 18px; }
+  .hero-text .hero-desc { font-size: 16px; line-height: 1.8; color: var(--text-mid); margin-bottom: 36px; max-width: 440px; }
+  .cta-btn {
+    display: inline-block; padding: 15px 38px; background: var(--navy); color: #fff;
+    text-decoration: none; font-size: 14px; font-weight: 700; letter-spacing: 3px;
+    box-shadow: 0 8px 0 rgba(0,0,0,.1); transition: all .2s;
   }
-  .hero .subtitle {
-    font-family: var(--font-body); font-size: 16px; font-weight: 300;
-    color: rgba(255,255,255,0.7); letter-spacing: 6px; margin-top: 16px;
-  }
-  .main { padding: 20px 0; }
-  .sec { padding: 60px 0; }
-  .sec.alt { background: var(--white); }
-  .sec-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 28px; }
-  .sec-header h2, .sec h2 {
-    font-family: var(--font-heading); font-size: 24px; font-weight: 700; color: var(--navy);
-  }
-  .more { font-size: 13px; color: var(--teal); text-decoration: none; }
-  .more:hover { text-decoration: underline; }
+  .cta-btn:hover { transform: translateY(2px); box-shadow: 0 4px 0 rgba(0,0,0,.1); }
 
-  .work-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  .work-card {
-    display: block; padding: 24px; border: 1px solid var(--border-light); border-radius: 10px;
-    background: #fff; text-decoration: none; transition: box-shadow 0.2s;
+  .hero-cards { position: relative; height: 300px; }
+  .hc {
+    position: absolute; background: var(--white); padding: 24px; border: 1px solid var(--border);
+    width: 200px; cursor: pointer; transition: transform .5s cubic-bezier(.25,.1,.25,1),box-shadow .5s;
+    text-decoration: none; color: inherit;
   }
-  .work-card:hover { box-shadow: 0 2px 16px rgba(0,0,0,0.06); }
-  .work-card h3 { font-family: var(--font-heading); font-size: 18px; color: var(--navy); margin-bottom: 6px; }
-  .work-card .meta { font-size: 12px; color: var(--teal); }
-  .work-card .desc { font-size: 13.5px; color: var(--text-mid); margin-top: 8px; line-height: 1.7; }
+  .hc:hover { z-index: 10 !important; box-shadow: 0 8px 32px rgba(0,0,0,.15) !important; }
+  .hc1 { top: 10px; left: 30px; z-index: 3; transform: rotate(-3deg); box-shadow: var(--shadow-md); }
+  .hc1:hover { transform: rotate(0deg) scale(1.05); }
+  .hc2 { top: 50px; right: 10px; z-index: 2; transform: rotate(2deg); box-shadow: var(--shadow-md); }
+  .hc2:hover { transform: rotate(-1deg) scale(1.05); }
+  .hc3 { bottom: 30px; left: 70px; z-index: 1; transform: rotate(-1.5deg); box-shadow: var(--shadow-md); }
+  .hc3:hover { transform: rotate(1deg) scale(1.05); }
+  .hc-tag { font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--accent); margin-bottom: 8px; display: block; }
+  .hc h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--navy); }
+  .hc a { text-decoration: none; color: inherit; }
+  .hc-author { font-size: 11px; color: var(--text-light); }
+  .hc-excerpt { font-size: 12px; line-height: 1.6; color: var(--text-mid); margin-top: 8px; }
 
-  .author-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  .author-card {
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-    padding: 24px 16px; border: 1px solid var(--border-light); border-radius: 10px;
-    background: #fff; text-decoration: none; transition: box-shadow 0.2s;
+  /* ===== 通用区域 ===== */
+  .sec { padding: 40px 48px; }
+  .sec-inner { max-width: 1100px; margin: 0 auto; }
+  .sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 36px; }
+  .sec-head h2 { font-size: 21px; font-weight: 800; letter-spacing: 3px; color: var(--navy); white-space: nowrap; }
+  .sec-line { flex: 1; height: 1px; background: var(--border); }
+  .sec-head a { font-size: 12px; font-weight: 600; color: var(--text-light); text-decoration: none; white-space: nowrap; }
+  .sec-head a:hover { color: var(--navy); }
+
+  /* ===== 内容卡片 ===== */
+  .card-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .c-card {
+    background: var(--white); padding: 36px; border: 1px solid var(--border);
+    box-shadow: var(--shadow-md); transition: all .35s; position: relative;
+    text-decoration: none; color: inherit; display: block;
   }
-  .author-card:hover { box-shadow: 0 2px 16px rgba(0,0,0,0.06); }
-  .avatar {
-    width: 52px; height: 52px; border-radius: 50%;
-    background: var(--teal); color: #fff;
+  .c-card::after { content: ''; position: absolute; bottom: 0; left: 6px; right: 6px; height: 10px; background: rgba(0,0,0,.03); filter: blur(6px); z-index: -1; transition: all .35s; }
+  .c-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); }
+  .c-card:hover::after { bottom: -6px; height: 14px; opacity: .6; }
+  .c-tag, .c-date { font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--accent); margin-bottom: 12px; display: block; }
+  .c-card h3 { font-size: 22px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .c-meta { font-size: 12px; color: var(--text-light); font-weight: 500; margin-bottom: 12px; }
+  .c-desc { font-size: 14px; line-height: 1.7; color: var(--text-mid); }
+
+  /* ===== 作者卡片 ===== */
+  .author-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; }
+  .a-card {
+    text-align: center; background: var(--white); padding: 36px 16px; border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm); transition: all .35s; text-decoration: none; color: inherit; display: block;
+  }
+  .a-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); }
+  .a-ava {
+    width: 62px; height: 62px; border-radius: 50%; margin: 0 auto 14px;
     display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-heading); font-size: 22px; font-weight: 700;
+    font-size: 22px; font-weight: 700; color: #fff;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,.2), 0 4px 8px rgba(0,0,0,.1);
   }
-  .author-card h3 { font-family: var(--font-heading); font-size: 16px; color: var(--navy); }
-  .author-card .desc { font-size: 12px; color: var(--text-light); text-align: center; }
+  .a-ava-1 { background: linear-gradient(145deg,#3d3858,#5a5280); }
+  .a-ava-2 { background: linear-gradient(145deg,#5a6b5a,#7a907a); }
+  .a-ava-3 { background: linear-gradient(145deg,#8a6b4a,#b08a5e); }
+  .a-ava-4 { background: linear-gradient(145deg,#5a6b6a,#7a9090); }
+  .a-name { font-size: 15px; font-weight: 700; color: var(--navy); }
+  .a-role { font-size: 12px; color: var(--text-light); margin-top: 4px; }
 
-  .post-item {
-    display: grid; grid-template-columns: 90px 1fr; gap: 16px 24px;
-    padding: 24px 0; border-bottom: 1px solid var(--border-light);
-    align-items: baseline;
+  /* ===== 轮播按钮 ===== */
+  .cycle-btn {
+    display: block; text-align: center; margin-top: 24px; padding: 14px 0;
+    font-size: 14px; font-weight: 700; color: var(--accent); cursor: pointer;
+    letter-spacing: 4px; border: 1px solid var(--border); background: var(--white);
+    transition: all .25s; user-select: none;
   }
-  .post-item:last-child { border-bottom: none; }
-  .date { font-size: 12.5px; color: var(--teal); white-space: nowrap; }
-  .post-title {
-    font-family: var(--font-heading); font-size: 18px; font-weight: 700;
-    color: var(--navy); text-decoration: none;
-  }
-  .post-title:hover { color: var(--gold); }
-  .post-author { font-size: 12px; color: var(--text-light); margin-left: 8px; }
-  .post-content .desc { font-size: 14px; color: var(--text-mid); margin-top: 4px; line-height: 1.7; }
-  .empty { color: var(--text-light); padding: 24px 0; }
+  .cycle-btn:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
 
-  @media (max-width: 640px) {
-    .hero { min-height: 45vh; }
-    .hero h1 { font-size: 36px; letter-spacing: 8px; }
-    .work-grid { grid-template-columns: 1fr; }
-    .author-grid { grid-template-columns: repeat(2, 1fr); }
-    .post-item { grid-template-columns: 1fr; }
+  /* ===== 空状态 ===== */
+  .empty { color: var(--text-light); padding: 40px 0; text-align: center; font-size: 15px; }
+
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; padding: 40px 24px; min-height: auto; gap: 32px; }
+    .hero-cards { height: auto; position: static; display: flex; gap: 12px; overflow-x: auto; }
+    .hc { position: static; transform: none !important; min-width: 180px; }
+    .hero-text h1 { font-size: 34px; }
+    .card-grid2 { grid-template-columns: 1fr; }
+    .author-grid { grid-template-columns: repeat(2,1fr); }
+    .sec { padding: 32px 24px; }
   }
 </style>
