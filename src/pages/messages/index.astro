@@ -3,18 +3,6 @@ export const prerender = false;
 import Layout from '../../layouts/Layout.astro';
 import PlatformNav from '../../components/PlatformNav.astro';
 import Footer from '../../components/Footer.astro';
-import fs from 'node:fs';
-import path from 'node:path';
-
-function getUsers() {
-  try {
-    const users = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src/data/users.json'), 'utf-8'));
-    const map: Record<string, any> = {};
-    users.forEach((u: any) => { map[u.id] = u; });
-    return map;
-  } catch { return {}; }
-}
-const userMap = getUsers();
 ---
 
 <Layout>
@@ -45,43 +33,36 @@ const userMap = getUsers();
       var h1 = document.querySelector('h1');
       if (h1) h1.textContent = '我的来信' + (unread > 0 ? '（' + unread + ' 条未读）' : '');
 
-      if (!convs.length) { list.innerHTML = '<p class="empty">暂无来信<br><span class="hint">在作者主页或个人主页下方可以发送私信</span></p>'; return; }
+      if (!convs.length) { list.innerHTML = '<p class="empty">暂无来信<br><span class="hint">在作者主页下方可发送私信</span></p>'; return; }
 
       list.innerHTML = convs.map(function(c) {
         var isUnread = !c.read && c.from !== me.id;
         var name = c.partnerName || '未知用户';
         var initials = (name || '?')[0];
         var hue = (name.charCodeAt(0) || 0) * 137 % 360;
-        return '<a href="/messages/' + c.partner + '" class="conv-item' + (isUnread ? ' unread' : '') + '">' +
-          '<div class="conv-avatar" style="background:hsl(' + hue + ',40%,55%)">' + initials + '</div>' +
-          '<div class="conv-main">' +
-            '<div class="conv-head"><span class="conv-name">' + esc(name) + '</span>' +
-            (isUnread ? '<span class="conv-badge">' + countUnread(convs, c.partner, me.id) + '</span>' : '') +
-            '<span class="conv-time">' + fmtTime(c.time) + '</span></div>' +
-            '<p class="conv-preview">' + (c.from === me.id ? '<span class="conv-prefix">我</span> ' : '') + esc(c.lastMsg || '') + '</p>' +
-          '</div>' +
+        return '<a href="/messages/' + c.partner + '" class="msg-card' + (isUnread ? ' unread' : '') + '">' +
+          '<span class="card-avatar" style="background:hsl(' + hue + ',45%,55%)">' + initials + '</span>' +
+          '<span class="card-body">' +
+            '<span class="card-top"><strong>' + esc(name) + '</strong>' +
+            (isUnread ? '<em class="card-badge">未读</em>' : '') +
+            '</span>' +
+            '<span class="card-time">' + fmtTime(c.time) + ' 来信</span>' +
+            '<span class="card-text">' + esc(c.lastMsg || '').slice(0, 60) + '</span>' +
+          '</span>' +
         '</a>';
       }).join('');
     } catch(e) { list.innerHTML = '<p class="empty">加载失败</p>'; }
   }
 
-  function countUnread(convs, partnerId, myId) {
-    var count = 0;
-    // rough count from the conversations data we have
-    convs.forEach(function(cv) {
-      if (cv.partner === partnerId && !cv.read && cv.from !== myId) count++;
-    });
-    return count;
-  }
   function fmtTime(t) {
     if (!t) return '';
     var d = new Date(t);
     var now = new Date();
     var diff = now.getTime() - d.getTime();
     if (diff < 60000) return '刚刚';
-    if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前';
-    if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前';
-    if (diff < 604800000) return Math.floor(diff / 86400000) + '天前';
+    if (diff < 3600000) return Math.floor(diff / 60000) + ' 分钟前';
+    if (diff < 86400000) return Math.floor(diff / 3600000) + ' 小时前';
+    if (diff < 604800000) return Math.floor(diff / 86400000) + ' 天前';
     return d.toISOString().slice(0, 10);
   }
 
@@ -92,30 +73,27 @@ const userMap = getUsers();
 
 <style>
   .page { padding: 100px 0 60px; min-height: 70vh; }
-  .page h1 { font-family: var(--font-heading); font-size: 28px; color: var(--navy); margin-bottom: 32px; }
+  .page h1 { font-family: var(--font-heading); font-size: 26px; color: var(--navy); margin-bottom: 28px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
   .empty { color: var(--text-light); padding: 60px 0; text-align: center; font-size: 15px; }
   .hint { font-size: 13px; color: var(--text-light); display: block; margin-top: 6px; }
-  .conv-item {
-    display: flex; align-items: center; gap: 16px; padding: 20px 24px;
-    border: 1px solid var(--border); border-radius: 12px; background: #fff;
-    text-decoration: none; margin-bottom: 10px; transition: all 0.2s;
+  .msg-card {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 16px 20px; margin-bottom: 8px;
+    border: 1px solid var(--border); border-radius: 10px;
+    background: #fff; text-decoration: none; transition: all 0.15s;
   }
-  .conv-item:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); transform: translateY(-1px); }
-  .conv-item.unread { background: #f6fbfc; }
-  .conv-avatar {
-    width: 50px; height: 50px; border-radius: 50%; color: #fff;
+  .msg-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.05); border-color: var(--teal-light); }
+  .msg-card.unread { background: #fafefe; border-left: 3px solid var(--teal); }
+  .card-avatar {
+    width: 42px; height: 42px; border-radius: 50%; color: #fff;
     display: flex; align-items: center; justify-content: center;
-    font-size: 20px; font-weight: 700; flex-shrink: 0;
+    font-size: 17px; font-weight: 700; flex-shrink: 0;
   }
-  .conv-main { flex: 1; min-width: 0; }
-  .conv-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .conv-name { font-size: 16px; font-weight: 600; color: var(--navy); }
-  .conv-badge {
-    font-size: 11px; padding: 2px 8px; border-radius: 10px;
-    background: var(--teal); color: #fff; font-weight: 600;
-  }
-  .conv-time { font-size: 12px; color: var(--text-light); margin-left: auto; }
-  .conv-preview { font-size: 14px; color: var(--text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.5; }
-  .conv-prefix { color: var(--teal); font-weight: 600; font-size: 12px; }
-  @media (max-width: 640px) { .page { padding: 80px 0 40px; } .conv-item { padding: 16px; } }
+  .card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .card-top { display: flex; align-items: center; gap: 8px; }
+  .card-top strong { font-size: 15px; color: var(--navy); }
+  .card-badge { font-style: normal; font-size: 11px; padding: 1px 7px; border-radius: 8px; background: var(--teal); color: #fff; font-weight: 600; }
+  .card-time { font-size: 12px; color: var(--text-light); }
+  .card-text { font-size: 13.5px; color: var(--text-mid); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  @media (max-width: 640px) { .page { padding: 80px 0 40px; } .msg-card { padding: 14px 16px; } }
 </style>
