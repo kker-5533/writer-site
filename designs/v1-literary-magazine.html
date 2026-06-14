@@ -1,0 +1,77 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>文学社 · 文学志风格</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Songti SC","STSong","KaiTi",serif;background:#faf7f2;color:#1e2d35;-webkit-font-smoothing:antialiased}
+.top-bar{background:#1a1f2e;color:rgba(255,255,255,.6);font-size:11px;text-align:center;padding:8px;letter-spacing:2px}
+nav{display:flex;justify-content:center;gap:48px;padding:18px 0;background:#fff;border-bottom:1px solid #e8e2d6;font-size:12.5px;letter-spacing:3px;font-family:"PingFang SC","Microsoft YaHei",sans-serif;text-transform:uppercase}
+nav a{color:#8a949c;text-decoration:none;transition:color .2s}
+nav a:hover{color:#1e2d35}
+
+.hero{text-align:center;padding:120px 0 100px;position:relative}
+.hero::before{content:'';display:block;width:1px;height:60px;background:#b09778;margin:0 auto 40px}
+.hero h1{font-size:64px;font-weight:400;letter-spacing:24px;color:#1e2d35}
+.hero .tagline{font-size:14px;color:#b09778;letter-spacing:8px;margin-top:20px;text-transform:uppercase}
+.hero .intro{max-width:520px;margin:40px auto 0;font-size:16px;line-height:2.2;color:#7a8a93}
+
+.issue-header{text-align:center;padding:60px 0 40px;border-top:1px solid #e8e2d6}
+.issue-header span{font-size:11px;letter-spacing:4px;color:#b09778}
+.issue-header h2{font-size:28px;font-weight:400;letter-spacing:6px;margin-top:8px;color:#1e2d35}
+
+.content{max-width:960px;margin:0 auto;padding:0 32px}
+.featured-grid{display:grid;grid-template-columns:2fr 1fr;gap:1px;background:#e8e2d6;margin-bottom:1px}
+.featured-main{background:#fff;padding:48px;display:flex;flex-direction:column;justify-content:center}
+.featured-main .label{font-size:10px;letter-spacing:3px;color:#b09778;margin-bottom:12px}
+.featured-main h3{font-size:32px;font-weight:400;letter-spacing:4px;line-height:1.4;margin-bottom:16px}
+.featured-main .author{font-size:13px;color:#8a949c;margin-bottom:20px}
+.featured-main .excerpt{font-size:15px;line-height:2;color:#4d5358;max-width:480px}
+.featured-side{background:#f7f4ec;padding:48px}
+.featured-side h4{font-size:11px;letter-spacing:3px;color:#b09778;margin-bottom:24px}
+.author-list{display:flex;flex-direction:column;gap:16px}
+.author-item{display:flex;align-items:center;gap:12px}
+.author-avatar{width:40px;height:40px;border-radius:50%;background:#1a1f2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px}
+.author-name{font-size:15px;color:#1e2d35}
+.author-role{font-size:11px;color:#b09778;display:block}
+
+.works-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#e8e2d6;margin-bottom:1px}
+.work-card{background:#fff;padding:36px;transition:background .2s}
+.work-card:hover{background:#fdfaf6}
+.work-card .num{font-size:12px;color:#b09778;margin-bottom:12px}
+.work-card h3{font-size:22px;font-weight:400;letter-spacing:2px;margin-bottom:8px}
+.work-card .meta{font-size:12px;color:#8a949c;margin-bottom:10px}
+.work-card p{font-size:14px;line-height:1.8;color:#4d5358}
+
+footer{text-align:center;padding:60px 0;font-size:12px;color:#c0b8a8;letter-spacing:2px;border-top:1px solid #e8e2d6;margin-top:60px}
+</style></head><body>
+<div class="top-bar">文学社 · 第二十四期 · 2026 年夏季刊</div>
+<nav><a href="#">作品</a><a href="#">作者</a><a href="#">期刊</a><a href="#">活动</a><a href="#">社团</a><a href="#" style="opacity:.4">登录</a></nav>
+<div class="hero">
+<h1>文学社</h1>
+<p class="tagline">Discover Words · Meet Writers</p>
+<p class="intro">每一篇作品都是一次相遇。我们在这里发现好文字，遇见好作者，安静地读，认真地写。</p>
+</div>
+<div class="content">
+<div class="featured-grid">
+<div class="featured-main">
+<div class="label">本期推荐</div>
+<h3>南方有雨</h3>
+<p class="author">蒲瑞昇 · 长篇小说</p>
+<p class="excerpt">一个关于南方小城三代女性的故事。雨水贯穿始终，冲刷出被遗忘的记忆与未曾说出口的爱。外婆坐在廊檐下，膝上摊着泛黄的相册——她翻页的速度极慢。</p>
+</div>
+<div class="featured-side">
+<h4>推荐作者</h4>
+<div class="author-list">
+<div class="author-item"><div class="author-avatar">蒲</div><div><span class="author-name">蒲瑞昇</span><span class="author-role">创办人</span></div></div>
+<div class="author-item"><div class="author-avatar">苏</div><div><span class="author-name">苏晚</span><span class="author-role">小说作者</span></div></div>
+<div class="author-item"><div class="author-avatar">江</div><div><span class="author-name">江月</span><span class="author-role">诗人</span></div></div>
+</div>
+</div>
+</div>
+<div class="works-grid">
+<div class="work-card"><div class="num">01</div><h3>渡口</h3><p class="meta">中篇小说 · 蒲瑞昇</p><p>长江边一个小渡口的最后一年。摆渡人老周与来往过客之间的短暂相遇与长久告别。</p></div>
+<div class="work-card"><div class="num">02</div><h3>桂花落</h3><p class="meta">散文 · 苏晚</p><p>桂花的气味有一种穿透力。它不是扑面而来的那种香，而是悄悄渗进你的鼻腔，直达记忆深处。</p></div>
+<div class="work-card"><div class="num">03</div><h3>月光落在左手边</h3><p class="meta">诗歌 · 江月</p><p>二十六首诗，关于月光、失眠和远方。凌晨三点，世界安静得像一个巨大的录音棚。</p></div>
+<div class="work-card"><div class="num">04</div><h3>山居笔记</h3><p class="meta">散文集 · 云栖</p><p>在终南山住了三个月，记录下的山水与心绪。风穿过竹叶的声音。</p></div>
+</div>
+</div>
+<footer>2026 · 文学社 · 由内而外地安静生长</footer>
+</body></html>

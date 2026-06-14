@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>文学社 · 东方水墨</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Songti SC","STSong","KaiTi",serif;background:#f7f4ed;color:#2c2416;-webkit-font-smoothing:antialiased}
+nav{text-align:center;padding:24px 0;border-bottom:1px solid rgba(0,0,0,.06)}
+nav a{display:inline-block;margin:0 24px;font-size:13px;letter-spacing:4px;color:#8a7a68;text-decoration:none;font-family:"PingFang SC","Microsoft YaHei",sans-serif;transition:color .2s}
+nav a:hover{color:#2c2416}
+
+.hero{text-align:center;padding:140px 0 100px;position:relative}
+.hero::before{content:'';position:absolute;top:60px;left:50%;transform:translateX(-50%);width:80px;height:80px;border:1px solid rgba(0,0,0,.08);border-radius:50%}
+.hero h1{font-size:60px;font-weight:400;letter-spacing:24px;margin-bottom:20px}
+.hero .sub{font-size:13px;color:#b0a090;letter-spacing:10px}
+
+.ink-stroke{width:200px;height:1px;background:linear-gradient(90deg,transparent,rgba(0,0,0,.15),transparent);margin:40px auto}
+
+.content{max-width:860px;margin:0 auto;padding:0 40px}
+
+.section{margin-bottom:80px}
+.section-title{text-align:center;font-size:16px;letter-spacing:8px;color:#2c2416;position:relative;margin-bottom:40px}
+.section-title::after{content:'';display:block;width:20px;height:1px;background:#2c2416;margin:14px auto 0}
+
+.featured{display:grid;grid-template-columns:1fr;gap:0}
+.feat-main{text-align:center;padding:60px 40px;background:#fff;border:1px solid rgba(0,0,0,.05)}
+.feat-main .label{font-size:10px;letter-spacing:4px;color:#b0a090;margin-bottom:12px}
+.feat-main h2{font-size:36px;font-weight:400;letter-spacing:8px;margin-bottom:12px}
+.feat-main .author{font-size:13px;color:#8a7a68;margin-bottom:20px}
+.feat-main .excerpt{font-size:16px;line-height:2.2;color:#5a5044;max-width:500px;margin:0 auto}
+
+.works-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(0,0,0,.05)}
+.work-card{background:#fff;padding:32px;text-align:center}
+.work-card .num{font-size:12px;color:#b0a090;margin-bottom:10px}
+.work-card h3{font-size:22px;font-weight:400;letter-spacing:4px;margin-bottom:6px}
+.work-card .meta{font-size:12px;color:#8a7a68;margin-bottom:10px}
+.work-card .desc{font-size:13px;line-height:1.8;color:#5a5044}
+
+.authors{display:flex;justify-content:center;gap:48px;text-align:center}
+.author-item .seal{width:60px;height:60px;border:1px solid #2c2416;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:20px;color:#2c2416}
+.author-item .name{font-size:16px;letter-spacing:2px;color:#2c2416}
+.author-item .role{font-size:11px;color:#b0a090;margin-top:4px}
+
+.bottom{text-align:center;padding:40px 0 60px;border-top:1px solid rgba(0,0,0,.06);margin-top:60px}
+.bottom .poem{font-size:14px;line-height:2.4;color:#8a7a68;letter-spacing:2px}
+</style></head><body>
+<nav><a href="#">作品</a><a href="#">作者</a><a href="#">随笔</a><a href="#">活动</a><a href="#">社团</a><a href="#" style="opacity:.3">登录</a></nav>
+
+<div class="hero">
+<h1>文  学  社</h1>
+<p class="sub">发 现 好 文 字  ·  遇 见 好 作 者</p>
+</div>
+
+<div class="ink-stroke"></div>
+
+<div class="content">
+<div class="section">
+<div class="section-title">推 荐 作 品</div>
+<div class="featured">
+<div class="feat-main">
+<div class="label">本期力荐</div>
+<h2>南 方 有 雨</h2>
+<p class="author">蒲瑞昇 · 长篇小说</p>
+<p class="excerpt">一个关于南方小城三代女性的故事。雨水贯穿始终——冲刷出被遗忘的记忆，与未曾说出口的爱。</p>
+</div>
+</div>
+</div>
+
+<div class="works-grid">
+<div class="work-card"><div class="num">壹</div><h3>渡口</h3><p class="meta">中篇小说 · 蒲瑞昇</p><p class="desc">长江边一个小渡口的最后一年</p></div>
+<div class="work-card"><div class="num">贰</div><h3>桂花落</h3><p class="meta">散文 · 苏晚</p><p class="desc">桂花的气味有一种穿透力</p></div>
+<div class="work-card"><div class="num">叁</div><h3>月光落在左手边</h3><p class="meta">诗歌 · 江月</p><p class="desc">二十六首诗，关于月光与远方</p></div>
+<div class="work-card"><div class="num">肆</div><h3>山居笔记</h3><p class="meta">散文集 · 云栖</p><p class="desc">终南山三个月的山水心绪</p></div>
+</div>
+
+<div class="section">
+<div class="section-title">推 荐 作 者</div>
+<div class="authors">
+<div class="author-item"><div class="seal">蒲</div><div class="name">蒲瑞昇</div><div class="role">创办人</div></div>
+<div class="author-item"><div class="seal">苏</div><div class="name">苏晚</div><div class="role">小说作者</div></div>
+<div class="author-item"><div class="seal">江</div><div class="name">江月</div><div class="role">诗人</div></div>
+</div>
+</div>
+
+<div class="bottom">
+<p class="poem">文字是林间的光<br>深浅不一<br>却总能照亮些什么</p>
+</div>
+</div>
+</body></html>
