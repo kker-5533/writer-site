@@ -1,0 +1,119 @@
+---
+export const prerender = false;
+import Layout from '../../layouts/Layout.astro';
+import PlatformNav from '../../components/PlatformNav.astro';
+import Footer from '../../components/Footer.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+function getUsers() {
+  try {
+    const users = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src/data/users.json'), 'utf-8'));
+    const map: Record<string, any> = {};
+    users.forEach((u: any) => { map[u.id] = u; });
+    return map;
+  } catch { return {}; }
+}
+const userMap = getUsers();
+---
+
+<Layout>
+  <PlatformNav />
+  <div class="page">
+    <div class="container">
+      <h1>我的来信</h1>
+      <div id="inboxList"><p class="empty">加载中...</p></div>
+    </div>
+  </div>
+  <Footer author="文学社" tagline="发现好文字，遇见好作者" />
+</Layout>
+
+<script>
+  var userStr = sessionStorage.getItem('linshen_user');
+  var auth = sessionStorage.getItem('linshen_auth');
+  if (auth !== 'true' || !userStr) { window.location.href = '/login'; }
+  var me = JSON.parse(userStr);
+
+  var userMap = {} as Record<string, any>;
+  // 把服务端数据放进页面
+  var rawUserMap = JSON.parse(document.getElementById('__userMap')?.textContent || '{}');
+
+  async function loadInbox() {
+    var list = document.getElementById('inboxList')!;
+    try {
+      // 获取用户列表
+      var uRes = await fetch('/api/auth', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ action: 'list', adminId: me.id }) });
+      if (!uRes.ok) { list.innerHTML = '<p class="empty">暂无来信</p>'; return; }
+      var users = await uRes.json();
+      var userMap: Record<string, any> = {};
+      users.forEach(function(u: any) { userMap[u.id] = u; });
+
+      // 获取对话列表
+      var res = await fetch('/api/private-messages?userId=' + me.id);
+      var data = await res.json();
+      var convs = data.conversations || [];
+      var unread = data.unread || 0;
+
+      document.querySelector('h1')!.textContent = '我的来信' + (unread > 0 ? '（' + unread + ' 条未读）' : '');
+
+      if (!convs.length) { list.innerHTML = '<p class="empty">暂无来信<br><span class="hint">在作者主页或个人主页下方可以发送私信</span></p>'; return; }
+
+      list.innerHTML = convs.map(function(c: any) {
+        var partner = userMap[c.partner] || { nickname: '未知用户' };
+        var isUnread = !c.read && c.from !== me.id;
+        return '<a href="/messages/' + c.partner + '" class="conv-item' + (isUnread ? ' unread' : '') + '">' +
+          '<div class="conv-left"><div class="conv-avatar">' + (partner.nickname || '?')[0] + '</div></div>' +
+          '<div class="conv-main"><div class="conv-head"><span class="conv-name">' + esc(partner.nickname) + '</span><span class="conv-time">' + fmtTime(c.time) + '</span></div>' +
+          '<p class="conv-preview">' + (c.from === me.id ? '我：' : '') + esc(c.lastMsg || '') + '</p></div>' +
+          (isUnread ? '<span class="conv-dot"></span>' : '') +
+          '</a>';
+      }).join('');
+    } catch(e) { list.innerHTML = '<p class="empty">加载失败</p>'; }
+  }
+
+  function fmtTime(t: string) {
+    if (!t) return '';
+    var d = new Date(t);
+    var now = new Date();
+    var diff = now.getTime() - d.getTime();
+    if (diff < 60000) return '刚刚';
+    if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前';
+    if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前';
+    return d.toISOString().slice(0, 10);
+  }
+
+  function esc(s: string) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  loadInbox();
+</script>
+
+<script type="application/json" id="__userMap">
+  {JSON.stringify(userMap)}
+</script>
+
+<style>
+  .page { padding: 100px 0 60px; min-height: 70vh; }
+  .page h1 { font-family: var(--font-heading); font-size: 28px; color: var(--navy); margin-bottom: 36px; }
+  .empty { color: var(--text-light); padding: 40px 0; text-align: center; font-size: 15px; }
+  .hint { font-size: 13px; color: var(--text-light); display: block; margin-top: 6px; }
+  .conv-item {
+    display: flex; align-items: center; gap: 14px; padding: 18px 20px;
+    border: 1px solid var(--border); border-radius: 10px; background: #fff;
+    text-decoration: none; margin-bottom: 8px; transition: box-shadow 0.2s;
+    position: relative;
+  }
+  .conv-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+  .conv-item.unread { border-left: 3px solid var(--teal); background: #fafefe; }
+  .conv-avatar {
+    width: 44px; height: 44px; border-radius: 50%; background: var(--teal); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-heading); font-size: 18px; font-weight: 700; flex-shrink: 0;
+  }
+  .conv-main { flex: 1; min-width: 0; }
+  .conv-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+  .conv-name { font-family: var(--font-heading); font-size: 16px; font-weight: 700; color: var(--navy); }
+  .conv-time { font-size: 12px; color: var(--text-light); }
+  .conv-preview { font-size: 14px; color: var(--text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .conv-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+  @media (max-width: 640px) { .page { padding: 80px 0 40px; } }
+</style>

@@ -1,0 +1,126 @@
+---
+export const prerender = false;
+import Layout from '../../layouts/Layout.astro';
+import PlatformNav from '../../components/PlatformNav.astro';
+import Footer from '../../components/Footer.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const { userId } = Astro.params;
+
+function getUser(id: string) {
+  try {
+    const users = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src/data/users.json'), 'utf-8'));
+    return users.find((u: any) => u.id === id);
+  } catch { return null; }
+}
+const partner = getUser(userId);
+if (!partner) return Astro.redirect('/messages');
+---
+
+<Layout>
+  <PlatformNav />
+  <div class="page">
+    <div class="container">
+      <a href="/messages" class="back">&larr; 返回收件箱</a>
+      <h1>与 {partner.nickname} 的对话</h1>
+      <div class="chat-box" id="chatBox"><p class="empty">加载中...</p></div>
+      <form class="chat-form" id="chatForm">
+        <textarea id="chatInput" placeholder="输入消息..." rows="2" maxlength="2000"></textarea>
+        <button type="submit">发送</button>
+      </form>
+    </div>
+  </div>
+  <Footer author="文学社" tagline="发现好文字，遇见好作者" />
+</Layout>
+
+<script>
+  var userStr = sessionStorage.getItem('linshen_user');
+  var auth = sessionStorage.getItem('linshen_auth');
+  if (auth !== 'true' || !userStr) { window.location.href = '/login'; }
+  var me = JSON.parse(userStr);
+  var partnerId = `${userId}`;
+
+  var chatBox = document.getElementById('chatBox')!;
+  var chatForm = document.getElementById('chatForm')!;
+  var chatInput = document.getElementById('chatInput') as HTMLTextAreaElement;
+
+  async function loadMessages() {
+    try {
+      var res = await fetch('/api/private-messages?userId=' + me.id + '&with=' + partnerId);
+      var msgs = await res.json();
+      if (!msgs.length) { chatBox.innerHTML = '<p class="empty">暂无消息，发送第一条吧</p>'; return; }
+      chatBox.innerHTML = msgs.map(function(m: any) {
+        var isMine = m.from === me.id;
+        return '<div class="msg-row ' + (isMine ? 'mine' : '') + '"><div class="msg-bubble"><p>' + esc(m.body) + '</p><span class="msg-time">' + fmtTime(m.time) + (isMine ? (m.read ? ' 已读' : '') : '') + '</span></div></div>';
+      }).join('');
+      chatBox.scrollTop = chatBox.scrollHeight;
+    } catch(e) {}
+  }
+
+  chatForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var body = chatInput.value.trim();
+    if (!body) return;
+    var btn = chatForm.querySelector('button')!;
+    btn.disabled = true;
+    try {
+      await fetch('/api/private-messages', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ from: me.id, to: partnerId, body: body }) });
+      chatInput.value = '';
+      loadMessages();
+    } catch(e) {}
+    btn.disabled = false;
+    chatInput.focus();
+  });
+
+  function fmtTime(t: string) {
+    if (!t) return '';
+    var d = new Date(t);
+    var now = new Date();
+    var diff = now.getTime() - d.getTime();
+    if (diff < 60000) return '刚刚';
+    if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前';
+    if (diff < 86400000) {
+      return d.toTimeString().slice(0,5);
+    }
+    return d.toISOString().slice(0, 10) + ' ' + d.toTimeString().slice(0,5);
+  }
+
+  function esc(s: string) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  loadMessages();
+  // 30秒自动刷新
+  setInterval(loadMessages, 30000);
+</script>
+
+<style>
+  .page { padding: 100px 0 60px; min-height: 70vh; }
+  .page h1 { font-family: var(--font-heading); font-size: 24px; color: var(--navy); margin-bottom: 24px; }
+  .back { font-size: 13px; color: var(--text-light); text-decoration: none; display: block; margin-bottom: 16px; }
+  .back:hover { color: var(--teal); }
+  .empty { color: var(--text-light); padding: 40px 0; text-align: center; font-size: 15px; }
+  .chat-box { max-height: 55vh; overflow-y: auto; padding: 16px 0; display: flex; flex-direction: column; gap: 12px; }
+  .msg-row { display: flex; }
+  .msg-row.mine { justify-content: flex-end; }
+  .msg-bubble {
+    max-width: 70%; padding: 12px 16px; border-radius: 14px; font-size: 14.5px; line-height: 1.7;
+  }
+  .msg-row:not(.mine) .msg-bubble { background: #fff; border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+  .msg-row.mine .msg-bubble { background: var(--teal); color: #fff; border-bottom-right-radius: 4px; }
+  .msg-time { font-size: 11px; opacity: 0.6; display: block; margin-top: 4px; }
+  .chat-form { display: flex; gap: 10px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .chat-form textarea {
+    flex: 1; padding: 12px 14px; font-family: var(--font-body); font-size: 14px; line-height: 1.7;
+    border: 1px solid var(--border); border-radius: 10px; background: var(--cream);
+    color: var(--text-dark); outline: none; resize: none; min-height: 48px;
+  }
+  .chat-form textarea:focus { border-color: var(--teal); background: #fff; }
+  .chat-form button {
+    padding: 12px 24px; font-family: var(--font-body); font-size: 14px; font-weight: 600;
+    letter-spacing: 1px; background: var(--navy); color: #fff;
+    border: none; border-radius: 10px; cursor: pointer; white-space: nowrap;
+  }
+  .chat-form button:hover { background: #243548; }
+  .chat-form button:disabled { opacity: 0.6; }
+  @media (max-width: 640px) { .msg-bubble { max-width: 85%; } .page { padding: 80px 0 40px; } }
+</style>
