@@ -63,11 +63,12 @@ export async function POST({ request }: { request: Request }) {
 
     // ===== 更新个人信息 =====
     if (action === 'updateProfile') {
-      const { userId, intro, email, weibo, douban, wechat } = body;
+      const { userId, intro, coverImage, email, weibo, douban, wechat } = body;
       const users = readUsers();
       const idx = users.findIndex((u: any) => u.id === userId);
       if (idx === -1) return new Response(JSON.stringify({ error: '用户不存在' }), { status: 404 });
       if (intro !== undefined) users[idx].intro = intro;
+      if (coverImage !== undefined) users[idx].coverImage = coverImage;
       if (email !== undefined) users[idx].email = email;
       if (weibo !== undefined) users[idx].weibo = weibo;
       if (douban !== undefined) users[idx].douban = douban;

@@ -131,6 +131,7 @@ const currentCover = site.coverImage || '';
   <div id="tab-profile" class="tab-content">
     <form id="profileForm" class="admin-form" style="max-width:500px">
       <div class="field"><label>个人简介</label><textarea name="profileIntro" rows="3" placeholder="介绍一下你自己..."></textarea></div>
+      <div class="field"><label>主页封面图 URL</label><input name="profileCover" placeholder="https://... 图片链接" /></div>
       <div class="field"><label>邮箱</label><input name="profileEmail" placeholder="your@email.com" /></div>
       <div class="field"><label>微博</label><input name="profileWeibo" placeholder="@你的微博" /></div>
       <div class="field"><label>豆瓣</label><input name="profileDouban" placeholder="豆瓣主页链接" /></div>
@@ -397,6 +398,7 @@ const currentCover = site.coverImage || '';
     if (!stored) return;
     var u = JSON.parse(stored);
     setVal('profileIntro', u.intro || '');
+    setVal('profileCover', u.coverImage || '');
     setVal('profileEmail', u.email || '');
     setVal('profileWeibo', u.weibo || '');
     setVal('profileDouban', u.douban || '');
@@ -406,6 +408,7 @@ const currentCover = site.coverImage || '';
     e.preventDefault();
     var data = {
       intro: getVal('profileIntro'),
+      coverImage: getVal('profileCover'),
       email: getVal('profileEmail'),
       weibo: getVal('profileWeibo'),
       douban: getVal('profileDouban'),

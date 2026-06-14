@@ -34,10 +34,6 @@ const userMap = getUsers();
   if (auth !== 'true' || !userStr) { window.location.href = '/login'; }
   var me = JSON.parse(userStr);
 
-  var userMap = {};
-  // 把服务端数据放进页面
-  var rawUserMap = JSON.parse(document.getElementById('__userMap')?.textContent || '{}');
-
   async function loadInbox() {
     var list = document.getElementById('inboxList');
     try {
@@ -78,10 +74,6 @@ const userMap = getUsers();
   function esc(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   loadInbox();
-</script>
-
-<script type="application/json" id="__userMap">
-  {JSON.stringify(userMap)}
 </script>
 
 <style>
