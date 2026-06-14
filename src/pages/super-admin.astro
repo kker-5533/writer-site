@@ -21,11 +21,13 @@ import Layout from '../layouts/Layout.astro';
       <button class="su-tab active" data-tab="admins">管理员</button>
       <button class="su-tab" data-tab="dashboard">数据看板</button>
       <button class="su-tab" data-tab="backup">备份恢复</button>
+      <button class="su-tab" data-tab="homepage">首页编辑</button>
       <button class="su-tab" data-tab="settings">系统设置</button>
     </div>
     <div id="tab-admins" class="su-content active"></div>
     <div id="tab-dashboard" class="su-content"></div>
     <div id="tab-backup" class="su-content"></div>
+    <div id="tab-homepage" class="su-content"></div>
     <div id="tab-settings" class="su-content"></div>
   </div>
 </div>
@@ -52,6 +54,7 @@ document.querySelectorAll('.su-tab').forEach(function(t){ t.addEventListener('cl
   if (tab === 'admins') loadAdmins();
   if (tab === 'dashboard') loadDashboard();
   if (tab === 'backup') loadBackup();
+  if (tab === 'homepage') loadHomepage();
   if (tab === 'settings') loadSettings();
 });});
 window.verify = verify;
@@ -60,6 +63,7 @@ window.demoteAdmin = demoteAdmin;
 window.doBackup = doBackup;
 window.doRestore = doRestore;
 window.changeSuperPwd = changeSuperPwd;
+window.esc = esc;
 
 function api(data) { return fetch('/api/super-admin', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(Object.assign({},data,{password:superPwd})) }).then(function(r){ return r.json(); }); }
 
@@ -97,6 +101,26 @@ async function loadBackup() {
 }
 async function doBackup() { var d = await api({action:'backup'}); if (!d.ok) return; var blob = new Blob([JSON.stringify(d.data,null,2)],{type:'application/json'}); var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup-'+new Date().toISOString().slice(0,10)+'.json'; a.click(); }
 async function doRestore() { var file = document.getElementById('restoreFile').files[0]; if (!file) return; if (!confirm('恢复会覆盖所有数据，确定？')) return; var text = await file.text(); var d = await api({action:'restore',data:JSON.parse(text)}); alert(d.ok ? '恢复成功' : d.error); }
+async function loadHomepage() {
+  var res = await fetch('/api/site');
+  var d = await res.json();
+  var el = document.getElementById('tab-homepage');
+  el.innerHTML = '<div class="su-card"><div style="flex:1"><label style="font-size:13px;font-weight:600;color:var(--navy)">平台名称</label><input id="hpAuthor" value="'+esc(d.author||'')+'" style="width:100%;padding:10px;border:1px solid var(--border);background:var(--bg);font-size:14px;margin-top:4px"></div></div>'+
+  '<div class="su-card"><div style="flex:1"><label style="font-size:13px;font-weight:600;color:var(--navy)">副标题</label><input id="hpSubtitle" value="'+esc(d.subtitle||'')+'" style="width:100%;padding:10px;border:1px solid var(--border);background:var(--bg);font-size:14px;margin-top:4px"></div></div>'+
+  '<div class="su-card"><div style="flex:1"><label style="font-size:13px;font-weight:600;color:var(--navy)">简介</label><textarea id="hpIntro" rows="3" style="width:100%;padding:10px;border:1px solid var(--border);background:var(--bg);font-size:14px;margin-top:4px;font-family:inherit">'+esc(d.intro||'')+'</textarea></div></div>'+
+  '<div class="su-card"><div style="flex:1"><label style="font-size:13px;font-weight:600;color:var(--navy)">封面图片URL</label><input id="hpCover" value="'+esc(d.coverImage||'')+'" style="width:100%;padding:10px;border:1px solid var(--border);background:var(--bg);font-size:14px;margin-top:4px"></div></div>'+
+  '<button class="su-btn-sm" style="margin-top:12px" onclick="saveHomepage()">保存修改</button><span id="hpMsg" style="font-size:13px;color:#4a8a4a;margin-left:12px;font-weight:600"></span>';
+  window._hpData = d;
+}
+async function saveHomepage() {
+  var body = { author: document.getElementById('hpAuthor').value, subtitle: document.getElementById('hpSubtitle').value, intro: document.getElementById('hpIntro').value, coverImage: document.getElementById('hpCover').value };
+  var res = await fetch('/api/site', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  var d = await res.json();
+  document.getElementById('hpMsg').textContent = d.ok ? '✓ 已保存' : '保存失败';
+  setTimeout(function(){ document.getElementById('hpMsg').textContent = ''; }, 3000);
+}
+window.saveHomepage = saveHomepage;
+
 async function loadSettings() {
   document.getElementById('tab-settings').innerHTML =
     '<div class="su-card"><p style="font-size:14px;color:var(--text-mid);margin-bottom:12px">修改超级管理密码</p>'+
