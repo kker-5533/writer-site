@@ -62,18 +62,16 @@ section{padding:80px 48px;max-width:1100px;margin:0 auto}
 .author-card .name{font-size:15px;font-weight:700}
 .author-card .role{font-size:12px;color:#999;margin-top:4px}
 
-/* ===== 随笔卡片（作者在外面）===== */
-.blog-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
-.blog-item{display:flex;flex-direction:column;gap:8px}
-.blog-card{background:#fff;padding:32px;border:1px solid #e0d8c8;box-shadow:0 2px 4px rgba(0,0,0,.02),0 8px 20px rgba(0,0,0,.04);transition:all .35s;flex:1}
-.blog-card:hover{transform:translateY(-4px);box-shadow:0 4px 8px rgba(0,0,0,.04),0 16px 36px rgba(0,0,0,.06)}
+/* ===== 随笔卡片（与推荐作品同格式）===== */
+.blog-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.blog-card{background:#fff;padding:36px;border:1px solid #e0d8c8;box-shadow:0 2px 4px rgba(0,0,0,.02),0 8px 24px rgba(0,0,0,.04),0 16px 48px rgba(0,0,0,.03);transition:all .35s;position:relative}
+.blog-card::after{content:'';position:absolute;bottom:0;left:8px;right:8px;height:12px;background:rgba(0,0,0,.03);filter:blur(8px);z-index:-1;transition:all .35s}
+.blog-card:hover{transform:translateY(-6px);box-shadow:0 4px 8px rgba(0,0,0,.04),0 12px 36px rgba(0,0,0,.06),0 24px 64px rgba(0,0,0,.05)}
+.blog-card:hover::after{bottom:-8px;height:16px;opacity:.6}
 .blog-card .date{font-size:10px;font-weight:700;letter-spacing:3px;color:#c0764a;margin-bottom:12px}
-.blog-card h4{font-size:19px;font-weight:700;margin-bottom:8px}
-.blog-card .excerpt{font-size:14px;line-height:1.7;color:#666}
-.blog-author{display:flex;align-items:center;gap:8px;padding-left:4px}
-.blog-author .dot{width:7px;height:7px;border-radius:50%;background:#c0764a}
-.blog-author .name{font-size:12.5px;font-weight:600;color:#7a7165}
-.blog-author .role{font-size:11px;color:#aaa;margin-left:4px}
+.blog-card h4{font-size:22px;font-weight:700;margin-bottom:8px}
+.blog-card .meta{font-size:12px;color:#999;font-weight:500;margin-bottom:12px}
+.blog-card .excerpt{font-size:14px;line-height:1.7;color:#555}
 
 footer{padding:48px;text-align:center;font-size:12px;color:#bbb;border-top:1px solid #e0d8c8}
 </style></head><body>
@@ -116,22 +114,10 @@ footer{padding:48px;text-align:center;font-size:12px;color:#bbb;border-top:1px s
 <section>
 <div class="sec-head"><h2>最新随笔</h2><span class="line"></span></div>
 <div class="blog-grid">
-<div class="blog-item">
-<div class="blog-card"><div class="date">2026 · 06 · 10</div><h4>写作者的书桌</h4><p class="excerpt">一张书桌能透露多少秘密？半杯凉茶、散落的便利贴、三支没墨的笔。写作从来不是体面的事，但它需要的只是一个坐下的人。</p></div>
-<div class="blog-author"><span class="dot"></span><span class="name">蒲瑞昇</span><span class="role">创办人</span></div>
-</div>
-<div class="blog-item">
-<div class="blog-card"><div class="date">2026 · 05 · 28</div><h4>重读《边城》</h4><p class="excerpt">时隔十年再读沈从文。年轻时只读到翠翠的爱情，现在读到的却是那条河本身——它带走一切，又包容一切。</p></div>
-<div class="blog-author"><span class="dot"></span><span class="name">苏晚</span><span class="role">作者</span></div>
-</div>
-<div class="blog-item">
-<div class="blog-card"><div class="date">2026 · 05 · 12</div><h4>在菜市场学到的写作课</h4><p class="excerpt">最好的对话不在书里，在菜市场。摊贩的吆喝、大妈的讨价还价——每一句都带着生活的纹理。</p></div>
-<div class="blog-author"><span class="dot"></span><span class="name">江月</span><span class="role">作者</span></div>
-</div>
-<div class="blog-item">
-<div class="blog-card"><div class="date">2026 · 04 · 25</div><h4>关于「南方有雨」的创作谈</h4><p class="excerpt">编辑问我为什么要写三代女性。我说，因为我的外婆、母亲和我——我们从未真正交谈过。写作是一种迟到的对话。</p></div>
-<div class="blog-author"><span class="dot"></span><span class="name">蒲瑞昇</span><span class="role">创办人</span></div>
-</div>
+<div class="blog-card"><div class="date">2026 · 06 · 10</div><h4>写作者的书桌</h4><p class="meta">蒲瑞昇 · 创办人</p><p class="excerpt">一张书桌能透露多少秘密？半杯凉茶、散落的便利贴、三支没墨的笔。写作从来不是体面的事。</p></div>
+<div class="blog-card"><div class="date">2026 · 05 · 28</div><h4>重读《边城》</h4><p class="meta">苏晚 · 作者</p><p class="excerpt">时隔十年再读沈从文。年轻时只读到翠翠的爱情，现在读到的却是那条河本身。</p></div>
+<div class="blog-card"><div class="date">2026 · 05 · 12</div><h4>在菜市场学到的写作课</h4><p class="meta">江月 · 作者</p><p class="excerpt">最好的对话不在书里，在菜市场。摊贩的吆喝、大妈的讨价还价——每一句都带着生活的纹理。</p></div>
+<div class="blog-card"><div class="date">2026 · 04 · 25</div><h4>关于「南方有雨」的创作谈</h4><p class="meta">蒲瑞昇 · 创办人</p><p class="excerpt">编辑问我为什么要写三代女性。我说，因为我的外婆、母亲和我——我们从未真正交谈过。</p></div>
 </div>
 </section>
 
