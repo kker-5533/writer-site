@@ -76,10 +76,8 @@ section.alt { background: var(--white); }
 
 /* 导航栏用户区 */
 .user-area { position: relative; display: flex; align-items: center; }
-.user-area > a { color: rgba(255,255,255,0.65); font-size: 12.5px; letter-spacing: 1.5px; text-decoration: none; position: relative; padding: 10px 0; }
-.user-area > a:hover { color: #fff; }
-.user-area > a::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 0; height: 2px; background: var(--gold-light); border-radius: 1px; transition: width 0.3s; }
-.user-area > a:hover::after { width: 60%; }
+.user-area > a { color: var(--text-muted); font-size: 13px; font-weight: 600; letter-spacing: 1px; text-decoration: none; padding: 12px 0; }
+.user-area > a:hover { color: var(--accent); }
 .user-trigger { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 10px 0; }
 .uname { color: rgba(255,255,255,0.85); font-size: 12.5px; font-weight: 500; }
 .role-badge { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; letter-spacing: 0; }
@@ -119,13 +117,13 @@ section.alt { background: var(--white); }
 /* 卡片 */
 .admin-card-list { display: flex; flex-direction: column; gap: 12px; }
 .admin-card {
-  padding: 22px 28px; border: 1px solid var(--border); border-radius: 12px;
-  background: #fff; display: flex; flex-direction: column; gap: 10px;
-  transition: all 0.2s; border-left: 4px solid var(--teal);
+  padding: 22px 28px; border: 1px solid var(--border);
+  background: var(--white); display: flex; flex-direction: column; gap: 10px;
+  transition: all .35s; box-shadow: var(--shadow-sm);
 }
-.admin-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); border-color: var(--teal-light); }
+.admin-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
 .admin-card strong { font-family: var(--font-heading); font-size: 18px; color: var(--navy); letter-spacing: 0.5px; font-weight: 700; }
-.admin-card .tag { font-size: 12px; padding: 3px 10px; background: var(--sand-light); border-radius: 20px; color: var(--text-mid); margin-left: 10px; font-weight: 600; }
+.admin-card .tag { font-size: 12px; padding: 3px 10px; background: var(--sand-light); border-radius: 3px; color: var(--text-mid); margin-left: 10px; font-weight: 600; }
 .admin-card .tag.draft { background: #fef3cd; color: #856404; }
 .admin-card-summary { font-size: 15px; color: var(--text-dark); line-height: 1.75; font-weight: 500; }
 .admin-card-note { font-size: 14px; font-weight: 500; color: #e67e22; background: #fef9f3; padding: 10px 14px; border-radius: 8px; margin-top: 6px; border-left: 3px solid #e67e22; }
@@ -136,14 +134,15 @@ section.alt { background: var(--white); }
 }
 
 /* 按钮 */
-.admin-btn-save { padding: 13px 40px; font-family: var(--font-body); font-size: 14px; font-weight: 600; letter-spacing: 2px; background: var(--navy); color: #fff; border: none; border-radius: 8px; cursor: pointer; align-self: flex-start; transition: all 0.2s; }
-.admin-btn-save:hover { background: #1a2d40; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.admin-btn-save { padding: 13px 40px; font-family: var(--font-body); font-size: 14px; font-weight: 700; letter-spacing: 2px; background: var(--navy); color: #fff; border: none; cursor: pointer; align-self: flex-start; transition: all .2s; box-shadow: 0 6px 0 rgba(0,0,0,.1); }
+.admin-btn-save:hover { transform: translateY(2px); box-shadow: 0 3px 0 rgba(0,0,0,.1); }
 .admin-btn-sm {
-  padding: 6px 16px; font-size: 13px; font-weight: 600;
-  border: 1px solid var(--border); border-radius: 20px; background: #fff;
-  cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px; white-space: nowrap;
+  padding: 6px 16px; font-size: 12px; font-weight: 600;
+  border: 1px solid var(--border); background: var(--white);
+  cursor: pointer; transition: all .2s; letter-spacing: 1px; white-space: nowrap;
+  box-shadow: 0 3px 0 rgba(0,0,0,.04);
 }
-.admin-btn-sm:hover { background: var(--cream); border-color: var(--teal); color: var(--teal); }
+.admin-btn-sm:hover { background: var(--navy); border-color: var(--navy); color: #fff; transform: translateY(1px); box-shadow: none; }
 .admin-btn-sm.danger { color: #c44; border-color: #ecc; } .admin-btn-sm.danger:hover { background: #fef0f0; border-color: #c44; color: #c44; }
 .admin-btn-sm.approve-btn { color: #4a8a4a; border-color: #a8d8a8; } .admin-btn-sm.approve-btn:hover { background: #f0faf0; border-color: #4a8a4a; color: #4a8a4a; }
 .admin-btn-sm.reject-btn { color: #c44; border-color: #ecc; } .admin-btn-sm.reject-btn:hover { background: #fef0f0; border-color: #c44; color: #c44; }
