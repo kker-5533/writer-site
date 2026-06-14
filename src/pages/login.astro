@@ -72,90 +72,46 @@ import Layout from '../layouts/Layout.astro';
   .login-wrapper {
     min-height: 100vh;
     display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(160deg, #1b2a3a 0%, #2e5c6e 100%);
+    background: var(--bg);
     padding: 40px 24px;
   }
   .login-card {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 0;
-    width: 100%;
-    max-width: 420px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.2);
-    overflow: hidden;
+    background: var(--white); border: 1px solid var(--border);
+    width: 100%; max-width: 420px;
+    box-shadow: var(--shadow-md);
   }
   .login-card .card-top {
-    background: linear-gradient(135deg, #1b2a3a 0%, #2e5c6e 100%);
-    padding: 40px 40px 32px;
-    text-align: center;
+    padding: 36px 36px 28px; text-align: center;
+    border-bottom: 1px solid var(--border);
   }
   .login-card .card-top h1 {
-    font-family: var(--font-heading);
-    font-size: 24px; font-weight: 700;
-    color: #fff;
-    letter-spacing: 4px;
-    margin-bottom: 6px;
+    font-size: 22px; font-weight: 800; letter-spacing: 6px; color: var(--navy);
   }
   .login-card .card-top .sub {
-    font-size: 12px; color: rgba(255,255,255,0.6);
-    letter-spacing: 2px;
+    font-size: 12px; color: var(--text-light); letter-spacing: 2px; margin-top: 4px;
   }
-  .login-card .card-body {
-    padding: 36px 40px 40px;
-  }
-  .login-form { display: flex; flex-direction: column; gap: 18px; }
+  .login-card .card-body { padding: 32px 36px 36px; }
+  .login-form { display: flex; flex-direction: column; gap: 16px; }
   .field { text-align: left; }
-  .field label {
-    display: block;
-    font-family: var(--font-body);
-    font-size: 11px; font-weight: 600;
-    color: var(--text-light);
-    letter-spacing: 1px;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-  }
+  .field label { display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 6px; }
   .field input {
-    width: 100%; padding: 13px 14px;
-    font-family: var(--font-body);
-    font-size: 15px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--cream);
-    color: var(--text-dark);
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%; padding: 12px 14px; font-size: 15px; font-family: var(--font-body);
+    border: 1px solid var(--border); background: var(--bg); color: var(--navy); outline: none;
   }
-  .field input:focus {
-    border-color: var(--teal);
-    box-shadow: 0 0 0 3px rgba(74,138,158,0.1);
-    background: var(--white);
-  }
-  .error {
-    font-size: 13px; color: #c44; text-align: center;
-  }
+  .field input:focus { border-color: var(--accent); background: var(--white); }
+  .error { font-size: 13px; color: #c44; text-align: center; }
   .login-form button {
-    padding: 14px;
-    font-family: var(--font-body);
-    font-size: 14px; font-weight: 600;
-    letter-spacing: 4px;
-    background: var(--navy);
-    color: #fff;
-    border: none; border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s;
-    margin-top: 6px;
+    padding: 14px; font-family: var(--font-body); font-size: 14px; font-weight: 700;
+    letter-spacing: 4px; background: var(--navy); color: #fff; border: none; cursor: pointer;
+    box-shadow: 0 6px 0 rgba(0,0,0,.1); transition: all .2s; margin-top: 4px;
   }
-  .login-form button:hover { background: #243548; }
-  .login-form button:disabled { opacity: 0.6; cursor: not-allowed; }
+  .login-form button:hover { transform: translateY(2px); box-shadow: 0 3px 0 rgba(0,0,0,.1); }
+  .login-form button:disabled { opacity: .6; }
   .card-bottom {
-    padding: 20px 40px;
-    border-top: 1px solid var(--border-light);
+    padding: 18px 36px; border-top: 1px solid var(--border);
     display: flex; justify-content: center; gap: 24px;
   }
-  .card-bottom a {
-    font-size: 13px; color: var(--text-light);
-    text-decoration: none; transition: color 0.2s;
-  }
-  .card-bottom a:hover { color: var(--teal); }
-  .reg-link { font-weight: 600; color: var(--teal) !important; }
+  .card-bottom a { font-size: 13px; color: var(--text-light); text-decoration: none; font-weight: 500; }
+  .card-bottom a:hover { color: var(--accent); }
+  .reg-link { font-weight: 700; color: var(--accent) !important; }
 </style>
