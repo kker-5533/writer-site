@@ -50,16 +50,29 @@ const userMap = getUsers();
       list.innerHTML = convs.map(function(c) {
         var isUnread = !c.read && c.from !== me.id;
         var name = c.partnerName || '未知用户';
+        var initials = (name || '?')[0];
+        var hue = (name.charCodeAt(0) || 0) * 137 % 360;
         return '<a href="/messages/' + c.partner + '" class="conv-item' + (isUnread ? ' unread' : '') + '">' +
-          '<div class="conv-left"><div class="conv-avatar">' + (name || '?')[0] + '</div></div>' +
-          '<div class="conv-main"><div class="conv-head"><span class="conv-name">' + esc(name) + '</span><span class="conv-time">' + fmtTime(c.time) + '</span></div>' +
-          '<p class="conv-preview">' + (c.from === me.id ? '我：' : '') + esc(c.lastMsg || '') + '</p></div>' +
-          (isUnread ? '<span class="conv-dot"></span>' : '') +
-          '</a>';
+          '<div class="conv-avatar" style="background:hsl(' + hue + ',40%,55%)">' + initials + '</div>' +
+          '<div class="conv-main">' +
+            '<div class="conv-head"><span class="conv-name">' + esc(name) + '</span>' +
+            (isUnread ? '<span class="conv-badge">' + countUnread(convs, c.partner, me.id) + '</span>' : '') +
+            '<span class="conv-time">' + fmtTime(c.time) + '</span></div>' +
+            '<p class="conv-preview">' + (c.from === me.id ? '<span class="conv-prefix">我</span> ' : '') + esc(c.lastMsg || '') + '</p>' +
+          '</div>' +
+        '</a>';
       }).join('');
     } catch(e) { list.innerHTML = '<p class="empty">加载失败</p>'; }
   }
 
+  function countUnread(convs, partnerId, myId) {
+    var count = 0;
+    // rough count from the conversations data we have
+    convs.forEach(function(cv) {
+      if (cv.partner === partnerId && !cv.read && cv.from !== myId) count++;
+    });
+    return count;
+  }
   function fmtTime(t) {
     if (!t) return '';
     var d = new Date(t);
@@ -68,6 +81,7 @@ const userMap = getUsers();
     if (diff < 60000) return '刚刚';
     if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前';
     if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前';
+    if (diff < 604800000) return Math.floor(diff / 86400000) + '天前';
     return d.toISOString().slice(0, 10);
   }
 
@@ -78,27 +92,30 @@ const userMap = getUsers();
 
 <style>
   .page { padding: 100px 0 60px; min-height: 70vh; }
-  .page h1 { font-family: var(--font-heading); font-size: 28px; color: var(--navy); margin-bottom: 36px; }
-  .empty { color: var(--text-light); padding: 40px 0; text-align: center; font-size: 15px; }
+  .page h1 { font-family: var(--font-heading); font-size: 28px; color: var(--navy); margin-bottom: 32px; }
+  .empty { color: var(--text-light); padding: 60px 0; text-align: center; font-size: 15px; }
   .hint { font-size: 13px; color: var(--text-light); display: block; margin-top: 6px; }
   .conv-item {
-    display: flex; align-items: center; gap: 14px; padding: 18px 20px;
-    border: 1px solid var(--border); border-radius: 10px; background: #fff;
-    text-decoration: none; margin-bottom: 8px; transition: box-shadow 0.2s;
-    position: relative;
+    display: flex; align-items: center; gap: 16px; padding: 20px 24px;
+    border: 1px solid var(--border); border-radius: 12px; background: #fff;
+    text-decoration: none; margin-bottom: 10px; transition: all 0.2s;
   }
-  .conv-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
-  .conv-item.unread { border-left: 3px solid var(--teal); background: #fafefe; }
+  .conv-item:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); transform: translateY(-1px); }
+  .conv-item.unread { background: #f6fbfc; }
   .conv-avatar {
-    width: 44px; height: 44px; border-radius: 50%; background: var(--teal); color: #fff;
+    width: 50px; height: 50px; border-radius: 50%; color: #fff;
     display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-heading); font-size: 18px; font-weight: 700; flex-shrink: 0;
+    font-size: 20px; font-weight: 700; flex-shrink: 0;
   }
   .conv-main { flex: 1; min-width: 0; }
-  .conv-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
-  .conv-name { font-family: var(--font-heading); font-size: 16px; font-weight: 700; color: var(--navy); }
-  .conv-time { font-size: 12px; color: var(--text-light); }
-  .conv-preview { font-size: 14px; color: var(--text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .conv-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
-  @media (max-width: 640px) { .page { padding: 80px 0 40px; } }
+  .conv-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .conv-name { font-size: 16px; font-weight: 600; color: var(--navy); }
+  .conv-badge {
+    font-size: 11px; padding: 2px 8px; border-radius: 10px;
+    background: var(--teal); color: #fff; font-weight: 600;
+  }
+  .conv-time { font-size: 12px; color: var(--text-light); margin-left: auto; }
+  .conv-preview { font-size: 14px; color: var(--text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.5; }
+  .conv-prefix { color: var(--teal); font-weight: 600; font-size: 12px; }
+  @media (max-width: 640px) { .page { padding: 80px 0 40px; } .conv-item { padding: 16px; } }
 </style>
