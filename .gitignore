@@ -4,4 +4,5 @@ dist/
 .DS_Store
 src/data/auth.json
 src/data/users.json
+src/data/super-auth.json
 public/images/

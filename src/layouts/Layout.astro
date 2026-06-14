@@ -25,7 +25,8 @@ import '../styles/global.css';
       var roleLabel = u.role === 'admin' ? '管理员' : '作者';
       var roleCls = u.role === 'admin' ? 'badge-admin' : 'badge-author';
       var adminUrl = u.role === 'admin' ? '/platform-admin' : '/admin';
-      area.innerHTML = '<span class="user-trigger" id="userTrigger-' + u.id + '"><span class="uname">' + u.nickname + '</span><span class="role-badge ' + roleCls + '">' + roleLabel + '</span></span><div class="user-dropdown" id="userDropdown-' + u.id + '" style="display:none"><a href="' + adminUrl + '">进入后台</a><a href="/author/' + u.id + '">我的主页</a><a href="/messages">我的来信</a><a href="javascript:void(0)" class="logout-link">退出登录</a></div>';
+      var superLink = u.role === 'admin' ? '<a href="/super-admin">超级管理</a>' : '';
+area.innerHTML = '<span class="user-trigger" id="userTrigger-' + u.id + '"><span class="uname">' + u.nickname + '</span><span class="role-badge ' + roleCls + '">' + roleLabel + '</span></span><div class="user-dropdown" id="userDropdown-' + u.id + '" style="display:none"><a href="' + adminUrl + '">进入后台</a><a href="/author/' + u.id + '">我的主页</a><a href="/messages">我的来信</a>' + superLink + '<a href="javascript:void(0)" class="logout-link">退出登录</a></div>';
       // 绑定下拉菜单
       var trigger = document.getElementById('userTrigger-' + u.id);
       var dropdown = document.getElementById('userDropdown-' + u.id);

@@ -1,0 +1,118 @@
+---
+export const prerender = false;
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+<div id="app" style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg)">
+  <div id="gate" style="background:var(--white);border:1px solid var(--border);padding:48px 40px;width:100%;max-width:400px;box-shadow:var(--shadow-md);text-align:center">
+    <h2 style="font-size:22px;font-weight:800;letter-spacing:4px;color:var(--navy);margin-bottom:8px">超级管理系统</h2>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:28px">请输入超级管理密码</p>
+    <input type="password" id="superPwd" placeholder="超级密码" style="width:100%;padding:12px 14px;border:1px solid var(--border);background:var(--bg);font-size:15px;margin-bottom:12px;outline:none;font-family:inherit" onkeydown="if(event.key==='Enter')verify()">
+    <p id="gateErr" style="color:#c44;font-size:13px;margin-bottom:12px;display:none"></p>
+    <button onclick="verify()" style="width:100%;padding:13px;font-size:14px;font-weight:700;letter-spacing:4px;background:var(--navy);color:#fff;border:none;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.1)">进 入</button>
+  </div>
+  <div id="panel" style="display:none;width:100%;max-width:900px;padding:60px 32px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px">
+      <h1 style="font-size:26px;font-weight:800;color:var(--navy)">超级管理</h1>
+      <button onclick="location.reload()" style="font-size:13px;color:var(--accent);background:none;border:none;cursor:pointer;font-weight:600">退出</button>
+    </div>
+    <div class="su-tabs" id="tabs">
+      <button class="su-tab active" data-tab="admins">管理员</button>
+      <button class="su-tab" data-tab="dashboard">数据看板</button>
+      <button class="su-tab" data-tab="backup">备份恢复</button>
+      <button class="su-tab" data-tab="settings">系统设置</button>
+    </div>
+    <div id="tab-admins" class="su-content active"></div>
+    <div id="tab-dashboard" class="su-content"></div>
+    <div id="tab-backup" class="su-content"></div>
+    <div id="tab-settings" class="su-content"></div>
+  </div>
+</div>
+</Layout>
+
+<script>
+var superPwd = '';
+function verify() {
+  var pwd = document.getElementById('superPwd').value;
+  fetch('/api/super-admin', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'verify',password:pwd}) })
+    .then(function(r){ return r.json(); }).then(function(d){
+      if (d.ok) { superPwd = pwd; document.getElementById('gate').style.display='none'; document.getElementById('panel').style.display='block'; loadAdmins(); }
+      else { var e = document.getElementById('gateErr'); e.textContent = d.error; e.style.display='block'; }
+    });
+}
+document.querySelectorAll('.su-tab').forEach(function(t){ t.addEventListener('click', function(){
+  document.querySelectorAll('.su-tab').forEach(function(x){ x.classList.remove('active'); });
+  document.querySelectorAll('.su-content').forEach(function(x){ x.classList.remove('active'); });
+  this.classList.add('active');
+  document.getElementById('tab-'+this.dataset.tab).classList.add('active');
+  var tab = this.dataset.tab;
+  if (tab === 'admins') loadAdmins();
+  if (tab === 'dashboard') loadDashboard();
+  if (tab === 'backup') loadBackup();
+  if (tab === 'settings') loadSettings();
+});});
+
+function api(data) { return fetch('/api/super-admin', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(Object.assign({},data,{password:superPwd})) }).then(function(r){ return r.json(); }); }
+
+async function loadAdmins() {
+  var d = await api({action:'listAdmins'});
+  var el = document.getElementById('tab-admins');
+  el.innerHTML = '<div style="margin-bottom:16px"><strong style="font-size:14px;color:var(--navy)">当前管理员</strong></div>' +
+    d.admins.map(function(a){ return '<div class="su-card"><span><strong>'+esc(a.nickname)+'</strong><span class="su-tag">管理员</span><span style="font-size:12px;color:var(--text-light);margin-left:8px">'+a.createdAt+'</span></span><button class="su-btn-sm danger" onclick="demoteAdmin(\''+a.id+'\')">降为作者</button></div>'; }).join('') +
+    '<div style="margin-top:24px"><strong style="font-size:14px;color:var(--navy)">提升作者为管理员</strong></div>' +
+    '<div style="margin-top:8px"><select id="authorSelect" style="padding:8px 12px;border:1px solid var(--border);background:var(--white);font-size:13px;min-width:200px"><option>加载中...</option></select> <button class="su-btn-sm" onclick="promoteAdmin()" style="margin-left:8px">提升</button></div>';
+  fetch('/api/auth', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'list',adminId:'admin-001'}) })
+    .then(function(r){ return r.json(); }).then(function(users){
+      var sel = document.getElementById('authorSelect');
+      sel.innerHTML = users.filter(function(u){ return u.role === 'author' && u.status === 'active'; }).map(function(u){ return '<option value="'+u.id+'">'+esc(u.nickname)+'</option>'; }).join('');
+    });
+}
+async function promoteAdmin() { var uid = document.getElementById('authorSelect').value; if (!uid) return; var d = await api({action:'promoteAdmin',userId:uid}); if (d.ok) loadAdmins(); else alert(d.error); }
+async function demoteAdmin(uid) { if (!confirm('确定降级？')) return; var d = await api({action:'demoteAdmin',userId:uid}); if (d.ok) loadAdmins(); else alert(d.error); }
+
+async function loadDashboard() {
+  var d = await api({action:'listAdmins'}); var s = d.stats;
+  document.getElementById('tab-dashboard').innerHTML =
+    '<div class="su-cards">'+
+    '<div class="su-stat"><span class="su-num">'+s.works+'</span><span class="su-label">作品总数</span></div>'+
+    '<div class="su-stat"><span class="su-num">'+s.blogs+'</span><span class="su-label">随笔总数</span></div>'+
+    '<div class="su-stat"><span class="su-num">'+(s.authors+d.admins.length)+'</span><span class="su-label">注册用户</span></div>'+
+    '<div class="su-stat"><span class="su-num">'+s.messages+'</span><span class="su-label">留言数</span></div>'+
+    '<div class="su-stat"><span class="su-num">'+s.likes+'</span><span class="su-label">点赞总数</span></div>'+
+    '</div>';
+}
+async function loadBackup() {
+  document.getElementById('tab-backup').innerHTML =
+    '<div class="su-card"><p style="font-size:14px;color:var(--text-mid);margin-bottom:12px">下载全站数据备份</p><button class="su-btn-sm" onclick="doBackup()">下载备份</button></div>'+
+    '<div class="su-card" style="margin-top:12px"><p style="font-size:14px;color:var(--text-mid);margin-bottom:12px">从备份恢复（覆盖当前数据）</p><input type="file" id="restoreFile" accept=".json" style="font-size:13px;margin-bottom:8px"><br><button class="su-btn-sm danger" onclick="doRestore()">恢复数据</button></div>';
+}
+async function doBackup() { var d = await api({action:'backup'}); if (!d.ok) return; var blob = new Blob([JSON.stringify(d.data,null,2)],{type:'application/json'}); var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup-'+new Date().toISOString().slice(0,10)+'.json'; a.click(); }
+async function doRestore() { var file = document.getElementById('restoreFile').files[0]; if (!file) return; if (!confirm('恢复会覆盖所有数据，确定？')) return; var text = await file.text(); var d = await api({action:'restore',data:JSON.parse(text)}); alert(d.ok ? '恢复成功' : d.error); }
+async function loadSettings() {
+  document.getElementById('tab-settings').innerHTML =
+    '<div class="su-card"><p style="font-size:14px;color:var(--text-mid);margin-bottom:12px">修改超级管理密码</p>'+
+    '<input type="password" id="newSuperPwd" placeholder="新密码（至少4位）" style="padding:10px 12px;border:1px solid var(--border);background:var(--bg);font-size:14px;width:100%;max-width:300px;margin-bottom:8px"><br>'+
+    '<button class="su-btn-sm" onclick="changeSuperPwd()">修改密码</button></div>';
+}
+async function changeSuperPwd() { var np = document.getElementById('newSuperPwd').value; if (!np || np.length < 4) return; var d = await api({action:'changePassword',newPassword:np}); if (d.ok) { superPwd = np; alert('密码已修改'); } else alert(d.error); }
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+
+<style>
+.su-tabs{display:flex;gap:2px;margin-bottom:28px;border-bottom:1px solid var(--border)}
+.su-tab{padding:10px 20px;font-size:13px;font-weight:600;background:none;border:none;color:var(--text-light);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;letter-spacing:1px}
+.su-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.su-content{display:none}
+.su-content.active{display:block}
+.su-card{padding:16px 20px;background:var(--white);border:1px solid var(--border);box-shadow:var(--shadow-sm);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.su-tag{font-size:10px;padding:2px 8px;background:var(--purple);color:#fff;font-weight:600;margin-left:8px}
+.su-btn-sm{padding:6px 14px;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--white);cursor:pointer;letter-spacing:1px;box-shadow:0 3px 0 rgba(0,0,0,.04);transition:all .15s}
+.su-btn-sm:hover{background:var(--navy);color:#fff;border-color:var(--navy);transform:translateY(1px);box-shadow:none}
+.su-btn-sm.danger{color:#c44;border-color:#ecc}
+.su-btn-sm.danger:hover{background:#c44;color:#fff}
+.su-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.su-stat{text-align:center;padding:28px 16px;background:var(--white);border:1px solid var(--border);box-shadow:var(--shadow-sm)}
+.su-num{display:block;font-size:36px;font-weight:800;color:var(--accent)}
+.su-label{font-size:13px;color:var(--text-muted);font-weight:600;margin-top:4px;display:block}
+</style>
