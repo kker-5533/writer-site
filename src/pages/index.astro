@@ -224,8 +224,8 @@ const recommendedAuthors = users.filter((u: any) => u.recommended && u.status ==
 
   @media (max-width: 768px) {
     .hero { grid-template-columns: 1fr; padding: 40px 24px; min-height: auto; gap: 32px; }
-    .hero-cards { height: auto; position: static; display: flex; gap: 12px; overflow-x: auto; }
-    .hc { position: static; transform: none !important; min-width: 180px; }
+    .hero-cards { height: auto; position: static; display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; }
+    .hc { position: static !important; transform: none !important; min-width: 140px; flex-shrink: 0; }
     .hero-text h1 { font-size: 34px; }
     .card-grid2 { grid-template-columns: 1fr; }
     .author-grid { grid-template-columns: repeat(2,1fr); }
