@@ -34,23 +34,22 @@ if (!partner) return Astro.redirect('/messages');
   <Footer author="文学社" tagline="发现好文字，遇见好作者" />
 </Layout>
 
-<script>
+<script define:vars={{ partnerId: userId }}>
   var userStr = sessionStorage.getItem('linshen_user');
   var auth = sessionStorage.getItem('linshen_auth');
   if (auth !== 'true' || !userStr) { window.location.href = '/login'; }
   var me = JSON.parse(userStr);
-  var partnerId = `${userId}`;
 
-  var chatBox = document.getElementById('chatBox')!;
-  var chatForm = document.getElementById('chatForm')!;
-  var chatInput = document.getElementById('chatInput') as HTMLTextAreaElement;
+  var chatBox = document.getElementById('chatBox');
+  var chatForm = document.getElementById('chatForm');
+  var chatInput = document.getElementById('chatInput');
 
   async function loadMessages() {
     try {
       var res = await fetch('/api/private-messages?userId=' + me.id + '&with=' + partnerId);
       var msgs = await res.json();
       if (!msgs.length) { chatBox.innerHTML = '<p class="empty">暂无消息，发送第一条吧</p>'; return; }
-      chatBox.innerHTML = msgs.map(function(m: any) {
+      chatBox.innerHTML = msgs.map(function(m) {
         var isMine = m.from === me.id;
         return '<div class="msg-row ' + (isMine ? 'mine' : '') + '"><div class="msg-bubble"><p>' + esc(m.body) + '</p><span class="msg-time">' + fmtTime(m.time) + (isMine ? (m.read ? ' 已读' : '') : '') + '</span></div></div>';
       }).join('');
@@ -62,7 +61,7 @@ if (!partner) return Astro.redirect('/messages');
     e.preventDefault();
     var body = chatInput.value.trim();
     if (!body) return;
-    var btn = chatForm.querySelector('button')!;
+    var btn = chatForm.querySelector('button');
     btn.disabled = true;
     try {
       await fetch('/api/private-messages', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ from: me.id, to: partnerId, body: body }) });
@@ -73,7 +72,7 @@ if (!partner) return Astro.redirect('/messages');
     chatInput.focus();
   });
 
-  function fmtTime(t: string) {
+  function fmtTime(t) {
     if (!t) return '';
     var d = new Date(t);
     var now = new Date();
@@ -86,7 +85,7 @@ if (!partner) return Astro.redirect('/messages');
     return d.toISOString().slice(0, 10) + ' ' + d.toTimeString().slice(0,5);
   }
 
-  function esc(s: string) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function esc(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   loadMessages();
   // 30秒自动刷新
