@@ -1,0 +1,30 @@
+[
+  {
+    "id": "poetry",
+    "name": "诗歌社",
+    "intro": "以诗会友。每月一次线上读诗会，每季度一本社刊。欢迎所有热爱诗歌的朋友。",
+    "contact": "poetry@example.com",
+    "createdBy": "江月"
+  },
+  {
+    "id": "fiction",
+    "name": "小说工坊",
+    "intro": "专注小说创作与互评。每周提交片段，周末线上讨论。有经验的作者带新人，一起打磨作品。",
+    "contact": "fiction@example.com",
+    "createdBy": "蒲瑞昇"
+  },
+  {
+    "id": "essay",
+    "name": "散文沙龙",
+    "intro": "散文爱好者的聚集地。不定期举办线下茶话会、城市漫步写作、读书分享。慢下来，写生活。",
+    "contact": "essay@example.com",
+    "createdBy": "苏晚"
+  },
+  {
+    "id": "youth",
+    "name": "青年写作计划",
+    "intro": "面向 30 岁以下写作者。提供创作指导、发表机会、写作基金申请辅导。让年轻的声音被听见。",
+    "contact": "youth@example.com",
+    "createdBy": "云栖"
+  }
+]
