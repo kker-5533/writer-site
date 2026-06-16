@@ -1,0 +1,55 @@
+---
+export const prerender = false;
+import Layout from '../../layouts/Layout.astro';
+import PlatformNav from '../../components/PlatformNav.astro';
+import Footer from '../../components/Footer.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const { id } = Astro.params;
+
+function getEvent(eid: string) {
+  try {
+    const events = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src/data/events.json'), 'utf-8'));
+    return events.find((e: any) => e.id === eid);
+  } catch { return null; }
+}
+const event = getEvent(id);
+if (!event) return Astro.redirect('/events');
+---
+
+<Layout>
+  <PlatformNav />
+  <div class="page">
+    <div class="container">
+      <a href="/events" class="back">&larr; 所有活动</a>
+      <div class="ev-header">
+        <span class="ev-tag">活动</span>
+        <span class="ev-source">{event.source}</span>
+        <span class="ev-deadline">截止日期：{event.deadline}</span>
+      </div>
+      <h1>{event.title}</h1>
+      <p class="ev-subtitle">{event.subtitle}</p>
+      <div class="ev-body">
+        <p>{event.intro}</p>
+      </div>
+    </div>
+  </div>
+  <Footer author="文学社" tagline="由内而外地安静生长" />
+</Layout>
+
+<style>
+  .page { padding: 100px 0 60px; min-height: 70vh; background: var(--bg); }
+  .container { max-width: 720px; margin: 0 auto; padding: 0 32px; }
+  .back { font-size: 13px; color: var(--text-light); text-decoration: none; display: block; margin-bottom: 32px; }
+  .back:hover { color: var(--accent); }
+  .ev-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .ev-tag { font-size: 10px; font-weight: 700; letter-spacing: 2px; background: var(--accent); color: #fff; padding: 3px 10px; }
+  .ev-source { font-size: 13px; color: var(--text-light); }
+  .ev-deadline { font-size: 13px; color: var(--accent); font-weight: 600; margin-left: auto; }
+  .page h1 { font-family: var(--font-heading); font-size: 32px; font-weight: 800; color: var(--navy); margin-bottom: 10px; letter-spacing: 2px; }
+  .ev-subtitle { font-size: 18px; color: var(--text-muted); margin-bottom: 36px; }
+  .ev-body { background: var(--white); border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 32px; }
+  .ev-body p { font-size: 16px; line-height: 2; color: var(--text-dark); }
+  @media (max-width: 640px) { .page { padding: 80px 0 40px; } }
+</style>

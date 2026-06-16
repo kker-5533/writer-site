@@ -1,7 +1,17 @@
 ---
+export const prerender = false;
 import Layout from '../layouts/Layout.astro';
 import PlatformNav from '../components/PlatformNav.astro';
 import Footer from '../components/Footer.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+function getEvents() {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src/data/events.json'), 'utf-8'));
+  } catch { return []; }
+}
+const events = getEvents();
 ---
 
 <Layout>
@@ -9,19 +19,59 @@ import Footer from '../components/Footer.astro';
   <div class="page">
     <div class="container">
       <h1>文学活动</h1>
-      <div class="placeholder">
-        <p>敬请期待</p>
-        <span>线上征文、线下读书会、写作比赛……即将上线</span>
+      <div class="event-list">
+        {events.map((e: any) => (
+          <a href={`/events/${e.id}`} class="event-card">
+            <div class="ev-img">{e.title[0]}</div>
+            <div class="ev-body">
+              <div class="ev-head">
+                <span class="ev-tag">活动</span>
+                <span class="ev-source">{e.source}</span>
+                <span class="ev-deadline">截止 {e.deadline}</span>
+              </div>
+              <h3>{e.title}</h3>
+              <p class="ev-sub">{e.subtitle}</p>
+            </div>
+            <span class="ev-arrow">→</span>
+          </a>
+        ))}
       </div>
     </div>
   </div>
-  <Footer author="文学社" tagline="发现好文字，遇见好作者" />
+  <Footer author="文学社" tagline="由内而外地安静生长" />
 </Layout>
 
 <style>
-  .page { padding: 100px 0 60px; min-height: 60vh; }
-  .page h1 { font-family: var(--font-heading); font-size: 28px; color: var(--navy); margin-bottom: 36px; }
-  .placeholder { text-align: center; padding: 80px 0; }
-  .placeholder p { font-family: var(--font-heading); font-size: 20px; color: var(--text-mid); margin-bottom: 8px; }
-  .placeholder span { font-size: 14px; color: var(--text-light); }
+  .page { padding: 100px 0 60px; min-height: 70vh; background: var(--bg); }
+  .container { max-width: 780px; margin: 0 auto; padding: 0 32px; }
+  .page h1 { font-family: var(--font-heading); font-size: 28px; font-weight: 800; color: var(--navy); margin-bottom: 36px; letter-spacing: 2px; }
+  .event-list { display: flex; flex-direction: column; gap: 14px; }
+  .event-card {
+    display: flex; align-items: center; gap: 24px;
+    background: var(--white); border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm); transition: all .35s;
+    text-decoration: none; color: inherit; padding-right: 20px;
+  }
+  .event-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+  .ev-img {
+    width: 140px; min-height: 120px; flex-shrink: 0;
+    background: linear-gradient(145deg, var(--navy), var(--teal));
+    color: rgba(255,255,255,.3); display: flex; align-items: center; justify-content: center;
+    font-size: 48px; font-weight: 900; font-family: var(--font-heading);
+  }
+  .ev-body { flex: 1; padding: 20px 0; }
+  .ev-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .ev-tag { font-size: 10px; font-weight: 700; letter-spacing: 2px; background: var(--accent); color: #fff; padding: 3px 10px; }
+  .ev-source { font-size: 12px; color: var(--text-light); font-weight: 500; }
+  .ev-deadline { font-size: 12px; color: var(--accent); font-weight: 600; margin-left: auto; }
+  .event-card h3 { font-size: 22px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .ev-sub { font-size: 14px; color: var(--text-mid); }
+  .ev-arrow { font-size: 22px; color: rgba(0,0,0,.1); transition: all .3s; }
+  .event-card:hover .ev-arrow { color: var(--accent); transform: translateX(4px); }
+  @media (max-width: 640px) {
+    .event-card { flex-direction: column; align-items: stretch; }
+    .ev-img { width: 100%; min-height: 80px; font-size: 32px; }
+    .ev-body { padding: 16px; }
+    .ev-deadline { margin-left: 0; }
+  }
 </style>

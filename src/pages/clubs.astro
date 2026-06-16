@@ -1,27 +1,140 @@
 ---
+export const prerender = false;
 import Layout from '../layouts/Layout.astro';
 import PlatformNav from '../components/PlatformNav.astro';
 import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+import fs from 'node:fs';
+import path from 'node:path';
+
+function loadWorks() {
+  const dir = path.join(process.cwd(), 'src/content/works');
+  try { const files = fs.readdirSync(dir).filter((f: string) => f.endsWith('.json')); return files.map((f: string) => ({ id: f.replace('.json', ''), ...JSON.parse(fs.readFileSync(path.join(dir, f), 'utf-8')) })); } catch { return []; }
+}
+function getEvents() { try { return JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src/data/events.json'), 'utf-8')); } catch { return []; } }
+function getUsers() { try { return JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src/data/users.json'), 'utf-8')); } catch { return []; } }
+
+const allWorks: any[] = loadWorks();
+const approved = allWorks.filter((w: any) => !w.reviewStatus || w.reviewStatus === 'approved');
+const events = getEvents();
+const users = getUsers();
+const authors = users.filter((u: any) => u.recommended && u.status === 'active');
 ---
 
 <Layout>
   <PlatformNav />
   <div class="page">
     <div class="container">
-      <h1>文学社团</h1>
-      <div class="placeholder">
-        <p>敬请期待</p>
-        <span>诗歌社、小说工坊、散文沙龙……即将上线</span>
-      </div>
+
+      <section class="club-hero">
+        <h1>文学社团</h1>
+        <p class="club-intro">文学社是一个开放的文字栖息地。我们相信每一篇作品都是一次相遇，每一个作者都值得被阅读。加入我们，用文字记录时代。</p>
+      </section>
+
+      <section class="club-sec">
+        <div class="sec-head"><h2>近期活动</h2><span class="sec-line"></span><a href="/events">全部 →</a></div>
+        <div class="ev-grid">
+          {events.slice(0,3).map((e: any) => (
+            <a href={`/events/${e.id}`} class="ev-mini">
+              <span class="ev-mini-tag">活动</span>
+              <h4>{e.title}</h4>
+              <p class="ev-mini-date">截止 {e.deadline}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="club-sec">
+        <div class="sec-head"><h2>推荐作品</h2><span class="sec-line"></span><a href="/recommended-works">全部 →</a></div>
+        <div class="club-grid2">
+          {approved.slice(0,4).map((w: any) => (
+            <a href={`/works/${w.id}`} class="club-card">
+              <span class="c-tag">{w.type}</span>
+              <h3>{w.title}</h3>
+              <p class="c-meta">{w.authorName || '佚名'} · {w.year}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="club-sec">
+        <div class="sec-head"><h2>推荐作者</h2><span class="sec-line"></span><a href="/recommended-authors">全部 →</a></div>
+        <div class="club-grid4">
+          {authors.slice(0,4).map((u: any) => (
+            <a href={`/author/${u.id}`} class="club-auth">
+              <div class="club-ava">{u.nickname[0]}</div>
+              <div class="club-name">{u.nickname}</div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="club-sec">
+        <div class="sec-head"><h2>联系方式</h2><span class="sec-line"></span></div>
+        <div class="club-contact">
+          <p>邮箱：linshen@example.com</p>
+          <p>公众号：文学社</p>
+          <p>豆瓣小组：文学社创作交流</p>
+        </div>
+      </section>
+
+      <section class="club-submit">
+        <h2>投稿通道</h2>
+        <p>欢迎投稿。请将作品发送至邮箱，注明「投稿」及作品类型。我们将在 7 个工作日内回复。</p>
+        <a href="/register" class="submit-btn">注 册 作 者</a>
+      </section>
+
     </div>
   </div>
-  <Footer author="文学社" tagline="发现好文字，遇见好作者" />
+  <Footer author="文学社" tagline="由内而外地安静生长" />
 </Layout>
 
 <style>
-  .page { padding: 100px 0 60px; min-height: 60vh; }
-  .page h1 { font-family: var(--font-heading); font-size: 28px; color: var(--navy); margin-bottom: 36px; }
-  .placeholder { text-align: center; padding: 80px 0; }
-  .placeholder p { font-family: var(--font-heading); font-size: 20px; color: var(--text-mid); margin-bottom: 8px; }
-  .placeholder span { font-size: 14px; color: var(--text-light); }
+  .page { padding: 100px 0 60px; min-height: 70vh; background: var(--bg); }
+  .container { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+  .club-hero { text-align: center; padding: 40px 0 50px; }
+  .club-hero h1 { font-size: 36px; font-weight: 800; color: var(--navy); letter-spacing: 3px; margin-bottom: 16px; }
+  .club-intro { font-size: 16px; color: var(--text-mid); max-width: 560px; margin: 0 auto; line-height: 1.8; }
+
+  .club-sec { margin-bottom: 56px; }
+  .sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; }
+  .sec-head h2 { font-size: 19px; font-weight: 800; letter-spacing: 2px; color: var(--navy); white-space: nowrap; }
+  .sec-line { flex: 1; height: 1px; background: var(--border); }
+  .sec-head a { font-size: 12px; font-weight: 600; color: var(--text-light); text-decoration: none; }
+  .sec-head a:hover { color: var(--accent); }
+
+  .ev-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+  .ev-mini { background: var(--white); border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 24px; text-decoration: none; color: inherit; transition: all .3s; display: block; }
+  .ev-mini:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+  .ev-mini-tag { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: var(--accent); display: block; margin-bottom: 10px; }
+  .ev-mini h4 { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .ev-mini-date { font-size: 12px; color: var(--text-light); }
+
+  .club-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .club-card { background: var(--white); border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 24px; text-decoration: none; color: inherit; transition: all .3s; display: block; }
+  .club-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+  .c-tag { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: var(--accent); display: block; margin-bottom: 8px; }
+  .club-card h3 { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .c-meta { font-size: 13px; color: var(--text-light); font-weight: 500; }
+
+  .club-grid4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+  .club-auth { text-align: center; background: var(--white); border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 28px 16px; text-decoration: none; color: inherit; transition: all .3s; display: block; }
+  .club-auth:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+  .club-ava { width: 56px; height: 56px; border-radius: 50%; background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 20px; font-weight: 700; }
+  .club-name { font-size: 15px; font-weight: 700; color: var(--navy); }
+
+  .club-contact { background: var(--white); border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 24px; }
+  .club-contact p { font-size: 14px; color: var(--text-mid); margin-bottom: 6px; }
+
+  .club-submit { text-align: center; padding: 40px; background: var(--white); border: 1px solid var(--border); box-shadow: var(--shadow-sm); margin-top: 20px; }
+  .club-submit h2 { font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
+  .club-submit p { font-size: 14px; color: var(--text-mid); margin-bottom: 20px; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .submit-btn { display: inline-block; padding: 13px 36px; background: var(--navy); color: #fff; text-decoration: none; font-size: 14px; font-weight: 700; letter-spacing: 3px; box-shadow: 0 6px 0 rgba(0,0,0,.1); transition: all .2s; }
+  .submit-btn:hover { transform: translateY(2px); box-shadow: 0 3px 0 rgba(0,0,0,.1); }
+
+  @media (max-width: 640px) {
+    .ev-grid { grid-template-columns: 1fr; }
+    .club-grid2 { grid-template-columns: 1fr; }
+    .club-grid4 { grid-template-columns: repeat(2,1fr); }
+  }
 </style>
