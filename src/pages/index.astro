@@ -36,8 +36,8 @@ const recommendedAuthors = users.filter((u: any) => u.recommended && u.status ==
   <header class="hero">
     <div class="hero-text">
       <span class="overline">LITERARY SOCIETY</span>
-      <h1>发现好文字<br>遇见好作者</h1>
-      <p class="hero-desc">文学社是一个开放的文字栖息地。每一篇作品都是一次相遇，每一个作者都值得被阅读。</p>
+      <h1>{siteData.author || '文学社'}<br>{siteData.subtitle || '发现好文字，遇见好作者'}</h1>
+      <p class="hero-desc">{siteData.intro || '文学社是一个开放的文字栖息地。每一篇作品都是一次相遇，每一个作者都值得被阅读。'}</p>
       <a href="/recommended-works" class="cta-btn">开 始 阅 读</a>
     </div>
     <div class="hero-grid">
