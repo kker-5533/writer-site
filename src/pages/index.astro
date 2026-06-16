@@ -141,30 +141,28 @@ const recommendedAuthors = users.filter((u: any) => u.recommended && u.status ==
   }
   .cta-btn:hover { transform: translateY(2px); box-shadow: 0 4px 0 rgba(0,0,0,.1); }
 
-  .hero-cards { position: relative; height: 520px; margin-top: -20px; }
+  .hero-cards { position: relative; height: 480px; margin-top: -10px; }
   .hc {
-    position: absolute; background: rgba(255,255,255,.95); backdrop-filter: blur(4px);
-    padding: 14px 16px; border: 1px solid var(--border);
-    width: 160px; cursor: pointer; transition: transform .5s cubic-bezier(.25,.1,.25,1),box-shadow .5s;
-    text-decoration: none; color: inherit; font-size: 11px;
+    position: absolute; background: rgba(255,255,255,.94); backdrop-filter: blur(6px);
+    padding: 14px 16px; border: 1px solid rgba(0,0,0,.06);
+    width: 170px; cursor: pointer; transition: transform .6s cubic-bezier(.22,.61,.36,1),box-shadow .6s,z-index .6s;
+    text-decoration: none; color: inherit;
+    box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 4px 12px rgba(0,0,0,.06);
   }
-  .hc:hover { z-index: 20 !important; box-shadow: 0 8px 32px rgba(0,0,0,.15) !important; transform: rotate(0deg) scale(1.08) !important; }
-  .hc h3 { font-size: 13px; margin-bottom: 2px; }
-  .hc-tag { font-size: 9px; letter-spacing: 2px; margin-bottom: 4px; }
-  .hc-author { font-size: 10px; }
-  /* 7 张卡片——层叠分布 */
-  .hc1 { top: 0; left: 20px; z-index: 7; transform: rotate(-4deg); box-shadow: var(--shadow-md); }
-  .hc2 { top: 20px; right: 20px; z-index: 6; transform: rotate(3deg); box-shadow: var(--shadow-md); }
-  .hc3 { top: 75px; left: 50px; z-index: 5; transform: rotate(-2deg); box-shadow: var(--shadow-md); }
-  .hc4 { top: 95px; right: 50px; z-index: 4; transform: rotate(1.5deg); box-shadow: var(--shadow-md); }
-  .hc5 { top: 150px; left: 20px; z-index: 3; transform: rotate(-1deg); box-shadow: var(--shadow-md); }
-  .hc6 { top: 170px; right: 20px; z-index: 2; transform: rotate(2.5deg); box-shadow: var(--shadow-md); }
-  .hc7 { top: 225px; left: 50%; transform: translateX(-50%) rotate(0.5deg); z-index: 1; box-shadow: var(--shadow-md); }
-  .hc-tag { font-size: 10px; font-weight: 700; letter-spacing: 3px; color: var(--accent); margin-bottom: 8px; display: block; }
-  .hc h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--navy); }
+  .hc:hover { z-index: 20 !important; box-shadow: 0 8px 40px rgba(0,0,0,.15) !important; transform: rotate(0deg) translateY(-6px) scale(1.06) !important; }
+  .hc-tag { font-size: 9px; font-weight: 700; letter-spacing: 3px; color: var(--accent); margin-bottom: 6px; display: block; }
+  .hc h3 { font-size: 15px; font-weight: 700; margin-bottom: 3px; color: var(--navy); line-height: 1.3; }
   .hc a { text-decoration: none; color: inherit; }
   .hc-author { font-size: 11px; color: var(--text-light); }
-  .hc-excerpt { font-size: 12px; line-height: 1.6; color: var(--text-mid); margin-top: 8px; }
+
+  /* 7张卡片——扇形瀑布层叠 */
+  .hc1 { top: 0; left: 15%; z-index: 7; transform: rotate(-5deg); }
+  .hc2 { top: 28px; left: 35%; z-index: 6; transform: rotate(-2deg); }
+  .hc3 { top: 56px; left: 8%; z-index: 5; transform: rotate(3deg); }
+  .hc4 { top: 84px; left: 42%; z-index: 4; transform: rotate(-3.5deg); }
+  .hc5 { top: 112px; left: 18%; z-index: 3; transform: rotate(1.5deg); }
+  .hc6 { top: 140px; left: 38%; z-index: 2; transform: rotate(-1deg); }
+  .hc7 { top: 170px; left: 25%; z-index: 1; transform: rotate(2.5deg); }
 
   /* ===== 通用区域 ===== */
   .sec { padding: 40px 48px; }
